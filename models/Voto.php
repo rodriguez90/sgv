@@ -49,15 +49,15 @@ class Voto extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'recinto_eleccion_id' => 'Recinto Eleccion ID',
-            'postulacion_id' => 'Postulacion ID',
-            'v_jr_man' => 'V Jr Man',
-            'v_jr_woman' => 'V Jr Woman',
-            'vn_jr_man' => 'Vn Jr Man',
-            'vn_jr_woman' => 'Vn Jr Woman',
-            'vb_jr_man' => 'Vb Jr Man',
-            'vb_jr_woman' => 'Vb Jr Woman',
+            'id' => 'No.',
+            'recinto_eleccion_id' => 'Recinto Electoral',
+            'postulacion_id' => 'Postulación',
+            'v_jr_man' => 'VJR Hombres',
+            'v_jr_woman' => 'VJR Mujeres',
+            'vn_jr_man' => 'VN JR Hombres',
+            'vn_jr_woman' => 'VN JR Mujeres',
+            'vb_jr_man' => 'VN JR Hombres',
+            'vb_jr_woman' => 'VN JR Mujeres',
         ];
     }
 

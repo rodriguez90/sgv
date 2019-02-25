@@ -10,30 +10,48 @@ $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Postulacions', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="postulacion-view">
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header">
+                <p>
+                    <?= Html::a('Modificar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                    <?= Html::a('Eliminar', ['delete', 'id' => $model->id], [
+                        'class' => 'btn btn-danger',
+                        'data' => [
+                            'confirm' => 'Está seguro que desea eliminar el elemento?',
+                            'method' => 'post',
+                        ],
+                    ]) ?>
+                </p>
+            </div>
+            <div class="box-body">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+                <div class="col col-md-6">
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+                    <?= DetailView::widget([
+                        'model' => $model,
+                        'attributes' => [
+                            'id',
+                            [
+                                'attribute' => 'partido.name',
+                                'label' => 'Partido'
+                            ],
+                            [
+                                'attribute' => 'candidate_id',
+                                'value' => $model->candidate->name
+                            ],
+                            [
+                                'attribute' => 'eleccion.name',
+                                'label' => 'Elección'
+                            ],
+                            'role',
+                        ],
+                        'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view'],
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'partido_id',
-            'candidate_id',
-            'eleccion_id',
-            'role',
-        ],
-    ]) ?>
-
+                    ]) ?>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

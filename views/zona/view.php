@@ -10,28 +10,44 @@ $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Zonas', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="zona-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header">
+                <p>
+                    <?= Html::a('Modificar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                    <?= Html::a('Eliminar', ['delete', 'id' => $model->id], [
+                        'class' => 'btn btn-danger',
+                        'data' => [
+                            'confirm' => 'Está seguro que desea eliminar el elemento?',
+                            'method' => 'post',
+                        ],
+                    ]) ?>
+                </p>
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
-
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'parroquia_id',
-            'name',
-        ],
-    ]) ?>
-
+                <div class="col col-md-6">
+                    <?= DetailView::widget([
+                        'model' => $model,
+                        'attributes' => [
+                            'id',
+                            [
+                                'attribute'=>'parroquia.canton.province.name',
+                                'label' => 'Provincia'
+                            ],
+                            [
+                                'attribute'=>'parroquia.canton.name',
+                                'label' => 'Cantón'
+                            ],
+                            [
+                                'attribute'=>'parroquia.name',
+                                'label' => 'Parroquia'
+                            ],
+                            'name',
+                        ],
+                    ]) ?>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

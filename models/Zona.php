@@ -43,9 +43,9 @@ class Zona extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'parroquia_id' => 'Parroquia ID',
-            'name' => 'Name',
+            'id' => 'No.',
+            'parroquia_id' => 'Parroquia',
+            'name' => 'Nombre',
         ];
     }
 

@@ -41,10 +41,10 @@ class Partido extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'list' => 'List',
-            'number' => 'Number',
+            'id' => 'No.',
+            'name' => 'Nombre',
+            'list' => 'Lista',
+            'number' => 'Número',
         ];
     }
 

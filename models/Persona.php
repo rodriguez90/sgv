@@ -18,6 +18,20 @@ use Yii;
  */
 class Persona extends \yii\db\ActiveRecord
 {
+
+    const GENDER_M = 'F';
+    const GENDER_F = 'M';
+
+    const GENDER_CHOICES = [
+        ['id' => 'F', 'name' => 'Feminia'],
+        ['id' => 'M', 'name' => 'Masculina'],
+    ];
+
+    const GENDER_LABEL = [
+        'F' => 'Feminia',
+        'M' => 'Masculina',
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -45,10 +59,10 @@ class Persona extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'first_name' => 'First Name',
-            'last_name' => 'Last Name',
-            'phone_number' => 'Phone Number',
-            'gender' => 'Gender',
+            'first_name' => 'Nombre',
+            'last_name' => 'Apellidos',
+            'phone_number' => 'Télefono',
+            'gender' => 'Género',
         ];
     }
 
@@ -66,5 +80,9 @@ class Persona extends \yii\db\ActiveRecord
     public function getRecintoEleccions0()
     {
         return $this->hasMany(RecintoEleccion::className(), ['coordinator_jr_woman' => 'id']);
+    }
+
+    public function getFullName(){
+        return $this->first_name . ' ' . $this->last_name ;
     }
 }

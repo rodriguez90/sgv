@@ -29,7 +29,7 @@ if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'zona_list')
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'recinto_list')
     || Yii::$app->user->identity->getIsAdmin())
 {
-    $items[]=['label' => 'Recinto Electoral', 'icon' => 'build', 'url' => ['/recintoelectoral/index']];
+    $items[]=['label' => 'Recinto Electoral', 'icon' => 'build', 'url' => ['/recinto-electoral/index']];
 }
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'partido_list')

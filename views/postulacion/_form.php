@@ -8,22 +8,43 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="postulacion-form">
+<!-- begin row -->
+<div class="row">
+    <!-- begin col-12 -->
+    <div class="col-12">
+        <!-- begin box -->
+        <div class="box box-success">
+            <div class="box-body">
+                <div class="col-lg-6 col-md-6 col-xs-6">
 
-    <?php $form = ActiveForm::begin(); ?>
+                    <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'partido_id')->textInput() ?>
+                    <?= $form->field($model, 'eleccion_id')->dropDownList(
+                        \yii\helpers\ArrayHelper::map(\app\models\Eleccion::find()->all(),'id','name'),
+                        ['prompt'=>'Seleccione la Elección',
+                        ]);?>
 
-    <?= $form->field($model, 'candidate_id')->textInput() ?>
 
-    <?= $form->field($model, 'eleccion_id')->textInput() ?>
+                    <?= $form->field($model, 'partido_id')->dropDownList(
+                        \yii\helpers\ArrayHelper::map(\app\models\Partido::find()->all(),'id','name'),
+                        ['prompt'=>'Seleccione el Partido',
+                        ]);?>
 
-    <?= $form->field($model, 'role')->textInput() ?>
+                    <?= $form->field($model, 'candidate_id')->textInput() ?>
 
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+                    <?= $form->field($model, 'role')->dropDownList(
+                        \yii\helpers\ArrayHelper::map(\app\models\Postulacion::ROL_CHOICES,'id','name'),
+                        ['prompt'=>'Seleccione el Rol',
+                        ]);?>
+
+                    <div class="form-group">
+                        <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
+                        <?= Html::button('Cancelar',['class'=>'btn btn-default','onclick'=>'window.history.go(-1)']) ?>
+                    </div>
+
+                    <?php ActiveForm::end(); ?>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <?php ActiveForm::end(); ?>
-
 </div>

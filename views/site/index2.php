@@ -123,7 +123,7 @@ $this->title = '';
                 {panelAfter}
                 {pager}',
             'columns' => [
-//                        ['class' => 'yii\grid\SerialColumn'],
+//                        // ['class' => 'yii\grid\SerialColumn'],
 //                        [
 //                            'attribute' => 'loan_id',
 //                            'content' => function ($data) {

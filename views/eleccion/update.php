@@ -5,14 +5,12 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Eleccion */
 
-$this->title = 'Update Eleccion: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Eleccions', 'url' => ['index']];
+$this->title = 'Modificar Elección: ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Elecciones', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Modificar';
 ?>
 <div class="eleccion-update">
-
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,

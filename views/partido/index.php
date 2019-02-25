@@ -10,29 +10,37 @@ use yii\widgets\Pjax;
 $this->title = 'Partidos';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="partido-index">
+<!-- begin row -->
+<div class="row">
+    <!-- begin col-12 -->
+    <div class="col-12">
+        <!-- begin box -->
+        <div class="box box-success">
+            <div class="box-body">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+                <?php Pjax::begin(); ?>
+                <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <p>
-        <?= Html::a('Create Partido', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+                <p>
+                    <?= Html::a('Nueva Partido', ['create'], ['class' => 'btn btn-success']) ?>
+                </p>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+                <?= GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    'filterModel' => $searchModel,
+                    'columns' => [
+                        // ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'name',
-            'list',
-            'number',
+                        'id',
+                        'name',
+                        'list',
+                        'number',
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-    <?php Pjax::end(); ?>
+                        ['class' => 'yii\grid\ActionColumn'],
+                    ],
+                ]); ?>
+                <?php Pjax::end(); ?>
+            </div>
+        </div>
+    </div>
 </div>

@@ -10,28 +10,45 @@ use yii\widgets\Pjax;
 $this->title = 'Parroquias';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="parroquia-index">
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+                <?php Pjax::begin(); ?>
+                <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <p>
-        <?= Html::a('Create Parroquia', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+                <p>
+                    <?= Html::a('Nueva Parroquia', ['create'], ['class' => 'btn btn-success']) ?>
+                </p>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            </div>
+            <div class="box-body">
 
-            'id',
-            'canton_id',
-            'name',
+                <?= GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    'filterModel' => $searchModel,
+                    'columns' => [
+                        // ['class' => 'yii\grid\SerialColumn'],
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-    <?php Pjax::end(); ?>
+                        'id',
+                        [
+                            'label' => 'Provincia',
+                            'value' => function($model) {
+                                return $model->canton->province->name;
+                            }
+                        ],
+                        [
+                            'attribute'=>'canton_id',
+                            'value' => 'canton.name'
+                        ],
+                        'name',
+
+                        ['class' => 'yii\grid\ActionColumn'],
+                    ],
+                ]); ?>
+                <?php Pjax::end(); ?>
+            </div>
+        </div>
+    </div>
 </div>

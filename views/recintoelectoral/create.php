@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\RecintoElectoral */
 
-$this->title = 'Create Recinto Electoral';
+$this->title = 'Nueva Recinto Electoral';
 $this->params['breadcrumbs'][] = ['label' => 'Recinto Electorals', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

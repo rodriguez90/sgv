@@ -10,28 +10,48 @@ $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Parroquias', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="parroquia-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header">
+                <p>
+                    <?= Html::a('Modificar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                    <?= Html::a('Eliminar', ['delete', 'id' => $model->id], [
+                        'class' => 'btn btn-danger',
+                        'data' => [
+                            'confirm' => 'Está seguro que desea eliminar el elemento?',
+                            'method' => 'post',
+                        ],
+                    ]) ?>
+                </p>
+            </div>
+            <div class="box-body">
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
-
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'canton_id',
-            'name',
-        ],
-    ]) ?>
-
+                <div class="col col-md-6">
+                    <?= DetailView::widget([
+                        'model' => $model,
+                        'attributes' => [
+                            'id',
+                            [
+                                'label' => 'Provincia',
+                                'value'=>function($model) {
+                                    return $model->canton->province->name;
+                                }
+                            ],
+                            [
+                                'attribute'=>'canton_id',
+                                'value'=>function($model) {
+                                    return $model->canton->name;
+                                }
+                            ],
+                            'name',
+                        ],
+                        'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view'],
+                    ]) ?>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+

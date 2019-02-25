@@ -43,9 +43,9 @@ class Parroquia extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'canton_id' => 'Canton ID',
-            'name' => 'Name',
+            'id' => 'No.',
+            'canton_id' => 'Cantón',
+            'name' => 'Nombre',
         ];
     }
 

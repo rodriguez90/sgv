@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use Da\User\Model\Profile;
 
 /**
  * This is the model class for table "postulacion".
@@ -20,6 +21,23 @@ use Yii;
  */
 class Postulacion extends \yii\db\ActiveRecord
 {
+
+    const ROL_ALCALDIA = 1;
+    const ROL_PREFECTURA = 2;
+    const ROL_CONSEJAL = 3;
+
+    const ROL_CHOICES = [
+        ['id' => 1, 'name' => 'Alcaldía'],
+        ['id' => 2, 'name' => 'Prefectura'],
+        ['id' => 3, 'name' => 'Consejal']
+    ];
+
+    const ROL_LABEL = [
+        1 => 'Alcaldía',
+        2 => 'Prefectura',
+        3 => 'Consejal'
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -48,11 +66,11 @@ class Postulacion extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'partido_id' => 'Partido ID',
-            'candidate_id' => 'Candidate ID',
-            'eleccion_id' => 'Eleccion ID',
-            'role' => 'Role',
+            'id' => 'No.',
+            'partido_id' => 'Partido',
+            'candidate_id' => 'Candidato',
+            'eleccion_id' => 'Elección',
+            'role' => 'Rol',
         ];
     }
 

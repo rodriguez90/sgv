@@ -8,20 +8,32 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="partido-form">
+<!-- begin row -->
+<div class="row">
+    <!-- begin col-12 -->
+    <div class="col-12">
+        <!-- begin box -->
+        <div class="box box-success">
+            <div class="box-body">
+                <div class="col-lg-6 col-md-6 col-xs-6">
 
-    <?php $form = ActiveForm::begin(); ?>
+                    <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'list')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'list')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
 
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+                    <div class="form-group">
+                        <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
+                        <?= Html::button('Cancelar',['class'=>'btn btn-default','onclick'=>'window.history.go(-1)']) ?>
+                    </div>
+
+                    <?php ActiveForm::end(); ?>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <?php ActiveForm::end(); ?>
-
 </div>
+

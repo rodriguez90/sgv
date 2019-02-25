@@ -46,7 +46,7 @@ class RecintoElectoral extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'zona_id' => 'Zona ID',
-            'name' => 'Name',
+            'name' => 'Nombre',
             'address' => 'Address',
         ];
     }

@@ -124,4 +124,20 @@ class ProvinceController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    public function actionLists()
+    {
+        $provinces = Province::find()->all();
+        if($provinces > 0)
+        {
+            foreach ( $provinces as $province  )
+            {
+                echo "<option value='".$province->id."'>".$province->name."</option>";
+            }
+        }
+        else
+        {
+            echo "<option>-</option>";
+        }
+    }
 }

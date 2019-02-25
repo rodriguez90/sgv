@@ -17,6 +17,22 @@ use Yii;
  */
 class Canton extends \yii\db\ActiveRecord
 {
+    const CANTON_RURAL = 1;
+    const CANTON_NORTH = 2;
+    const CANTON_SOUTH = 3;
+
+    const CANTON_CHOICES = [
+        ['id' => 1, 'name' => 'Rural'],
+        ['id' => 2, 'name' => 'Norte'],
+        ['id' => 3, 'name' => 'Sur']
+    ];
+
+    const CANTON_LABEL = [
+       1 => 'Rural',
+       2 => 'Norte',
+       3 => 'Sur'
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -44,10 +60,10 @@ class Canton extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'province_id' => 'Province ID',
-            'name' => 'Name',
-            'type' => 'Type',
+            'id' => 'No.',
+            'province_id' => 'Provincia',
+            'name' => 'Nombre',
+            'type' => 'Tipo',
         ];
     }
 

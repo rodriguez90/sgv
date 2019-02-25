@@ -14,7 +14,7 @@ use yii\console\Controller;
 use yii\console\ExitCode;
 
 
-class LoanController extends Controller
+class SgvController extends Controller
 {
     /**
      * @return int
@@ -25,8 +25,9 @@ class LoanController extends Controller
         $email = 'root@test.com';
         $username = 'root';
         $year = date(strtotime("Y"));
-        $password = 'root*'.$year;
+        $password = 'root*2019';
         $role = 'Administrador';
+
         $createController->actionIndex($email,$username, $password, $role);
 
         return ExitCode::OK;

@@ -96,7 +96,7 @@ $this->title = 'Inicio';
                     'filterModel' => $searchModel,
 //                    'id'=>'payments',
                     'columns' => [
-                        ['class' => 'yii\grid\SerialColumn'],
+                        // ['class' => 'yii\grid\SerialColumn'],
                         [
                             'attribute' => 'loan_id',
                             'content' => function ($data) {

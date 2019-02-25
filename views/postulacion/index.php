@@ -10,30 +10,34 @@ use yii\widgets\Pjax;
 $this->title = 'Postulacions';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="postulacion-index">
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header">
+                <?php Pjax::begin(); ?>
+                <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+                <p>
+                    <?= Html::a('Nueva Postulacion', ['create'], ['class' => 'btn btn-success']) ?>
+                </p>
 
-    <p>
-        <?= Html::a('Create Postulacion', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+                <?= GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    'filterModel' => $searchModel,
+                    'columns' => [
+                        // ['class' => 'yii\grid\SerialColumn'],
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+                        'id',
+                        'partido_id',
+                        'candidate_id',
+                        'eleccion_id',
+                        'role',
 
-            'id',
-            'partido_id',
-            'candidate_id',
-            'eleccion_id',
-            'role',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-    <?php Pjax::end(); ?>
+                        ['class' => 'yii\grid\ActionColumn'],
+                    ],
+                ]); ?>
+                <?php Pjax::end(); ?>
+            </div>
+        </div>
+    </div>
 </div>

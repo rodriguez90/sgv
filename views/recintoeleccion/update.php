@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\RecintoEleccion */
 
-$this->title = 'Update Recinto Eleccion: ' . $model->id;
+$this->title = 'ModificarRecinto Eleccion: ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Recinto Eleccions', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Modificar';
 ?>
 <div class="recinto-eleccion-update">
 

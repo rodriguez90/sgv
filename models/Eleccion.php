@@ -42,9 +42,9 @@ class Eleccion extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'delivery_date' => 'Delivery Date',
+            'id' => 'No.',
+            'name' => 'Nombre',
+            'delivery_date' => 'Fecha',
         ];
     }
 
