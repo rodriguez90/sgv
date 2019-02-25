@@ -1,6 +1,12 @@
 <?php
 $items = [['label' => 'Menu', 'options' => ['class' => 'header']]];
 
+if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'partido_list')
+    || Yii::$app->user->identity->getIsAdmin())
+{
+    $items[]=['label' => 'Eleccion', 'icon' => 'build', 'url' => ['/eleccion/index']];
+}
+
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'province_list')
     || Yii::$app->user->identity->getIsAdmin())
 {
@@ -12,7 +18,6 @@ if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'canton_list', [
 {
     $items[]=['label' => 'Cantones', 'icon' => 'circle', 'url' => ['/canton/index']];
 }
-
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'parroquia_list')
     || Yii::$app->user->identity->getIsAdmin())
@@ -32,17 +37,19 @@ if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'recinto_list')
     $items[]=['label' => 'Recinto Electoral', 'icon' => 'build', 'url' => ['/recinto-electoral/index']];
 }
 
+if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'recinto_list')
+    || Yii::$app->user->identity->getIsAdmin())
+{
+    $items[]=['label' => 'Recinto en Elección', 'icon' => 'build', 'url' => ['/recinto-eleccion/index']];
+}
+
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'partido_list')
     || Yii::$app->user->identity->getIsAdmin())
 {
     $items[]=['label' => 'Partido', 'icon' => 'build', 'url' => ['/partido/index']];
 }
 
-if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'partido_list')
-    || Yii::$app->user->identity->getIsAdmin())
-{
-    $items[]=['label' => 'Eleccion', 'icon' => 'build', 'url' => ['/eleccion/index']];
-}
+
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'persona_list')
     || Yii::$app->user->identity->getIsAdmin())

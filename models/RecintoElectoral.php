@@ -44,10 +44,10 @@ class RecintoElectoral extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'zona_id' => 'Zona ID',
+            'id' => 'No.',
+            'zona_id' => 'Zona',
             'name' => 'Nombre',
-            'address' => 'Address',
+            'address' => 'Dirección',
         ];
     }
 

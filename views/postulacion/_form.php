@@ -30,7 +30,10 @@ use yii\widgets\ActiveForm;
                         ['prompt'=>'Seleccione el Partido',
                         ]);?>
 
-                    <?= $form->field($model, 'candidate_id')->textInput() ?>
+                    <?= $form->field($model, 'candidate_id')->dropDownList(
+                        \yii\helpers\ArrayHelper::map(\Da\User\Model\Profile::find()->all(),'user_id','name'),
+                        ['prompt'=>'Seleccione el Candidato',
+                        ]);?>
 
                     <?= $form->field($model, 'role')->dropDownList(
                         \yii\helpers\ArrayHelper::map(\app\models\Postulacion::ROL_CHOICES,'id','name'),

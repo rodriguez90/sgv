@@ -54,13 +54,13 @@ class RecintoEleccion extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'recinto_id' => 'Recinto ID',
-            'coordinator_jr_man' => 'Coordinator Jr Man',
-            'coordinator_jr_woman' => 'Coordinator Jr Woman',
-            'eleccion_id' => 'Eleccion ID',
-            'jr_woman' => 'Jr Woman',
-            'jr_man' => 'Jr Man',
-            'count_elector' => 'Count Elector',
+            'recinto_id' => 'Recinto',
+            'coordinator_jr_man' => 'Coordinator JR Hombres',
+            'coordinator_jr_woman' => 'Coordinator JR Mujeres',
+            'eleccion_id' => 'Elección',
+            'jr_woman' => 'Jr Mujeres',
+            'jr_man' => 'Jr Hombres',
+            'count_elector' => 'Electores',
         ];
     }
 

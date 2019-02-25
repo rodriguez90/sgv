@@ -124,4 +124,23 @@ class RecintoEleccionController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    public function actionLists($id)
+    {
+
+        $results = RecintoEleccion::find()
+            ->where(['eleccion_id'=>$id])
+            ->all();
+        if(count($results) > 0)
+        {
+            foreach ( $results as $model )
+            {
+                echo "<option value='".$model->id."'>".$model->recinto->name."</option>";
+            }
+        }
+        else
+        {
+            echo "<option>-</option>";
+        }
+    }
 }

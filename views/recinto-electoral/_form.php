@@ -4,13 +4,10 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Canton */
+/* @var $model app\models\RecintoElectoral */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<?php if ($model->hasErrors()) {
-    \Yii::$app->getSession()->setFlash('error', $model->getErrorSummary(true));
-}
-?>
+
 
 <!-- begin row -->
 <div class="row">
@@ -23,21 +20,18 @@ use yii\widgets\ActiveForm;
 
                     <?php $form = ActiveForm::begin(); ?>
 
-                    <?= $form->field($model, 'province_id')->dropDownList(
-                        \yii\helpers\ArrayHelper::map(\app\models\Province::find()->all(),'id','name'),
-                        ['prompt'=>'Seleccione la Provincia',
-                        ]);?>
-
-                    <?= $form->field($model, 'type')->dropDownList(
-                        \yii\helpers\ArrayHelper::map(\app\models\Canton::CANTON_CHOICES,'id','name'),
-                        ['prompt'=>'Seleccione el Tipo',
+                    <?= $form->field($model, 'zona_id')->dropDownList(
+                        \yii\helpers\ArrayHelper::map(\app\models\Zona::find()->all(),'id','name'),
+                        [
+                            'prompt'=>'Seleccione la Zona',
                         ]);?>
 
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
+                    <?= $form->field($model, 'address')->textInput(['maxlength' => true]) ?>
+
                     <div class="form-group">
                         <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
-                        <?= Html::button('Cancelar',['class'=>'btn btn-default','onclick'=>'window.history.go(-1)']) ?>
                     </div>
 
                     <?php ActiveForm::end(); ?>
