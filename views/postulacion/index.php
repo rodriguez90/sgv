@@ -28,11 +28,25 @@ $this->params['breadcrumbs'][] = $this->title;
                         // ['class' => 'yii\grid\SerialColumn'],
 
                         'id',
-                        'partido_id',
-                        'candidate_id',
-                        'eleccion_id',
-                        'role',
-
+                        [
+							'attribute' => 'partido.name',
+							'label' => 'Nombre',
+						],
+						[
+							'attribute' => 'candidate.name',
+							'label' => 'Candidato',
+						],
+						[
+							'attribute' => 'eleccion.name',
+							'label' => 'Elección',
+						],
+						[
+							'attribute' => 'role',							
+							'value' => function($model)
+							{
+								return app\models\Postulacion::ROL_LABEL[$model->role];
+							}
+						],
                         ['class' => 'yii\grid\ActionColumn'],
                     ],
                 ]); ?>

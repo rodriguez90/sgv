@@ -1,40 +1,60 @@
 <?php
-$items = [['label' => 'Menu', 'options' => ['class' => 'header']]];
+//$items = [['label' => 'Menu', 'options' => ['class' => 'header']]];
+
+$items = [['label' => 'Menu', 
+	'options' => ['class' => 'header'],
+	'items' =>[]
+]];
+
+$localization = [
+	'label' => 'Localización',
+    'icon' => 'map',
+    'url' => '#',
+	'items' => []
+];
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'partido_list')
     || Yii::$app->user->identity->getIsAdmin())
 {
-    $items[]=['label' => 'Eleccion', 'icon' => 'build', 'url' => ['/eleccion/index']];
+    $items=['label' => 'Eleccion', 'icon' => 'build', 'url' => ['/eleccion/index']];
 }
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'province_list')
     || Yii::$app->user->identity->getIsAdmin())
 {
-    $items[]=['label' => 'Provincias', 'icon' => 'map', 'url' => ['/province/index']];
+   $localization['items'][]=['label' => 'Provincias', 'icon' => 'map', 'url' => ['/province/index']];
 }
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'canton_list', [])
     || Yii::$app->user->identity->getIsAdmin())
 {
-    $items[]=['label' => 'Cantones', 'icon' => 'circle', 'url' => ['/canton/index']];
+    $localization['items'][]=['label' => 'Cantones', 'icon' => 'circle', 'url' => ['/canton/index']];
 }
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'parroquia_list')
     || Yii::$app->user->identity->getIsAdmin())
 {
-    $items[]=['label' => 'Parroquias', 'icon' => 'home', 'url' => ['/parroquia/index']];
+    $localization['items'][]  =['label' => 'Parroquias', 'icon' => 'home', 'url' => ['/parroquia/index']];
 }
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'zona_list')
     || Yii::$app->user->identity->getIsAdmin())
 {
-    $items[]=['label' => 'Zonas', 'icon' => 'home', 'url' => ['/zona/index']];
+    $localization['items'][]=['label' => 'Zonas', 'icon' => 'home', 'url' => ['/zona/index']];
 }
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'recinto_list')
     || Yii::$app->user->identity->getIsAdmin())
 {
-    $items[]=['label' => 'Recinto Electoral', 'icon' => 'build', 'url' => ['/recinto-electoral/index']];
+    $localization['items'][]=['label' => 'Recinto Electoral', 'icon' => 'build', 'url' => ['/recinto-electoral/index']];
+}
+
+
+// Menus que tienen más relacion con la el proceso
+if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'voto_list')
+    || Yii::$app->user->identity->getIsAdmin())
+{
+    $items[]=['label' => 'Voto', 'icon' => 'build', 'url' => ['/voto/index']];
 }
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'recinto_list')
@@ -49,8 +69,6 @@ if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'partido_list')
     $items[]=['label' => 'Partido', 'icon' => 'build', 'url' => ['/partido/index']];
 }
 
-
-
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'persona_list')
     || Yii::$app->user->identity->getIsAdmin())
 {
@@ -63,23 +81,21 @@ if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'persona_list')
     $items[]=['label' => 'Postulación', 'icon' => 'build', 'url' => ['/postulacion/index']];
 }
 
-if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'voto_list')
-    || Yii::$app->user->identity->getIsAdmin())
-{
-    $items[]=['label' => 'Voto', 'icon' => 'build', 'url' => ['/voto/index']];
-}
-
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'report_view')
 || Yii::$app->user->identity->getIsAdmin())
 {
     $items[]=['label' => 'Reporte', 'icon' => 'file', 'url' => ['/site/report']];
 }
 
+// Menus de Localización
+$items[] = $localization;
+
 if(Yii::$app->user->identity->getIsAdmin())
 {
     $items[]=['label' => 'Administración', 'icon' => 'cogs', 'url' => ['/user/admin/index']];
 }
 
+//var_dump($items);die;
 ?>
 <aside class="main-sidebar">
 

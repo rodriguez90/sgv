@@ -105,4 +105,15 @@ class Postulacion extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Voto::className(), ['postulacion_id' => 'id']);
     }
+
+    private $_name;
+    public function getName(){
+        $name = $this->partido->name .
+                ' - ' . $this->partido->list .
+                ' - ' . $this->partido->number .
+                ' - '.  $this->candidate->name  .
+                ' - ' . Postulacion::ROL_LABEL[$this->role];
+
+        return $name;
+    }
 }

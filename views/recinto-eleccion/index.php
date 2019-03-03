@@ -32,13 +32,29 @@ $this->params['breadcrumbs'][] = $this->title;
                         // ['class' => 'yii\grid\SerialColumn'],
 
                         'id',
-                        'recinto_id',
-                        'coordinator_jr_man',
-                        'coordinator_jr_woman',
-                        'eleccion_id',
-                        //'jr_woman',
-                        //'jr_man',
-                        //'count_elector',
+						[
+								'attribute'=> 'recinto.name',
+								'label' => 'Nombre'
+						],
+                        [
+							'attribute'=> 'coordinator_jr_man',							
+							'value' => function($model) {
+								return $model->coordinatorJrMan->getFullName();
+							}
+						],
+						 [
+							'attribute'=> 'coordinator_jr_woman',							
+							'value' => function($model) {
+								return $model->coordinatorJrWoman->getFullName();
+							}
+						],
+                        [
+							'attribute' => 'eleccion.name',
+							'label' => 'Elección',
+						],
+                        'jr_woman',
+                        'jr_man',
+                        'count_elector',
 
                         ['class' => 'yii\grid\ActionColumn'],
                     ],

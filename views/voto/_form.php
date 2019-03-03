@@ -19,9 +19,20 @@ use yii\widgets\ActiveForm;
                     <?php $form = ActiveForm::begin(); ?>
                     <div class="row">
                         <div class="col-md-6">
-                            <?= $form->field($model, 'recinto_eleccion_id')->textInput() ?>
+                            <?= $form->field($model, 'recinto_eleccion_id')->dropDownList(
+                                \yii\helpers\ArrayHelper::map(\app\models\RecintoEleccion::find()
+                                    ->select(['recinto_eleccion.id',
+                                              'recinto_electoral.name'
+                                    ])->innerJoin('recinto_electoral',
+                                        'recinto_electoral.id=recinto_eleccion.recinto_id')
+                                    ->asArray()->all(),'id','name'),
+                                    ['prompt'=>'Seleccione la Elección',
+                                ]);?>
 
-                            <?= $form->field($model, 'postulacion_id')->textInput() ?>
+                            <?= $form->field($model, 'postulacion_id')->dropDownList(
+                                \yii\helpers\ArrayHelper::map(\app\models\Postulacion::find()->all(),'id','name'),
+                                ['prompt'=>'Seleccione la Postulación',
+                                ]);?>
 
                             <?= $form->field($model, 'v_jr_man')->textInput() ?>
 

@@ -32,7 +32,10 @@ $this->params['breadcrumbs'][] = $this->title;
                             // ['class' => 'yii\grid\SerialColumn'],
 
                             'id',
-                            'zona_id',
+                            [
+								'attribute'=> 'zona.name',
+								'label' => 'Zona'
+							],
                             'name',
                             'address',
 

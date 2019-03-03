@@ -76,4 +76,16 @@ class Voto extends \yii\db\ActiveRecord
     {
         return $this->hasOne(RecintoEleccion::className(), ['id' => 'recinto_eleccion_id']);
     }
+
+    public function getVotos()
+    {
+        return $this->hasMany(Voto::className(), ['postulacion_id' => 'id']);
+    }
+
+    private $_name;
+    public function getName(){
+        $name = $this->postulacion->name;
+
+        return $name;
+    }
 }
