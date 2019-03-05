@@ -104,6 +104,24 @@ class RecintoEleccion extends \yii\db\ActiveRecord
         return $this->hasMany(Voto::className(), ['recinto_eleccion_id' => 'id']);
     }
 
+    private $_totalJuntas;
+
+    public function getTotalJuntas(){
+        $name = $this->jr_man + $this->jr_woman;
+
+        return $name;
+    }
+
+    private $_parroquia;
+    public function getParroquia(){
+        return $this->getZona()->parroquia;
+    }
+    private $_zona;
+    public function getZona(){
+        return $this->recinto->zona;
+
+    }
+
     private $_name;
     public function getName(){
         $name = $this->recinto->name;

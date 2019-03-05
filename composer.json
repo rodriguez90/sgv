@@ -45,7 +45,10 @@
         "kartik-v/yii2-validators": "dev-master",
         "yiisoft/yii2-jui": "^2.0",
         "kartik-v/yii2-editable": "@dev",
-        "w3lifer/yii2-js-data-provider": "^6.1"
+        "w3lifer/yii2-js-data-provider": "^6.1",
+        "custom-it/yii2-excel-report": "^1.0",
+        "kartik-v/yii2-export": "dev-master",
+        "kartik-v/yii2-detail-view": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

@@ -64,6 +64,7 @@ class Canton extends \yii\db\ActiveRecord
             'province_id' => 'Provincia',
             'name' => 'Nombre',
             'type' => 'Tipo',
+            'provinceName' => 'Provincia',
         ];
     }
 
@@ -73,6 +74,13 @@ class Canton extends \yii\db\ActiveRecord
     public function getProvince()
     {
         return $this->hasOne(Province::className(), ['id' => 'province_id']);
+    }
+
+    private $_provinceName;
+    public function getProvinceName()
+    {
+        $province = $this->province;
+        return $province ? $province->name : '';
     }
 
     /**

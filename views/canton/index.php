@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'columns' => [
                         'id',
                         [
-                            'attribute'=>'province_id',
+                            'attribute'=>'province',
                             'value'=>'province.name',
                         ],
                         'name',
@@ -37,7 +37,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             'attribute'=>'type',
                             'value' => function ($model) {
                                     return \app\models\Canton::CANTON_LABEL[$model->type];
-                            }
+                            },
+                            'filter' => \app\models\Canton::CANTON_LABEL
+//                            'filter' =>Html::activeDropDownList($searchModel,
+//                            'type',
+//                            \app\models\Canton::CANTON_LABEL,
+//                            ['class'=>'form-control', 'multiple'=>true]
+//                            ),
                         ],
 
                         ['class' => 'yii\grid\ActionColumn'],

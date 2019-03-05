@@ -34,12 +34,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         'id',
                         [
                             'label' => 'Provincia',
-                            'value' => function($model) {
-                                return $model->canton->province->name;
-                            }
+                            'attribute'=>'province',
+                            'value' => 'province.name'
+//                            'value' => function($model) {
+//                                return $model->canton->province->name;
+//                            }
                         ],
                         [
-                            'attribute'=>'canton_id',
+                            'attribute'=>'canton',
+                            'label'=>'Cantón',
                             'value' => 'canton.name'
                         ],
                         'name',

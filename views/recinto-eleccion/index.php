@@ -32,6 +32,18 @@ $this->params['breadcrumbs'][] = $this->title;
                         // ['class' => 'yii\grid\SerialColumn'],
 
                         'id',
+                        [
+                            'attribute' => 'eleccion.name',
+                            'label' => 'Elección',
+                        ],
+                        [
+                            'attribute' => 'parroquia.name',
+                            'label' => 'Parroquia',
+                        ],
+                        [
+                            'attribute' => 'zona.name',
+                            'label' => 'Zona',
+                        ],
 						[
 								'attribute'=> 'recinto.name',
 								'label' => 'Nombre'
@@ -42,18 +54,15 @@ $this->params['breadcrumbs'][] = $this->title;
 								return $model->coordinatorJrMan->getFullName();
 							}
 						],
-						 [
+                        [
 							'attribute'=> 'coordinator_jr_woman',							
 							'value' => function($model) {
 								return $model->coordinatorJrWoman->getFullName();
 							}
 						],
-                        [
-							'attribute' => 'eleccion.name',
-							'label' => 'Elección',
-						],
                         'jr_woman',
                         'jr_man',
+                        'totalJuntas',
                         'count_elector',
 
                         ['class' => 'yii\grid\ActionColumn'],

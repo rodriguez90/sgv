@@ -64,4 +64,14 @@ class Zona extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Parroquia::className(), ['id' => 'parroquia_id']);
     }
+
+    public function getProvince()
+    {
+        return $this->parroquia->canton->province;
+    }
+
+    public function getCanton()
+    {
+        return $this->parroquia->canton;
+    }
 }

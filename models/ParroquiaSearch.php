@@ -12,6 +12,8 @@ use app\models\Parroquia;
  */
 class ParroquiaSearch extends Parroquia
 {
+    public $canton;
+    public $province;
     /**
      * {@inheritdoc}
      */
@@ -19,7 +21,7 @@ class ParroquiaSearch extends Parroquia
     {
         return [
             [['id', 'canton_id'], 'integer'],
-            [['name'], 'safe'],
+            [['name', 'canton', 'province'], 'safe'],
         ];
     }
 
@@ -45,9 +47,22 @@ class ParroquiaSearch extends Parroquia
 
         // add conditions that should always apply here
 
+        $query->joinWith('canton');
+        $query->innerJoin('province', 'canton.province_id=province.id');
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+
+        $dataProvider->sort->attributes['canton'] = [
+            'asc'=>['canton.name' => SORT_ASC],
+            'desc'=>['canton.name'=> SORT_DESC] ,
+        ];
+
+        $dataProvider->sort->attributes['province'] = [
+            'asc'=>['province.name' => SORT_ASC],
+            'desc'=>['province.name'=> SORT_DESC] ,
+        ];
 
         $this->load($params);
 
@@ -59,11 +74,13 @@ class ParroquiaSearch extends Parroquia
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'parroquia.id' => $this->id,
             'canton_id' => $this->canton_id,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'canton.name', $this->canton]);
+        $query->andFilterWhere(['like', 'province.name', $this->province]);
 
         return $dataProvider;
     }

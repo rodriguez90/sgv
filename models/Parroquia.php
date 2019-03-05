@@ -49,6 +49,11 @@ class Parroquia extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getProvince()
+    {
+        return $this->canton->province;
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */

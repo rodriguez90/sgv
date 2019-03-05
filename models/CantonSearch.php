@@ -12,6 +12,7 @@ use app\models\Canton;
  */
 class CantonSearch extends Canton
 {
+    public $province;
     /**
      * {@inheritdoc}
      */
@@ -19,7 +20,7 @@ class CantonSearch extends Canton
     {
         return [
             [['id', 'province_id', 'type'], 'integer'],
-            [['name'], 'safe'],
+            [['name', 'province'], 'safe'],
         ];
     }
 
@@ -45,9 +46,16 @@ class CantonSearch extends Canton
 
         // add conditions that should always apply here
 
+        $query->joinWith('province');
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+
+        $dataProvider->sort->attributes['province'] = [
+            'asc'=>['province.name' => SORT_ASC],
+            'desc'=>['province.name'=> SORT_DESC] ,
+        ];
 
         $this->load($params);
 
@@ -59,12 +67,13 @@ class CantonSearch extends Canton
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'province_id' => $this->province_id,
+            'canton.id' => $this->id,
+//            'province_id' => $this->province_id,
             'type' => $this->type,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'province.name', $this->province]);
 
         return $dataProvider;
     }

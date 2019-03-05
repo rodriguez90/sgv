@@ -31,15 +31,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         'id',
                         [
-                            'attribute' => 'parroquia.canton.province.name',
+                            'attribute' => 'province',
+                            'value' => 'province.name',
                             'label' => 'Provincia'
                         ],
                         [
-                            'attribute' => 'parroquia.canton.name',
+                            'attribute' => 'canton',
+                            'value' => 'canton.name',
                             'label' => 'Cantón'
                         ],
                         [
-                            'attribute' => 'parroquia.name',
+                            'attribute' => 'parroquia',
+                            'value' => 'parroquia.name',
                             'label' => 'Parroquia'
                         ],
                         'name',

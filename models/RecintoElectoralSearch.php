@@ -12,6 +12,7 @@ use app\models\RecintoElectoral;
  */
 class RecintoElectoralSearch extends RecintoElectoral
 {
+    public $zona;
     /**
      * {@inheritdoc}
      */
@@ -19,7 +20,7 @@ class RecintoElectoralSearch extends RecintoElectoral
     {
         return [
             [['id', 'zona_id'], 'integer'],
-            [['name', 'address'], 'safe'],
+            [['name', 'address', 'zona'], 'safe'],
         ];
     }
 
@@ -45,9 +46,16 @@ class RecintoElectoralSearch extends RecintoElectoral
 
         // add conditions that should always apply here
 
+        $query->joinWith('zona');
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+
+        $dataProvider->sort->attributes['zona'] = [
+            'asc'=>['zona.name' => SORT_ASC],
+            'desc'=>['zona.name'=> SORT_DESC] ,
+        ];
 
         $this->load($params);
 
@@ -64,7 +72,8 @@ class RecintoElectoralSearch extends RecintoElectoral
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'address', $this->address]);
+            ->andFilterWhere(['like', 'address', $this->address])
+            ->andFilterWhere(['like', 'zona.name', $this->zona]);
 
         return $dataProvider;
     }

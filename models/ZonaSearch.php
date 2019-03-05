@@ -12,6 +12,9 @@ use app\models\Zona;
  */
 class ZonaSearch extends Zona
 {
+    public $canton;
+    public $province;
+    public $parroquia;
     /**
      * {@inheritdoc}
      */
@@ -19,7 +22,7 @@ class ZonaSearch extends Zona
     {
         return [
             [['id', 'parroquia_id'], 'integer'],
-            [['name'], 'safe'],
+            [['name', 'canton', 'province', 'parroquia'], 'safe'],
         ];
     }
 
@@ -44,10 +47,31 @@ class ZonaSearch extends Zona
         $query = Zona::find();
 
         // add conditions that should always apply here
+        $query->joinWith('parroquia');
+        $query->innerJoin('canton', 'parroquia.canton_id=canton.id');
+        $query->innerJoin('province', 'canton.province_id=province.id');
+
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+
+
+        $dataProvider->sort->attributes['parroquia'] = [
+            'asc'=>['parroquia.name' => SORT_ASC],
+            'desc'=>['parroquia.name'=> SORT_DESC] ,
+        ];
+
+        $dataProvider->sort->attributes['canton'] = [
+            'asc'=>['canton.name' => SORT_ASC],
+            'desc'=>['canton.name'=> SORT_DESC] ,
+        ];
+
+        $dataProvider->sort->attributes['province'] = [
+            'asc'=>['province.name' => SORT_ASC],
+            'desc'=>['province.name'=> SORT_DESC] ,
+        ];
+
 
         $this->load($params);
 
@@ -64,6 +88,9 @@ class ZonaSearch extends Zona
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'parroquia.name', $this->parroquia]);
+        $query->andFilterWhere(['like', 'canton.name', $this->canton]);
+        $query->andFilterWhere(['like', 'province.name', $this->province]);
 
         return $dataProvider;
     }

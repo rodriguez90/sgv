@@ -33,7 +33,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
                             'id',
                             [
-								'attribute'=> 'zona.name',
+								'attribute'=> 'zona',
+								'value'=> 'zona.name',
 								'label' => 'Zona'
 							],
                             'name',
