@@ -12,6 +12,8 @@ use app\models\Voto;
  */
 class VotoSearch extends Voto
 {
+    public $postulacion;
+    public $recintoEleccion;
     /**
      * {@inheritdoc}
      */
@@ -19,6 +21,7 @@ class VotoSearch extends Voto
     {
         return [
             [['id', 'recinto_eleccion_id', 'postulacion_id', 'v_jr_man', 'v_jr_woman', 'vn_jr_man', 'vn_jr_woman', 'vb_jr_man', 'vb_jr_woman'], 'integer'],
+            [['recintoEleccion', 'postulacion'], 'safe'],
         ];
     }
 
@@ -43,10 +46,21 @@ class VotoSearch extends Voto
         $query = Voto::find();
 
         // add conditions that should always apply here
+        $query->joinWith(['postulacion', 'recintoEleccion']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+
+        $dataProvider->sort->attributes['postulacion'] = [
+            'asc'=>['postulacion.name' => SORT_ASC],
+            'desc'=>['postulacion.name'=> SORT_DESC] ,
+        ];
+
+        $dataProvider->sort->attributes['recintoEleccion'] = [
+            'asc'=>['recintoEleccion.name' => SORT_ASC],
+            'desc'=>['recintoEleccion.name'=> SORT_DESC] ,
+        ];
 
         $this->load($params);
 

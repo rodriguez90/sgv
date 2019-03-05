@@ -108,11 +108,14 @@ class Postulacion extends \yii\db\ActiveRecord
 
     private $_name;
     public function getName(){
-        $name = $this->partido->name .
-                ' - ' . $this->partido->list .
-                ' - ' . $this->partido->number .
-                ' - '.  $this->candidate->name  .
-                ' - ' . Postulacion::ROL_LABEL[$this->role];
+//        $name = $this->partido->name .
+//                ' - ' . $this->partido->list .
+//                ' - ' . $this->partido->number .
+//                ' - '.  $this->candidate->name  .
+//                ' - ' . Postulacion::ROL_LABEL[$this->role];
+
+        $name = $this->partido->list .
+                ' - ' . $this->partido->number;
 
         return $name;
     }

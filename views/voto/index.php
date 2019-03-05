@@ -30,8 +30,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         // ['class' => 'yii\grid\SerialColumn'],
 
                         'id',
-                        'recintoEleccion.name',
-                        'postulacion.name',
+                        [
+                            'label' => 'Recinto',
+                            'attribute'=>'recintoEleccion',
+                            'value' => 'recintoEleccion.name'
+                        ],
+                        [
+                            'label' => 'Postulación',
+                            'attribute'=>'postulacion',
+                            'value' => 'postulacion.name'
+                        ],
                         'v_jr_man',
                         'v_jr_woman',
                         'vn_jr_man',

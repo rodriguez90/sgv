@@ -12,6 +12,9 @@ use app\models\Postulacion;
  */
 class PostulacionSearch extends Postulacion
 {
+    public $partido;
+    public $candidate;
+    public $eleccion;
     /**
      * {@inheritdoc}
      */
@@ -19,6 +22,7 @@ class PostulacionSearch extends Postulacion
     {
         return [
             [['id', 'partido_id', 'candidate_id', 'eleccion_id', 'role'], 'integer'],
+            [['partido', 'candidate', 'eleccion'], 'safe'],
         ];
     }
 
@@ -44,9 +48,27 @@ class PostulacionSearch extends Postulacion
 
         // add conditions that should always apply here
 
+        $query->joinWith(['partido', 'candidate', 'eleccion']);
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+
+        $dataProvider->sort->attributes['partido'] = [
+            'asc'=>['partido.name' => SORT_ASC],
+            'desc'=>['partido.name'=> SORT_DESC] ,
+        ];
+
+        $dataProvider->sort->attributes['candidate'] = [
+            'asc'=>['candidate.name' => SORT_ASC],
+            'desc'=>['candidate.name'=> SORT_DESC] ,
+        ];
+
+        $dataProvider->sort->attributes['eleccion'] = [
+            'asc'=>['eleccion.name' => SORT_ASC],
+            'desc'=>['eleccion.name'=> SORT_DESC] ,
+        ];
+
 
         $this->load($params);
 
@@ -58,12 +80,16 @@ class PostulacionSearch extends Postulacion
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'partido_id' => $this->partido_id,
-            'candidate_id' => $this->candidate_id,
-            'eleccion_id' => $this->eleccion_id,
+            'postulacion.id' => $this->id,
+//            'partido_id' => $this->partido_id,
+//            'candidate_id' => $this->candidate_id,
+//            'eleccion_id' => $this->eleccion_id,
             'role' => $this->role,
         ]);
+
+        $query->andFilterWhere(['like', 'partido.name', $this->partido]);
+        $query->andFilterWhere(['like', 'eleccion.name', $this->eleccion]);
+        $query->andFilterWhere(['like', 'candidate.name', $this->candidate]);
 
         return $dataProvider;
     }

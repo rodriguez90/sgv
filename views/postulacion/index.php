@@ -29,16 +29,19 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         'id',
                         [
-							'attribute' => 'partido.name',
-							'label' => 'Nombre',
+							'attribute' => 'partido',
+							'value' => 'partido.name',
+							'label' => 'Partido',
 						],
 						[
-							'attribute' => 'candidate.name',
+							'attribute' => 'candidate',
+							'value' => 'candidate.name',
 							'label' => 'Candidato',
 						],
 						[
-							'attribute' => 'eleccion.name',
-							'label' => 'Elección',
+							'attribute' => 'eleccion',
+							'value' => 'eleccion.name',
+							'label' => 'ElecciÃ³n',
 						],
 						[
 							'attribute' => 'role',							
