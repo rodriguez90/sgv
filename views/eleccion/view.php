@@ -34,6 +34,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             'id',
                             'name',
                             'delivery_date',
+                            'delivery_date',
+                            'totalElectores',
+                            'totalRecintos'
                         ],
                         'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view'],
                     ]) ?>

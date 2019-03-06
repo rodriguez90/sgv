@@ -63,4 +63,20 @@ class Eleccion extends \yii\db\ActiveRecord
     {
         return $this->hasMany(RecintoEleccion::className(), ['eleccion_id' => 'id']);
     }
+
+    /**
+     * @return mixed
+     */
+    public function getTotalElectores()
+    {
+        $count  = RecintoEleccion::find()->where(['eleccion_id'=>$this->id])->sum('count_elector');
+        return $count;
+    }
+
+    public function getTotalRecintos()
+    {
+        $count  = RecintoEleccion::find()->count('id');
+        return $count;
+    }
+
 }

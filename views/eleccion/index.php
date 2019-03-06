@@ -7,7 +7,7 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\models\EleccionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Eleccions';
+$this->title = 'Elección';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">

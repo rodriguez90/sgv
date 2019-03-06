@@ -50,7 +50,13 @@ if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'recinto_list')
 }
 
 
-// Menus que tienen más relacion con la el proceso
+// Menus que tienen más relacion con la el proceso eleccionario
+if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'eleccion_list')
+    || Yii::$app->user->identity->getIsAdmin())
+{
+    $items[]=['label' => 'Elección', 'icon' => 'build', 'url' => ['/eleccion/index']];
+}
+
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'voto_list')
     || Yii::$app->user->identity->getIsAdmin())
 {
