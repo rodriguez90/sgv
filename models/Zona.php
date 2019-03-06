@@ -74,4 +74,48 @@ class Zona extends \yii\db\ActiveRecord
     {
         return $this->parroquia->canton;
     }
+
+    public function getTotalElectores($eleccionId=null)
+    {
+        $count  = RecintoEleccion::find()
+            ->joinWith('recinto')
+            ->innerJoin('zona', 'recinto_electoral.zona_id=zona.id')
+            ->where(['zona.id'=>$this->id])
+            ->andFilterWhere(['eleccion_id'=>$eleccionId])->sum('count_elector');
+        return $count;
+    }
+
+    public function getTotalRecintos($eleccionId=null)
+    {
+        $count  = RecintoEleccion::find()
+            ->joinWith('recinto')
+            ->innerJoin('zona', 'recinto_electoral.zona_id=zona.id')
+            ->where(['zona.id'=>$this->id])
+            ->andFilterWhere(['eleccion_id'=>$eleccionId])
+            ->count('recinto_eleccion.id');
+        return $count;
+    }
+
+    public function getJuntasMujeres($eleccionId=null){
+        $count  = RecintoEleccion::find()
+            ->joinWith('recinto')
+            ->innerJoin('zona', 'recinto_electoral.zona_id=zona.id')
+            ->where(['zona.id'=>$this->id])
+            ->andFilterWhere(['eleccion_id'=>$eleccionId])->sum('jr_woman');
+        return $count;
+    }
+
+    public function getJuntasHombres($eleccionId=null){
+        $count  = RecintoEleccion::find()
+            ->joinWith('recinto')
+            ->innerJoin('zona', 'recinto_electoral.zona_id=zona.id')
+            ->where(['zona.id'=>$this->id])
+            ->andFilterWhere(['eleccion_id'=>$eleccionId])->sum('jr_man');
+        return $count;
+    }
+
+    public function getTotalJuntas($eleccionId=null){
+        return $this->getJuntasHombres($eleccionId) + $this->getJuntasMujeres($eleccionId);
+
+    }
 }

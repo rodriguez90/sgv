@@ -90,4 +90,50 @@ class Canton extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Parroquia::className(), ['canton_id' => 'id']);
     }
+
+    public function getTotalElectores($eleccionId=null)
+    {
+        $parroquias  = $this->parroquias;
+        $count = 0;
+        foreach ($parroquias as $parroquia)
+        {
+            $count += $parroquia->getTotalElectores($eleccionId);
+        }
+        return $count;
+    }
+
+    public function getTotalRecintos($eleccionId=null)
+    {
+        $parroquias  = $this->parroquias;
+        $count = 0;
+        foreach ($parroquias as $parroquia)
+        {
+            $count += $parroquia->getTotalRecintos($eleccionId);
+        }
+        return $count;
+    }
+
+    public function getJuntasMujeres($eleccionId=null){
+        $parroquias  = $this->parroquias;
+        $count = 0;
+        foreach ($parroquias as $parroquia)
+        {
+            $count += $parroquia->getJuntasMujeres($eleccionId);
+        }
+        return $count;
+    }
+
+    public function getJuntasHombres($eleccionId=null){
+        $parroquias  = $this->parroquias;
+        $count = 0;
+        foreach ($parroquias as $parroquia)
+        {
+            $count += $parroquia->getJuntasHombres($eleccionId);
+        }
+        return $count;
+    }
+
+    public function getTotalJuntas($eleccionId=null){
+        return $this->getJuntasHombres($eleccionId) + $this->getJuntasMujeres($eleccionId);
+    }
 }

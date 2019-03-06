@@ -33,6 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'model' => $model,
                         'attributes' => [
                             'id',
+                            'name',
                             [
                                 'label' => 'Provincia',
                                 'value'=>function($model) {
@@ -45,7 +46,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                     return $model->canton->name;
                                 }
                             ],
-                            'name',
+                            'juntasMujeres',
+                            'juntasHombres',
+                            'totalJuntas',
+                            'totalElectores',
+                            'totalRecintos',
                         ],
                         'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view'],
                     ]) ?>

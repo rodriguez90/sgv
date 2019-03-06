@@ -45,7 +45,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'attribute'=>'type',
                                     'value' => \app\models\Canton::CANTON_LABEL[$model->type]
                                 ],
-
+                                'juntasMujeres',
+                                'juntasHombres',
+                                'totalJuntas',
+                                'totalElectores',
+                                'totalRecintos',
                             ],
                             'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view'],
                         ]) ?>

@@ -31,6 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'model' => $model,
                         'attributes' => [
                             'id',
+                            'name',
                             [
                                 'attribute'=>'parroquia.canton.province.name',
                                 'label' => 'Provincia'
@@ -43,7 +44,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'attribute'=>'parroquia.name',
                                 'label' => 'Parroquia'
                             ],
-                            'name',
+                            'juntasMujeres',
+                            'juntasHombres',
+                            'totalJuntas',
+                            'totalElectores',
+                            'totalRecintos',
                         ],
                     ]) ?>
                 </div>

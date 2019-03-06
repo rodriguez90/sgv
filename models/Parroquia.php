@@ -69,4 +69,50 @@ class Parroquia extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Zona::className(), ['parroquia_id' => 'id']);
     }
+
+    public function getTotalElectores($eleccionId=null)
+    {
+        $zonas  = $this->zonas;
+        $count = 0;
+        foreach ($zonas as $zona)
+        {
+            $count += $zona->getTotalElectores($eleccionId);
+        }
+        return $count;
+    }
+
+    public function getTotalRecintos($eleccionId=null)
+    {
+        $zonas  = $this->zonas;
+        $count = 0;
+        foreach ($zonas as $zona)
+        {
+            $count += $zona->getTotalRecintos($eleccionId);
+        }
+        return $count;
+    }
+
+    public function getJuntasMujeres($eleccionId=null){
+        $zonas  = $this->zonas;
+        $count = 0;
+        foreach ($zonas as $zona)
+        {
+            $count += $zona->getJuntasMujeres($eleccionId);
+        }
+        return $count;
+    }
+
+    public function getJuntasHombres($eleccionId=null){
+        $zonas  = $this->zonas;
+        $count = 0;
+        foreach ($zonas as $zona)
+        {
+            $count += $zona->getJuntasHombres($eleccionId);
+        }
+        return $count;
+    }
+
+    public function getTotalJuntas($eleccionId=null){
+        return $this->getJuntasHombres($eleccionId) + $this->getJuntasMujeres($eleccionId);
+    }
 }
