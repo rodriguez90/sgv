@@ -34,13 +34,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             'model' => $model,
                             'attributes' => [
                                 'id',
+                                'name',
                                 [
                                     'attribute'=>'province_id',
                                     'value'=>function($model) {
                                         return $model->province->name;
                                     }
                                 ],
-                                'name',
                                 [
                                     'attribute'=>'type',
                                     'value' => \app\models\Canton::CANTON_LABEL[$model->type]

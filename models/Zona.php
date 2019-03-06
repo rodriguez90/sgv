@@ -116,6 +116,5 @@ class Zona extends \yii\db\ActiveRecord
 
     public function getTotalJuntas($eleccionId=null){
         return $this->getJuntasHombres($eleccionId) + $this->getJuntasMujeres($eleccionId);
-
     }
 }
