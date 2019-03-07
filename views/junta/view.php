@@ -4,10 +4,10 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Eleccion */
+/* @var $model app\models\Junta */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Elecciones', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Juntas', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
@@ -19,28 +19,29 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= Html::a('Eliminar', ['delete', 'id' => $model->id], [
                         'class' => 'btn btn-danger',
                         'data' => [
-                            'confirm' => 'Está seguro que desea eliminar el elemento?',
+                            'confirm' => 'Está seguro que desea eliminar la junta?',
                             'method' => 'post',
                         ],
                     ]) ?>
                 </p>
             </div>
             <div class="box-body">
-
-                <div class="col col-md-6">
-                    <?= DetailView::widget([
-                        'model' => $model,
-                        'attributes' => [
-                            'id',
-                            'name',
-                            'delivery_date',
-                            'totalElectores',
-                            'totalRecintos'
+                <?= DetailView::widget([
+                    'model' => $model,
+                    'attributes' => [
+                        'id',
+                        'recintoEleccion.name',
+                        'name',
+                        [
+                            'attribute'=>'type',
+                            'value' => \app\models\Junta::JUNTA_LABEL[$model->type]
                         ],
-                        'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view'],
-                    ]) ?>
-                </div>
+                    ],
+                    'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view'],
+                ]) ?>
+
             </div>
         </div>
     </div>
 </div>
+

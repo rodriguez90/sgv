@@ -4,10 +4,8 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Eleccion */
+/* @var $model app\models\Junta */
 /* @var $form yii\widgets\ActiveForm */
-
-$initDate = $model->isNewRecord ? date('d-m-Y') : date('d-m-Y', strtotime($model->delivery_date));
 ?>
 
 <!-- begin row -->
@@ -21,19 +19,22 @@ $initDate = $model->isNewRecord ? date('d-m-Y') : date('d-m-Y', strtotime($model
 
                     <?php $form = ActiveForm::begin(); ?>
 
+                    <?= $form->field($model, 'recinto_eleccion_id')->dropDownList(
+                        \yii\helpers\ArrayHelper::map(\app\models\RecintoEleccion::find()
+                            ->select(['recinto_eleccion.id',
+                                'recinto_electoral.name'
+                            ])->innerJoin('recinto_electoral',
+                                'recinto_electoral.id=recinto_eleccion.recinto_id')
+                            ->asArray()->all(),'id','name'),
+                        ['prompt'=>'Seleccione el Recinto',
+                        ]);?>
+
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-                    <?= $form->field($model, 'delivery_date')->widget(\kartik\widgets\DatePicker::className(),[
-                        // inline too, not bad
-                        'options' => ['placeholder'=>'Seleccione la fecha'],
-                        'type' => \kartik\widgets\DatePicker::TYPE_COMPONENT_APPEND,
-                        'value'=> $initDate,
-                        'pickerIcon' => '<i class="fa fa-calendar text-primary"></i>',
-                        'pluginOptions' => [
-                            'autoclose' => true,
-                            'format' => 'dd-mm-yyyy'
-                        ]
-                    ]);?>
+                    <?= $form->field($model, 'type')->dropDownList(
+                        \yii\helpers\ArrayHelper::map(\app\models\Junta::JUNTA_CHOICES,'id','name'),
+                        ['prompt'=>'Seleccione el Tipo',
+                        ]);?>
 
                     <div class="form-group">
                         <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>

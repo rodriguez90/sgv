@@ -48,7 +48,8 @@
         "w3lifer/yii2-js-data-provider": "^6.1",
         "custom-it/yii2-excel-report": "^1.0",
         "kartik-v/yii2-export": "dev-master",
-        "kartik-v/yii2-detail-view": "dev-master"
+        "kartik-v/yii2-detail-view": "dev-master",
+        "2amigos/yii2-chartjs-widget": "~2.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

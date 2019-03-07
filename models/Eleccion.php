@@ -70,12 +70,13 @@ class Eleccion extends \yii\db\ActiveRecord
     public function getTotalElectores()
     {
         $count  = RecintoEleccion::find()->where(['eleccion_id'=>$this->id])->sum('count_elector');
+        if($count == null) $count = 0;
         return $count;
     }
 
     public function getTotalRecintos()
     {
-        $count  = RecintoEleccion::find()->count('id');
+        $count  = RecintoEleccion::find()->where(['eleccion_id'=>$this->id])->count('recinto_eleccion.id');
         return $count;
     }
 

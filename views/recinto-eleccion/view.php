@@ -58,6 +58,19 @@ $this->params['breadcrumbs'][] = $this->title;
                             'jr_woman',
                             'jr_man',
                             'count_elector',
+                            'totalVotos',
+                            [
+                                'attribute'=>'totalVotosNulos',
+                                'label' => 'Votos Nulos'
+                            ],
+                             [
+                                'attribute'=>'totalVotosBlancos',
+                                'label' => 'Votos en Blanco'
+                            ],
+                            [
+                                'attribute'=>'ausentismo',
+                                'label' => 'Ausentismo'
+                            ]
                         ],
                         'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view'],
                     ]) ?>

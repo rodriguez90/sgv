@@ -52,12 +52,12 @@ class Voto extends \yii\db\ActiveRecord
             'id' => 'No.',
             'recinto_eleccion_id' => 'Recinto Electoral',
             'postulacion_id' => 'Postulación',
-            'v_jr_man' => 'VJR Hombres',
-            'v_jr_woman' => 'VJR Mujeres',
-            'vn_jr_man' => 'VN JR Hombres',
-            'vn_jr_woman' => 'VN JR Mujeres',
-            'vb_jr_man' => 'VN JR Hombres',
-            'vb_jr_woman' => 'VN JR Mujeres',
+            'v_jr_man' => 'Votos Hombres',
+            'v_jr_woman' => 'Votos Mujeres',
+            'vn_jr_man' => 'VN-JRH',
+            'vn_jr_woman' => 'VN-JRM',
+            'vb_jr_man' => 'VB-JRH',
+            'vb_jr_woman' => 'VB-JRM',
         ];
     }
 

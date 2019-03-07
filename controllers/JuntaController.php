@@ -3,16 +3,16 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Eleccion;
-use app\models\EleccionSearch;
+use app\models\Junta;
+use app\models\JuntaSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * EleccionController implements the CRUD actions for Eleccion model.
+ * JuntaController implements the CRUD actions for Junta model.
  */
-class EleccionController extends Controller
+class JuntaController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -30,12 +30,12 @@ class EleccionController extends Controller
     }
 
     /**
-     * Lists all Eleccion models.
+     * Lists all Junta models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new EleccionSearch();
+        $searchModel = new JuntaSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -45,7 +45,7 @@ class EleccionController extends Controller
     }
 
     /**
-     * Displays a single Eleccion model.
+     * Displays a single Junta model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -58,22 +58,16 @@ class EleccionController extends Controller
     }
 
     /**
-     * Creates a new Eleccion model.
+     * Creates a new Junta model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Eleccion();
+        $model = new Junta();
 
-        if (Yii::$app->request->isPost)
-        {
-            $data = Yii::$app->request->post();
-
-            $data['Eleccion']['delivery_date'] = date('Y-m-d',  strtotime($data['Eleccion']['delivery_date']) );
-
-            if ($model->load($data) && $model->save())
-                return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
@@ -82,7 +76,7 @@ class EleccionController extends Controller
     }
 
     /**
-     * Updates an existing Eleccion model.
+     * Updates an existing Junta model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -92,14 +86,8 @@ class EleccionController extends Controller
     {
         $model = $this->findModel($id);
 
-        if (Yii::$app->request->isPost)
-        {
-            $data = Yii::$app->request->post();
-
-            $data['Eleccion']['delivery_date'] = date('Y-m-d',  strtotime($data['Eleccion']['delivery_date']) );
-
-            if ($model->load($data) && $model->save())
-                return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
@@ -108,7 +96,7 @@ class EleccionController extends Controller
     }
 
     /**
-     * Deletes an existing Eleccion model.
+     * Deletes an existing Junta model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -122,15 +110,15 @@ class EleccionController extends Controller
     }
 
     /**
-     * Finds the Eleccion model based on its primary key value.
+     * Finds the Junta model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Eleccion the loaded model
+     * @return Junta the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Eleccion::findOne($id)) !== null) {
+        if (($model = Junta::findOne($id)) !== null) {
             return $model;
         }
 

@@ -19,14 +19,9 @@ use yii\widgets\ActiveForm;
                     <?php $form = ActiveForm::begin(); ?>
                     <div class="row">
                         <div class="col-md-6">
-                            <?= $form->field($model, 'recinto_eleccion_id')->dropDownList(
-                                \yii\helpers\ArrayHelper::map(\app\models\RecintoEleccion::find()
-                                    ->select(['recinto_eleccion.id',
-                                              'recinto_electoral.name'
-                                    ])->innerJoin('recinto_electoral',
-                                        'recinto_electoral.id=recinto_eleccion.recinto_id')
-                                    ->asArray()->all(),'id','name'),
-                                    ['prompt'=>'Seleccione la Elección',
+                            <?= $form->field($model, 'junta_id')->dropDownList(
+                                \yii\helpers\ArrayHelper::map(\app\models\Junta::find()->asArray()->all(),'id','name'),
+                                    ['prompt'=>'Seleccione la Junta',
                                 ]);?>
 
                             <?= $form->field($model, 'postulacion_id')->dropDownList(
@@ -34,19 +29,9 @@ use yii\widgets\ActiveForm;
                                 ['prompt'=>'Seleccione la Postulación',
                                 ]);?>
 
-                            <?= $form->field($model, 'v_jr_man')->textInput() ?>
-
-                            <?= $form->field($model, 'v_jr_woman')->textInput() ?>
-
-                        </div>
-                        <div class="col-md-6">
-                            <?= $form->field($model, 'vn_jr_man')->textInput() ?>
-
-                            <?= $form->field($model, 'vn_jr_woman')->textInput() ?>
-
-                            <?= $form->field($model, 'vb_jr_man')->textInput() ?>
-
-                            <?= $form->field($model, 'vb_jr_woman')->textInput() ?>
+                            <?= $form->field($model, 'voto')->textInput() ?>
+                            <?= $form->field($model, 'null_voto')->textInput() ?>
+                            <?= $form->field($model, 'blank_voto')->textInput() ?>
                         </div>
                     </div>
 
