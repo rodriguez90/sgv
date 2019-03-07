@@ -68,7 +68,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'label' => 'Votos en Blanco'
                             ],
                             [
-                                'attribute'=>'ausentismo',
+//                                'attribute'=>'ausentismo',
+                                'value'=> $model->getAusentismo(). '( ' . $model->getPorcientoAusentismo() . '% )',
                                 'label' => 'Ausentismo'
                             ]
                         ],

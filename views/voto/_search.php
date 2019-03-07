@@ -20,21 +20,17 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'recinto_eleccion_id') ?>
-
     <?= $form->field($model, 'postulacion_id') ?>
 
-    <?= $form->field($model, 'v_jr_man') ?>
+    <?= $form->field($model, 'junta_id') ?>
 
-    <?= $form->field($model, 'v_jr_woman') ?>
+    <?= $form->field($model, 'vote') ?>
 
-    <?php // echo $form->field($model, 'vn_jr_man') ?>
+    <?= $form->field($model, 'null_vote') ?>
 
-    <?php // echo $form->field($model, 'vn_jr_woman') ?>
+    <?php // echo $form->field($model, 'blank_vote') ?>
 
-    <?php // echo $form->field($model, 'vb_jr_man') ?>
-
-    <?php // echo $form->field($model, 'vb_jr_woman') ?>
+    <?php // echo $form->field($model, 'user_id') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

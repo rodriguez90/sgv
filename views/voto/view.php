@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\models\Voto */
 
-$this->title = $model->name;
+$this->title = $model->getName();
 $this->params['breadcrumbs'][] = ['label' => 'Votos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= Html::a('Eliminar', ['delete', 'id' => $model->id], [
                         'class' => 'btn btn-danger',
                         'data' => [
-                            'confirm' => 'Está seguro que desea eliminar el elemento?',
+                            'confirm' => 'Está seguro que desea eliminar el voto?',
                             'method' => 'post',
                         ],
                     ]) ?>
@@ -33,14 +33,25 @@ $this->params['breadcrumbs'][] = $this->title;
                         'model' => $model,
                         'attributes' => [
                             'id',
-                            'recintoEleccion.name',
-                            'postulacion.name',
-                            'v_jr_man',
-                            'v_jr_woman',
-                            'vn_jr_man',
-                            'vn_jr_woman',
-                            'vb_jr_man',
-                            'vb_jr_woman',
+                            [
+                                'attribute'=>'postulacion.name',
+                                'label' => 'Postulación'
+
+                            ],
+                            [
+                                'attribute'=>'recintoEleccion.name',
+                                'label' => 'Recinto en Elección'
+
+                            ],
+                            [
+                                'attribute'=>'junta.name',
+                                'label' => 'Junta'
+
+                            ],
+                            'vote',
+                            'null_vote',
+                            'blank_vote',
+//                            'user_id',
                         ],
                         'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view'],
                     ]) ?>
@@ -48,5 +59,4 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
-</div>
 </div>

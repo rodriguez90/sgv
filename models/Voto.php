@@ -3,22 +3,22 @@
 namespace app\models;
 
 use Yii;
+use Da\User\Model\User;
 
 /**
  * This is the model class for table "voto".
  *
  * @property int $id
- * @property int $recinto_eleccion_id
  * @property int $postulacion_id
- * @property int $v_jr_man
- * @property int $v_jr_woman
- * @property int $vn_jr_man
- * @property int $vn_jr_woman
- * @property int $vb_jr_man
- * @property int $vb_jr_woman
+ * @property int $junta_id
+ * @property int $vote
+ * @property int $null_vote
+ * @property int $blank_vote
+ * @property int $user_id
  *
+ * @property Junta $junta
+ * @property User $user
  * @property Postulacion $postulacion
- * @property RecintoEleccion $recintoEleccion
  */
 class Voto extends \yii\db\ActiveRecord
 {
@@ -36,10 +36,11 @@ class Voto extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['recinto_eleccion_id', 'postulacion_id', 'v_jr_man', 'v_jr_woman', 'vn_jr_man', 'vn_jr_woman', 'vb_jr_man', 'vb_jr_woman'], 'required'],
-            [['recinto_eleccion_id', 'postulacion_id', 'v_jr_man', 'v_jr_woman', 'vn_jr_man', 'vn_jr_woman', 'vb_jr_man', 'vb_jr_woman'], 'integer'],
+            [['postulacion_id', 'junta_id', 'vote', 'null_vote', 'blank_vote', 'user_id'], 'required'],
+            [['postulacion_id', 'junta_id', 'vote', 'null_vote', 'blank_vote', 'user_id'], 'integer'],
+            [['junta_id'], 'exist', 'skipOnError' => true, 'targetClass' => Junta::className(), 'targetAttribute' => ['junta_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['postulacion_id'], 'exist', 'skipOnError' => true, 'targetClass' => Postulacion::className(), 'targetAttribute' => ['postulacion_id' => 'id']],
-            [['recinto_eleccion_id'], 'exist', 'skipOnError' => true, 'targetClass' => RecintoEleccion::className(), 'targetAttribute' => ['recinto_eleccion_id' => 'id']],
         ];
     }
 
@@ -50,15 +51,29 @@ class Voto extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'No.',
-            'recinto_eleccion_id' => 'Recinto Electoral',
             'postulacion_id' => 'Postulación',
-            'v_jr_man' => 'Votos Hombres',
-            'v_jr_woman' => 'Votos Mujeres',
-            'vn_jr_man' => 'VN-JRH',
-            'vn_jr_woman' => 'VN-JRM',
-            'vb_jr_man' => 'VB-JRH',
-            'vb_jr_woman' => 'VB-JRM',
+            'junta_id' => 'Junta',
+            'vote' => 'Votos',
+            'null_vote' => 'Votos Nulos',
+            'blank_vote' => 'Votos en Blanco',
+            'user_id' => 'Usuario',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getJunta()
+    {
+        return $this->hasOne(Junta::className(), ['id' => 'junta_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
     /**
@@ -69,22 +84,17 @@ class Voto extends \yii\db\ActiveRecord
         return $this->hasOne(Postulacion::className(), ['id' => 'postulacion_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getRecintoEleccion()
-    {
-        return $this->hasOne(RecintoEleccion::className(), ['id' => 'recinto_eleccion_id']);
+    public function getRecintoEleccion(){
+        return $this->junta->recintoEleccion;
     }
 
-    public function getVotos()
-    {
-        return $this->hasMany(Voto::className(), ['postulacion_id' => 'id']);
+    public function getRecinto(){
+        return $this->junta->recintoEleccion->recinto;
     }
 
     private $_name;
     public function getName(){
-        $name = $this->postulacion->name;
+        $name = $this->postulacion->getName();
 
         return $name;
     }

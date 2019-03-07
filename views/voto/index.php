@@ -40,13 +40,14 @@ $this->params['breadcrumbs'][] = $this->title;
                             'attribute'=>'postulacion',
                             'value' => 'postulacion.name'
                         ],
-                        'v_jr_man',
-                        'v_jr_woman',
-                        'vn_jr_man',
-                        'vn_jr_woman',
-                        'vb_jr_man',
-                        'vb_jr_woman',
-
+                        [
+                            'label' => 'Junta',
+                            'attribute'=>'junta',
+                            'value' => 'junta.name'
+                        ],
+                        'vote',
+                        'null_vote',
+                        'blank_vote',
                         ['class' => 'yii\grid\ActionColumn'],
                     ],
                 ]); ?>

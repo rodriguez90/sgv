@@ -66,7 +66,10 @@ class VotoController extends Controller
     {
         $model = new Voto();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if (Yii::$app->request->isPost) {
+            $data = Yii::$app->request->post();
+            $data['Voto']['user_id'] = Yii::$app->user->id;
+            if($model->load($data) && $model->save())
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

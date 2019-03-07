@@ -14,14 +14,16 @@ class VotoSearch extends Voto
 {
     public $postulacion;
     public $recintoEleccion;
+    public $junta;
+
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'recinto_eleccion_id', 'postulacion_id', 'v_jr_man', 'v_jr_woman', 'vn_jr_man', 'vn_jr_woman', 'vb_jr_man', 'vb_jr_woman'], 'integer'],
-            [['recintoEleccion', 'postulacion'], 'safe'],
+            [['id', 'postulacion_id', 'junta_id', 'vote', 'null_vote', 'blank_vote', 'user_id'], 'integer'],
         ];
     }
 
@@ -46,7 +48,11 @@ class VotoSearch extends Voto
         $query = Voto::find();
 
         // add conditions that should always apply here
-        $query->joinWith(['postulacion', 'recintoEleccion']);
+
+        $query->joinWith(['postulacion', 'junta']);
+        $query->innerJoin('recinto_eleccion', 'recinto_eleccion.id=junta.recinto_eleccion_id');
+        $query->innerJoin('recinto_electoral', 'recinto_electoral.id=recinto_eleccion.recinto_id');
+
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -62,6 +68,11 @@ class VotoSearch extends Voto
             'desc'=>['junta.name'=> SORT_DESC] ,
         ];
 
+        $dataProvider->sort->attributes['recintoEleccion'] = [
+            'asc'=>['recintoEleccion.name' => SORT_ASC],
+            'desc'=>['recintoEleccion.name'=> SORT_DESC] ,
+        ];
+
         $this->load($params);
 
         if (!$this->validate()) {
@@ -72,13 +83,18 @@ class VotoSearch extends Voto
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'recinto_eleccion_id' => $this->recinto_eleccion_id,
+            'voto.id' => $this->id,
             'postulacion_id' => $this->postulacion_id,
-            'vote' => $this->vn_jr_woman,
-            'null_vote' => $this->vb_jr_man,
-            'vote' => $this->vb_jr_woman,
+            'junta_id' => $this->junta_id,
+            'vote' => $this->vote,
+            'null_vote' => $this->null_vote,
+            'blank_vote' => $this->blank_vote,
+            'user_id' => $this->user_id,
         ]);
+
+        $query->andFilterWhere(['like', 'postulacion.name', $this->postulacion]);
+        $query->andFilterWhere(['like', 'junta.name', $this->junta]);
+        $query->andFilterWhere(['like', 'recintoEleccion.name', $this->recinto]);
 
         return $dataProvider;
     }

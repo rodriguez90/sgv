@@ -15,23 +15,38 @@ use yii\widgets\ActiveForm;
         <!-- begin box -->
         <div class="box box-success">
             <div class="box-body">
-                <div class="col-lg-6 col-md-6 col-xs-6 col-lg-offset-3">
+                <div class="col-lg-12 col-md-12 col-xs-12">
                     <?php $form = ActiveForm::begin(); ?>
                     <div class="row">
                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label" for="province">Recinto</label>
+                                <?= \yii\helpers\BaseHtml::dropDownList(
+                                    'recinto',
+                                    $model->isNewRecord ? null: $model->junta->recinto_eleccion_id,
+                                    \yii\helpers\ArrayHelper::map(\app\models\RecintoEleccion::find()->all(),'id','name'),
+                                    [
+                                        'prompt'=>'Seleccione el Recinto',
+                                        'onchange' =>'
+                                    $.get("../junta/lists?id='.'"+$(this).val(),function(data){
+                                    $( "select#voto-junta_id" ).html(data);
+                                    });',
+                                        'class' =>'form-control',
+                                    ]);?>
+                            </div>
                             <?= $form->field($model, 'junta_id')->dropDownList(
                                 \yii\helpers\ArrayHelper::map(\app\models\Junta::find()->asArray()->all(),'id','name'),
-                                    ['prompt'=>'Seleccione la Junta',
+                                ['prompt'=>'Seleccione la Junta',
                                 ]);?>
-
                             <?= $form->field($model, 'postulacion_id')->dropDownList(
                                 \yii\helpers\ArrayHelper::map(\app\models\Postulacion::find()->all(),'id','name'),
                                 ['prompt'=>'Seleccione la Postulación',
                                 ]);?>
-
-                            <?= $form->field($model, 'voto')->textInput() ?>
-                            <?= $form->field($model, 'null_voto')->textInput() ?>
-                            <?= $form->field($model, 'blank_voto')->textInput() ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= $form->field($model, 'vote')->textInput() ?>
+                            <?= $form->field($model, 'null_vote')->textInput() ?>
+                            <?= $form->field($model, 'blank_vote')->textInput() ?>
                         </div>
                     </div>
 

@@ -16,11 +16,11 @@ use Yii;
  * @property int $jr_man
  * @property int $count_elector
  *
+ * @property Junta[] $juntas
  * @property Persona $coordinatorJrMan
  * @property Persona $coordinatorJrWoman
  * @property Eleccion $eleccion
  * @property RecintoElectoral $recinto
- * @property Voto[] $votos
  */
 class RecintoEleccion extends \yii\db\ActiveRecord
 {
@@ -54,14 +54,22 @@ class RecintoEleccion extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'recinto_id' => 'Recinto',
-            'coordinator_jr_man' => 'Coordinator JR Hombres',
-            'coordinator_jr_woman' => 'Coordinator JR Mujeres',
-            'eleccion_id' => 'Elección',
-            'jr_woman' => 'Jr Mujeres',
-            'jr_man' => 'Jr Hombres',
-            'count_elector' => 'Electores',
+            'recinto_id' => 'Recinto ID',
+            'coordinator_jr_man' => 'Coordinator Jr Man',
+            'coordinator_jr_woman' => 'Coordinator Jr Woman',
+            'eleccion_id' => 'Eleccion ID',
+            'jr_woman' => 'Jr Woman',
+            'jr_man' => 'Jr Man',
+            'count_elector' => 'Count Elector',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getJuntas()
+    {
+        return $this->hasMany(Junta::className(), ['recinto_eleccion_id' => 'id']);
     }
 
     /**
@@ -96,12 +104,17 @@ class RecintoEleccion extends \yii\db\ActiveRecord
         return $this->hasOne(RecintoElectoral::className(), ['id' => 'recinto_id']);
     }
 
+    private $_votos=[];
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getVotos()
     {
-        return $this->hasMany(Voto::className(), ['recinto_eleccion_id' => 'id']);
+        return Voto::find()
+            ->joinWith('junta')
+            ->innerJoin('recinto_eleccion', 'recinto_eleccion.id=junta.recinto_eleccion_id')
+            ->where(['recinto_eleccion.id'=>$this->id])
+            ->all();
     }
 
     private $_totalJuntas;
@@ -134,12 +147,7 @@ class RecintoEleccion extends \yii\db\ActiveRecord
         $total = 0;
 
         foreach ($votos as $voto) {
-            $total += $voto->v_jr_man +
-                $voto->v_jr_woman +
-                $voto->vn_jr_man +
-                $voto->vn_jr_woman +
-                $voto->vb_jr_man +
-                $voto->vb_jr_woman ;
+            $total += $voto->vote;
         }
 
         return $total;
@@ -149,12 +157,12 @@ class RecintoEleccion extends \yii\db\ActiveRecord
         $votos = $this->votos;
         $total = 0;
 
-        foreach ($votos as $voto) {
-            $total +=
-                $voto->v_jr_woman +
-                $voto->vn_jr_woman +
-                $voto->vb_jr_woman ;
-        }
+//        foreach ($votos as $voto) {
+//            $total +=
+//                $voto->v_jr_woman +
+//                $voto->vn_jr_woman +
+//                $voto->vb_jr_woman ;
+//        }
 
         return $total;
     }
@@ -163,11 +171,11 @@ class RecintoEleccion extends \yii\db\ActiveRecord
         $votos = $this->votos;
         $total = 0;
 
-        foreach ($votos as $voto) {
-            $total += $voto->v_jr_man +
-                $voto->vn_jr_man +
-                $voto->vb_jr_man;
-        }
+//        foreach ($votos as $voto) {
+//            $total += $voto->v_jr_man +
+//                $voto->vn_jr_man +
+//                $voto->vb_jr_man;
+//        }
 
         return $total;
     }
@@ -177,8 +185,7 @@ class RecintoEleccion extends \yii\db\ActiveRecord
         $total = 0;
 
         foreach ($votos as $voto) {
-            $total += $voto->vn_jr_man +
-                $voto->vn_jr_woman;
+            $total += $voto->null_vote;
         }
 
         return $total;
@@ -190,8 +197,7 @@ class RecintoEleccion extends \yii\db\ActiveRecord
         $total = 0;
 
         foreach ($votos as $voto) {
-            $total += $voto->vb_jr_man +
-                $voto->vb_jr_woman;
+            $total += $voto->blank_vote;
         }
 
         return $total;
@@ -201,5 +207,13 @@ class RecintoEleccion extends \yii\db\ActiveRecord
         $totalVotos = $this->getTotalVotos();
 
         return $this->count_elector - $totalVotos;
+    }
+
+    public function getPorcientoAusentismo() {
+        $ausentismo = $this->getAusentismo();
+
+        $porciento = ($ausentismo * 100 )/ $this->count_elector;
+
+        return $porciento;
     }
 }
