@@ -53,14 +53,14 @@ class RecintoEleccion extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'recinto_id' => 'Recinto ID',
-            'coordinator_jr_man' => 'Coordinator Jr Man',
-            'coordinator_jr_woman' => 'Coordinator Jr Woman',
-            'eleccion_id' => 'Eleccion ID',
-            'jr_woman' => 'Jr Woman',
-            'jr_man' => 'Jr Man',
-            'count_elector' => 'Count Elector',
+            'id' => 'No.',
+            'recinto_id' => 'Recinto',
+            'coordinator_jr_man' => 'Coordinador Junta Hombres',
+            'coordinator_jr_woman' => 'Coordinador Junta Mujeres',
+            'eleccion_id' => 'Elección',
+            'jr_woman' => 'Juntas Mujeres',
+            'jr_man' => 'Juntas Hombres',
+            'count_elector' => 'Cantidad de Electores',
         ];
     }
 

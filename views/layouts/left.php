@@ -6,18 +6,19 @@ $items = [['label' => 'Menu',
 	'items' =>[]
 ]];
 
+$eleccion = [
+    'label' => 'Elección',
+    'icon' => 'flash',
+    'url' => '#',
+    'items' => []
+];
+
 $localization = [
 	'label' => 'Localización',
     'icon' => 'map',
     'url' => '#',
 	'items' => []
 ];
-
-if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'partido_list')
-    || Yii::$app->user->identity->getIsAdmin())
-{
-    $items=['label' => 'Eleccion', 'icon' => 'flash', 'url' => ['/eleccion/index']];
-}
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'province_list')
     || Yii::$app->user->identity->getIsAdmin())
@@ -54,47 +55,59 @@ if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'recinto_list')
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'eleccion_list')
     || Yii::$app->user->identity->getIsAdmin())
 {
-    $items[]=['label' => 'Elección', 'icon' => 'houzz', 'url' => ['/eleccion/index']];
-}
-
-if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'voto_list')
-    || Yii::$app->user->identity->getIsAdmin())
-{
-    $items[]=['label' => 'Voto', 'icon' => 'file', 'url' => ['/voto/index']];
+    $eleccion['items'][]=['label' => 'Elección', 'icon' => 'houzz', 'url' => ['/eleccion/index']];
 }
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'recinto_list')
     || Yii::$app->user->identity->getIsAdmin())
 {
-    $items[]=['label' => 'Recinto en Elección', 'icon' => 'square', 'url' => ['/recinto-eleccion/index']];
+    $eleccion['items'][]=['label' => 'Recinto en Elección', 'icon' => 'th-large', 'url' => ['/recinto-eleccion/index']];
+}
+
+if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'juntas_list')
+    || Yii::$app->user->identity->getIsAdmin())
+{
+    $eleccion['items'][]=['label' => 'Juntas', 'icon' => 'archive', 'url' => ['/juntas/index']];
+}
+
+if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'voto_list')
+    || Yii::$app->user->identity->getIsAdmin())
+{
+    $eleccion['items'][]=['label' => 'Voto', 'icon' => 'file', 'url' => ['/voto/index']];
 }
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'partido_list')
     || Yii::$app->user->identity->getIsAdmin())
 {
-    $items[]=['label' => 'Partido', 'icon' => 'object-group', 'url' => ['/partido/index']];
+    $eleccion['items'][]=['label' => 'Partido', 'icon' => 'object-group', 'url' => ['/partido/index']];
 }
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'persona_list')
     || Yii::$app->user->identity->getIsAdmin())
 {
-    $items[]=['label' => 'Persona', 'icon' => 'users', 'url' => ['/persona/index']];
+    $eleccion['items'][]=['label' => 'Persona', 'icon' => 'users', 'url' => ['/persona/index']];
 }
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'persona_list')
     || Yii::$app->user->identity->getIsAdmin())
 {
-    $items[]=['label' => 'Postulación', 'icon' => 'paw', 'url' => ['/postulacion/index']];
+    $eleccion['items'][]=['label' => 'Postulación', 'icon' => 'paw', 'url' => ['/postulacion/index']];
 }
+
+
+
+
+$items[] = $eleccion;
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'report_view')
-|| Yii::$app->user->identity->getIsAdmin())
+    || Yii::$app->user->identity->getIsAdmin())
 {
     $items[]=['label' => 'Reporte', 'icon' => 'line-chart', 'url' => ['/site/report']];
 }
 
 // Menus de Localización
 $items[] = $localization;
+
 
 if(Yii::$app->user->identity->getIsAdmin())
 {
