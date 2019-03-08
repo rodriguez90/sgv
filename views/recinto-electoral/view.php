@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\models\RecintoElectoral */
 
-$this->title = $model->name;
+$this->title = 'Recinto: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Recintos Electorales', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -33,15 +33,24 @@ $this->params['breadcrumbs'][] = $this->title;
                             'attributes' => [
                                 'id',
                                 [
-                                    'attribute' => 'zona.parroquia.canton.province.name',
+                                    'format' => 'raw',
+                                    'value' => function ($model) {
+                                        return  Html::a($model->zona->canton->province->name, \yii\helpers\Url::toRoute(['province/view', 'id' =>  $model->zona->canton->province->id]));
+                                    },
                                     'label' => 'Provincia'
                                 ],
                                 [
-                                    'attribute' => 'zona.parroquia.canton.name',
+                                    'format' => 'raw',
+                                    'value' => function ($model) {
+                                        return  Html::a($model->zona->canton->name, \yii\helpers\Url::toRoute(['canton/view', 'id' =>  $model->zona->canton->id]));
+                                    },
                                     'label' => 'Cantón'
                                 ],
                                 [
-                                    'attribute' => 'zona.parroquia.name',
+                                    'format' => 'raw',
+                                    'value' => function ($model) {
+                                        return  Html::a($model->zona->parroquia->name, \yii\helpers\Url::toRoute(['parroquia/view', 'id' =>  $model->zona->parroquia->id]));
+                                    },
                                     'label' => 'Parroquía'
                                 ],
                                 [

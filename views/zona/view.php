@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\models\Zona */
 
-$this->title = $model->name;
+$this->title = 'Zona: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Zonas', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -33,15 +33,27 @@ $this->params['breadcrumbs'][] = $this->title;
                             'id',
                             'name',
                             [
-                                'attribute'=>'parroquia.canton.province.name',
+                                'attribute'=>'province.name',
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    return  Html::a($model->province->name, \yii\helpers\Url::toRoute(['province/view', 'id' =>  $model->province->id]));
+                                },
                                 'label' => 'Provincia'
                             ],
                             [
-                                'attribute'=>'parroquia.canton.name',
+                                'attribute'=>'canton.name',
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    return  Html::a($model->canton->name, \yii\helpers\Url::toRoute(['canton/view', 'id' =>  $model->canton->id]));
+                                },
                                 'label' => 'Cantón'
                             ],
                             [
                                 'attribute'=>'parroquia.name',
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    return  Html::a($model->parroquia->name, \yii\helpers\Url::toRoute(['parroquia/view', 'id' =>  $model->parroquia->id]));
+                                },
                                 'label' => 'Parroquia'
                             ],
                             'juntasMujeres',

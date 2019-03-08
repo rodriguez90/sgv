@@ -39,7 +39,39 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'label' => 'Elección'
                             ],
                             [
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    return  Html::a($model->zona->canton->province->name, \yii\helpers\Url::toRoute(['province/view', 'id' =>  $model->zona->canton->province->id]));
+                                },
+                                'label' => 'Provincia'
+                            ],
+                            [
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    return  Html::a($model->zona->canton->name, \yii\helpers\Url::toRoute(['canton/view', 'id' =>  $model->zona->canton->id]));
+                                },
+                                'label' => 'Cantón'
+                            ],
+                            [
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    return  Html::a($model->zona->parroquia->name, \yii\helpers\Url::toRoute(['parroquia/view', 'id' =>  $model->zona->parroquia->id]));
+                                },
+                                'label' => 'Parroquía'
+                            ],
+                            [
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    return  Html::a($model->zona->name, \yii\helpers\Url::toRoute(['zona/view', 'id' =>  $model->zona->id]));
+                                },
+                                'label' => 'Zona'
+                            ],
+                            [
                                 'attribute' => 'recinto.name',
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    return  Html::a($model->recinto->name, \yii\helpers\Url::toRoute(['recinto-electoral/view', 'id' =>  $model->recinto->id]));
+                                },
                                 'label' => 'Recinto'
                             ],
                             [

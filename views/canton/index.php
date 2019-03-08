@@ -30,7 +30,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         'id',
                         [
                             'attribute'=>'province',
-                            'value'=>'province.name',
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return  Html::a($model->province->name, \yii\helpers\Url::toRoute(['province/view', 'id' =>  $model->province->id]));
+                            },
                         ],
                         'name',
                         [

@@ -35,15 +35,18 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'label' => 'Provincia',
                             'attribute'=>'province',
-                            'value' => 'province.name'
-//                            'value' => function($model) {
-//                                return $model->canton->province->name;
-//                            }
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return  Html::a($model->province->name, \yii\helpers\Url::toRoute(['province/view', 'id' =>  $model->province->id]));
+                            },
                         ],
                         [
                             'attribute'=>'canton',
                             'label'=>'Cantón',
-                            'value' => 'canton.name'
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return  Html::a($model->canton->name, \yii\helpers\Url::toRoute(['canton/view', 'id' =>  $model->canton->id]));
+                            },
                         ],
                         'name',
 

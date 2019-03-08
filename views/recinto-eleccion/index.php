@@ -25,45 +25,66 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
 
-                <?= GridView::widget([
+                <?= \kartik\grid\GridView::widget([
+                    'moduleId'=>'gridView',
                     'dataProvider' => $dataProvider,
                     'filterModel' => $searchModel,
+                    'striped' => true,
+                    'hover' => true,
                     'columns' => [
                         // ['class' => 'yii\grid\SerialColumn'],
 
                         'id',
                         [
                             'attribute' => 'eleccion',
-                            'value' => 'eleccion.name',
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return  Html::a($model->eleccion->name, \yii\helpers\Url::toRoute(['eleccion/view', 'id' =>  $model->eleccion->id]));
+                            },
                             'label' => 'Elección',
                         ],
                         [
                             'attribute' => 'parroquia',
-                            'value' => 'parroquia.name',
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return  Html::a($model->parroquia->name, \yii\helpers\Url::toRoute(['parroquia/view', 'id' =>  $model->parroquia->id]));
+                            },
                             'label' => 'Parroquia',
                         ],
                         [
                             'attribute' => 'zona',
-                            'value' => 'zona.name',
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return  Html::a($model->zona->name, \yii\helpers\Url::toRoute(['zona/view', 'id' =>  $model->zona->id]));
+                            },
                             'label' => 'Zona',
                         ],
 						[
-								'attribute'=> 'recinto',
-								'value'=> 'recinto.name',
-								'label' => 'Nombre'
+                            'attribute'=> 'recinto',
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return  Html::a($model->recinto->name, \yii\helpers\Url::toRoute(['recinto-electoral/view', 'id' =>  $model->recinto->id]));
+                            },
+                            'label' => 'Nombre',
+                            'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
+                            'filter' => \yii\helpers\ArrayHelper::map(\app\models\RecintoEleccion::find()->joinWith('recinto')->orderBy(['recinto_electoral.name'=>SORT_ASC])->all(), 'id', 'name'),
+                            'filterWidgetOptions' => [
+                                    'pluginOptions' => ['allowClear' => true]
+                            ],
+                            'filterInputOptions' => ['placeholder' => 'Recintos']
 						],
-                        [
-							'attribute'=> 'coordinator_jr_man',							
-							'value' => function($model) {
-								return $model->coordinatorJrMan->getFullName();
-							}
-						],
-                        [
-							'attribute'=> 'coordinator_jr_woman',							
-							'value' => function($model) {
-								return $model->coordinatorJrWoman->getFullName();
-							}
-						],
+//                        [
+////							'attribute'=> 'coordinator_jr_man',
+////							'value' => function($model) {
+////								return $model->coordinatorJrMan->getFullName();
+////							}
+////						],
+////                        [
+////							'attribute'=> 'coordinator_jr_woman',
+////							'value' => function($model) {
+////								return $model->coordinatorJrWoman->getFullName();
+////							}
+////						],
                         'jr_woman',
                         'jr_man',
                         'totalJuntas',

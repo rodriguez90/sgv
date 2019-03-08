@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\models\Parroquia */
 
-$this->title = $model->name;
+$this->title = 'Parroquia: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Parroquias', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -36,15 +36,17 @@ $this->params['breadcrumbs'][] = $this->title;
                             'name',
                             [
                                 'label' => 'Provincia',
-                                'value'=>function($model) {
-                                    return $model->canton->province->name;
-                                }
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    return  Html::a($model->province->name, \yii\helpers\Url::toRoute(['province/view', 'id' =>  $model->province->id]));
+                                },
                             ],
                             [
                                 'attribute'=>'canton_id',
-                                'value'=>function($model) {
-                                    return $model->canton->name;
-                                }
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    return  Html::a($model->canton->name, \yii\helpers\Url::toRoute(['canton/view', 'id' =>  $model->canton->id]));
+                                },
                             ],
                             'juntasMujeres',
                             'juntasHombres',

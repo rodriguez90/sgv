@@ -54,6 +54,7 @@ class RecintoEleccionSearch extends RecintoEleccion
         $query->innerJoin('zona', 'zona.id=recinto_electoral.zona_id');
         $query->innerJoin('parroquia', 'zona.parroquia_id=parroquia.id');
         $query->innerJoin('persona', 'persona.id=recinto_eleccion.coordinator_jr_man or persona.id=recinto_eleccion.coordinator_jr_woman');
+        $query->orderBy(['recinto_electoral.name'=>SORT_ASC]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

@@ -67,7 +67,7 @@ if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'recinto_list')
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'juntas_list')
     || Yii::$app->user->identity->getIsAdmin())
 {
-    $eleccion['items'][]=['label' => 'Juntas', 'icon' => 'archive', 'url' => ['/juntas/index']];
+    $eleccion['items'][]=['label' => 'Juntas', 'icon' => 'archive', 'url' => ['/junta/index']];
 }
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'voto_list')

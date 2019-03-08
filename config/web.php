@@ -89,6 +89,9 @@ $config = [
 //        ],
     ],
     'modules' => [
+        'gridView' => [
+            'class' => '\kartik\grid\Module'
+        ],
         'user' => [
             'class' => Da\User\Module::class,
             'administrators'=>['root'],

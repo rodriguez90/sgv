@@ -30,7 +30,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     'model' => $model,
                     'attributes' => [
                         'id',
-                        'recintoEleccion.name',
+                        [
+                            'label' => 'Recinto',
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return  Html::a($model->recintoEleccion->name, \yii\helpers\Url::toRoute(['recinto-eleccion/view', 'id' =>  $model->recintoEleccion->id]));
+                            },
+                        ],
                         'name',
                         [
                             'attribute'=>'type',

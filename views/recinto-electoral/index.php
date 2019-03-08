@@ -34,7 +34,10 @@ $this->params['breadcrumbs'][] = $this->title;
                             'id',
                             [
 								'attribute'=> 'zona',
-								'value'=> 'zona.name',
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    return  Html::a($model->zona->name, \yii\helpers\Url::toRoute(['zona/view', 'id' =>  $model->zona->id]));
+                                },
 								'label' => 'Zona'
 							],
                             'name',
