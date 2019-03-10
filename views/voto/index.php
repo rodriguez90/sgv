@@ -34,7 +34,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'label' => 'Recinto',
                             'attribute'=>'recintoEleccion',
-                            'value' => 'recintoEleccion.name',
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return  Html::a($model->recintoEleccion->name, \yii\helpers\Url::toRoute(['recinto-eleccion/view', 'id' =>  $model->recintoEleccion->id]));
+                            },
                             'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
                             'filter' => \yii\helpers\ArrayHelper::map(\app\models\RecintoEleccion::find()->joinWith('recinto')->orderBy(['recinto_electoral.name'=>SORT_ASC])->all(), 'id', 'name'),
                             'filterWidgetOptions' => [
@@ -45,7 +48,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'label' => 'Junta',
                             'attribute'=>'junta',
-                            'value' => 'junta.name',
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return  Html::a($model->junta->name, \yii\helpers\Url::toRoute(['junta/view', 'id' =>  $model->junta->id]));
+                            },
                             'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
                             'filter' => \yii\helpers\ArrayHelper::map(\app\models\Junta::find()->all(), 'id', 'name'),
                             'filterWidgetOptions' => [
@@ -56,7 +62,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'label' => 'Postulación',
                             'attribute'=>'postulacion',
-                            'value' => 'postulacion.name',
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return  Html::a($model->postulacion->name, \yii\helpers\Url::toRoute(['postulacion/view', 'id' =>  $model->postulacion->id]));
+                            },
                             'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
                             'filter' => \yii\helpers\ArrayHelper::map(\app\models\Postulacion::find()->all(), 'id', 'name'),
                             'filterWidgetOptions' => [

@@ -105,9 +105,10 @@ $this->params['breadcrumbs'][] = $this->title;
 ////						],
                         'jr_woman',
                         'jr_man',
-                        'totalJuntas',
                         'count_elector',
+                        'totalJuntas',
                         'totalVotos',
+                        'porcientoAusentismo',
 
                         ['class' => 'yii\grid\ActionColumn'],
                     ],

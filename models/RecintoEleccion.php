@@ -58,8 +58,8 @@ class RecintoEleccion extends \yii\db\ActiveRecord
             'coordinator_jr_man' => 'Coordinador Junta Hombres',
             'coordinator_jr_woman' => 'Coordinador Junta Mujeres',
             'eleccion_id' => 'Elección',
-            'jr_woman' => 'Juntas Mujeres',
-            'jr_man' => 'Juntas Hombres',
+            'jr_woman' => 'JM',
+            'jr_man' => 'JH',
             'count_elector' => 'Cantidad de Electores',
         ];
     }
@@ -160,10 +160,7 @@ class RecintoEleccion extends \yii\db\ActiveRecord
         $total = 0;
 
         foreach ($votos as $voto) {
-            $total +=
-                $voto->v_jr_woman +
-                $voto->vn_jr_woman +
-                $voto->vb_jr_woman ;
+            $total +=  $voto->vote;
         }
 
         return $total;
@@ -174,9 +171,7 @@ class RecintoEleccion extends \yii\db\ActiveRecord
         $total = 0;
 
         foreach ($votos as $voto) {
-            $total += $voto->vote +
-                $voto->null_vote +
-                $voto->blank_vote;
+            $total += $voto->vote;
         }
 
         return $total;
@@ -204,12 +199,14 @@ class RecintoEleccion extends \yii\db\ActiveRecord
         return $total;
     }
 
+    private $_ausentismo;
     public function getAusentismo() {
         $totalVotos = $this->getTotalVotos();
 
         return $this->count_elector - $totalVotos;
     }
 
+    private $_porcientoAusentismo;
     public function getPorcientoAusentismo() {
         $ausentismo = $this->getAusentismo();
 

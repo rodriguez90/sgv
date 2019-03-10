@@ -57,6 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                         'null_vote',
                         'blank_vote',
+                        'totalVotos',
                         ['class' => 'yii\grid\ActionColumn'],
                     ],
                 ]); ?>

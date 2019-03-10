@@ -86,6 +86,7 @@ class Junta extends \yii\db\ActiveRecord
         return $this->hasMany(Voto::className(), ['junta_id' => 'id']);
     }
 
+    private $_totalVotos;
     public function getTotalVotos() {
         $votos = $this->votos;
         $total = 0;
