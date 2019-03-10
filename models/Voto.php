@@ -12,8 +12,6 @@ use Da\User\Model\User;
  * @property int $postulacion_id
  * @property int $junta_id
  * @property int $vote
- * @property int $null_vote
- * @property int $blank_vote
  * @property int $user_id
  *
  * @property Junta $junta
@@ -36,8 +34,8 @@ class Voto extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['postulacion_id', 'junta_id', 'vote', 'null_vote', 'blank_vote', 'user_id'], 'required'],
-            [['postulacion_id', 'junta_id', 'vote', 'null_vote', 'blank_vote', 'user_id'], 'integer'],
+            [['postulacion_id', 'junta_id', 'vote', 'user_id'], 'required'],
+            [['postulacion_id', 'junta_id', 'vote', 'user_id'], 'integer'],
             [['junta_id'], 'exist', 'skipOnError' => true, 'targetClass' => Junta::className(), 'targetAttribute' => ['junta_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['postulacion_id'], 'exist', 'skipOnError' => true, 'targetClass' => Postulacion::className(), 'targetAttribute' => ['postulacion_id' => 'id']],
@@ -54,8 +52,6 @@ class Voto extends \yii\db\ActiveRecord
             'postulacion_id' => 'Postulación',
             'junta_id' => 'Junta',
             'vote' => 'Votos',
-            'null_vote' => 'Votos Nulos',
-            'blank_vote' => 'Votos en Blanco',
             'user_id' => 'Usuario',
         ];
     }

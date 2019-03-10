@@ -11,6 +11,8 @@ use Yii;
  * @property int $recinto_eleccion_id
  * @property string $name
  * @property int $type
+ * @property int $null_vote
+ * @property int $blank_vote
  *
  * @property RecintoEleccion $recintoEleccion
  * @property Voto[] $votos
@@ -46,7 +48,8 @@ class Junta extends \yii\db\ActiveRecord
     {
         return [
             [['recinto_eleccion_id', 'name', 'type'], 'required'],
-            [['recinto_eleccion_id', 'type'], 'integer'],
+            [['recinto_eleccion_id', 'null_vote', 'blank_vote', 'type'], 'integer'],
+            [['null_vote', 'blank_vote',], 'safe'],
             [['name'], 'string', 'max' => 255],
             [['recinto_eleccion_id'], 'exist', 'skipOnError' => true, 'targetClass' => RecintoEleccion::className(), 'targetAttribute' => ['recinto_eleccion_id' => 'id']],
         ];
@@ -62,6 +65,8 @@ class Junta extends \yii\db\ActiveRecord
             'recinto_eleccion_id' => 'Recinto en Elección',
             'name' => 'Nombre',
             'type' => 'Tipo',
+            'null_vote' => 'Votos Nulos',
+            'blank_vote' => 'Votos en Blanco',
         ];
     }
 
@@ -79,6 +84,17 @@ class Junta extends \yii\db\ActiveRecord
     public function getVotos()
     {
         return $this->hasMany(Voto::className(), ['junta_id' => 'id']);
+    }
+
+    public function getTotalVotos() {
+        $votos = $this->votos;
+        $total = 0;
+
+        foreach ($votos as $voto) {
+            $total += $voto->vote;
+        }
+
+        return $total;
     }
 
     private $_recintoName;

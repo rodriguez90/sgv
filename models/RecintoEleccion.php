@@ -108,12 +108,13 @@ class RecintoEleccion extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getVotos()
+    public function getVotos($juntaTipo = null)
     {
         return Voto::find()
             ->joinWith('junta')
             ->innerJoin('recinto_eleccion', 'recinto_eleccion.id=junta.recinto_eleccion_id')
             ->where(['recinto_eleccion.id'=>$this->id])
+            ->andFilterWhere(['junta.type'=>$juntaTipo])
             ->all();
     }
 
@@ -142,6 +143,7 @@ class RecintoEleccion extends \yii\db\ActiveRecord
         return $name;
     }
 
+    private $_totalVotos;
     public function getTotalVotos() {
         $votos = $this->votos;
         $total = 0;
@@ -154,50 +156,49 @@ class RecintoEleccion extends \yii\db\ActiveRecord
     }
 
     public function getTotalVotosMujeres() {
-        $votos = $this->votos;
-        $total = 0;
-
-//        foreach ($votos as $voto) {
-//            $total +=
-//                $voto->v_jr_woman +
-//                $voto->vn_jr_woman +
-//                $voto->vb_jr_woman ;
-//        }
-
-        return $total;
-    }
-
-    public function getTotalVotosHombres() {
-        $votos = $this->votos;
-        $total = 0;
-
-//        foreach ($votos as $voto) {
-//            $total += $voto->v_jr_man +
-//                $voto->vn_jr_man +
-//                $voto->vb_jr_man;
-//        }
-
-        return $total;
-    }
-
-    public function getTotalVotosNulos() {
-        $votos = $this->votos;
+        $votos = $this->getVotos(Junta::JUNTA_MUJER);
         $total = 0;
 
         foreach ($votos as $voto) {
-            $total += $voto->null_vote;
+            $total +=
+                $voto->v_jr_woman +
+                $voto->vn_jr_woman +
+                $voto->vb_jr_woman ;
         }
 
         return $total;
     }
 
-
-    public function getTotalVotosBlancos() {
-        $votos = $this->votos;
+    public function getTotalVotosHombres() {
+        $votos = $this->getVotos(Junta::JUNTA_HOMBRE);
         $total = 0;
 
         foreach ($votos as $voto) {
-            $total += $voto->blank_vote;
+            $total += $voto->vote +
+                $voto->null_vote +
+                $voto->blank_vote;
+        }
+
+        return $total;
+    }
+
+    public function getTotalVotosNulos() {
+        $juntas = $this->juntas;
+        $total = 0;
+
+        foreach ($juntas as $junta) {
+            $total += $juntas->null_vote;
+        }
+
+        return $total;
+    }
+
+    public function getTotalVotosBlancos() {
+        $juntas = $this->juntas;
+        $total = 0;
+
+        foreach ($juntas as $junta) {
+            $total += $juntas->blank_vote;
         }
 
         return $total;

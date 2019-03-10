@@ -26,10 +26,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'vote') ?>
 
-    <?= $form->field($model, 'null_vote') ?>
-
-    <?php // echo $form->field($model, 'blank_vote') ?>
-
     <?php // echo $form->field($model, 'user_id') ?>
 
     <div class="form-group">

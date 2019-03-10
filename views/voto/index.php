@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="box box-info">
             <div class="box-header">
 
-                    <?= Html::a('Nueva Voto', ['create'], ['class' => 'btn btn-success']) ?>
+                <?= Html::a('Nuevo Voto', ['create'], ['class' => 'btn btn-success']) ?>
                 </p>
             </div>
             <div class="box-body">
@@ -23,7 +23,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php Pjax::begin(); ?>
                 <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-                <?= GridView::widget([
+                <?= \kartik\grid\GridView::widget([
+                    'moduleId'=>'gridView',
                     'dataProvider' => $dataProvider,
                     'filterModel' => $searchModel,
                     'columns' => [
@@ -33,21 +34,37 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'label' => 'Recinto',
                             'attribute'=>'recintoEleccion',
-                            'value' => 'recintoEleccion.name'
-                        ],
-                        [
-                            'label' => 'Postulación',
-                            'attribute'=>'postulacion',
-                            'value' => 'postulacion.name'
+                            'value' => 'recintoEleccion.name',
+                            'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
+                            'filter' => \yii\helpers\ArrayHelper::map(\app\models\RecintoEleccion::find()->joinWith('recinto')->orderBy(['recinto_electoral.name'=>SORT_ASC])->all(), 'id', 'name'),
+                            'filterWidgetOptions' => [
+                                'pluginOptions' => ['allowClear' => true]
+                            ],
+                            'filterInputOptions' => ['placeholder' => 'Recintos']
                         ],
                         [
                             'label' => 'Junta',
                             'attribute'=>'junta',
-                            'value' => 'junta.name'
+                            'value' => 'junta.name',
+                            'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
+                            'filter' => \yii\helpers\ArrayHelper::map(\app\models\Junta::find()->all(), 'id', 'name'),
+                            'filterWidgetOptions' => [
+                                'pluginOptions' => ['allowClear' => true]
+                            ],
+                            'filterInputOptions' => ['placeholder' => 'Junta']
+                        ],
+                        [
+                            'label' => 'Postulación',
+                            'attribute'=>'postulacion',
+                            'value' => 'postulacion.name',
+                            'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
+                            'filter' => \yii\helpers\ArrayHelper::map(\app\models\Postulacion::find()->all(), 'id', 'name'),
+                            'filterWidgetOptions' => [
+                                'pluginOptions' => ['allowClear' => true]
+                            ],
+                            'filterInputOptions' => ['placeholder' => 'Postulación']
                         ],
                         'vote',
-                        'null_vote',
-                        'blank_vote',
                         ['class' => 'yii\grid\ActionColumn'],
                     ],
                 ]); ?>

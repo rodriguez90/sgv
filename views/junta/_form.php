@@ -36,6 +36,9 @@ use yii\widgets\ActiveForm;
                         ['prompt'=>'Seleccione el Tipo',
                         ]);?>
 
+                    <?= $form->field($model, 'null_vote')->textInput() ?>
+                    <?= $form->field($model, 'blank_vote')->textInput() ?>
+
                     <div class="form-group">
                         <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
                         <?= Html::button('Cancelar',['class'=>'btn btn-default','onclick'=>'window.history.go(-1)']) ?>

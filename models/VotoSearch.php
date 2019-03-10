@@ -23,7 +23,8 @@ class VotoSearch extends Voto
     public function rules()
     {
         return [
-            [['id', 'postulacion_id', 'junta_id', 'vote', 'null_vote', 'blank_vote', 'user_id'], 'integer'],
+            [['id', 'postulacion_id', 'junta_id', 'vote', 'user_id'], 'integer'],
+            [['postulacion', 'recintoEleccion', 'junta'], 'safe'],
         ];
     }
 
@@ -87,8 +88,6 @@ class VotoSearch extends Voto
             'postulacion_id' => $this->postulacion_id,
             'junta_id' => $this->junta_id,
             'vote' => $this->vote,
-            'null_vote' => $this->null_vote,
-            'blank_vote' => $this->blank_vote,
             'user_id' => $this->user_id,
         ]);
 

@@ -49,8 +49,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
                             ],
                             'vote',
-                            'null_vote',
-                            'blank_vote',
 //                            'user_id',
                         ],
                         'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view'],

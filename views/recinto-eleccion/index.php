@@ -42,6 +42,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                 return  Html::a($model->eleccion->name, \yii\helpers\Url::toRoute(['eleccion/view', 'id' =>  $model->eleccion->id]));
                             },
                             'label' => 'Elección',
+                            'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
+                            'filter' => \yii\helpers\ArrayHelper::map(\app\models\Eleccion::find()->orderBy(['name'=>SORT_ASC])->all(), 'id', 'name'),
+                            'filterWidgetOptions' => [
+                                'pluginOptions' => ['allowClear' => true]
+                            ],
+                            'filterInputOptions' => ['placeholder' => 'Elección']
                         ],
                         [
                             'attribute' => 'parroquia',
@@ -50,14 +56,26 @@ $this->params['breadcrumbs'][] = $this->title;
                                 return  Html::a($model->parroquia->name, \yii\helpers\Url::toRoute(['parroquia/view', 'id' =>  $model->parroquia->id]));
                             },
                             'label' => 'Parroquia',
+                            'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
+                            'filter' => \yii\helpers\ArrayHelper::map(\app\models\Parroquia::find()->orderBy(['name'=>SORT_ASC])->all(), 'id', 'name'),
+                            'filterWidgetOptions' => [
+                                'pluginOptions' => ['allowClear' => true]
+                            ],
+                            'filterInputOptions' => ['placeholder' => 'Parroquia']
                         ],
                         [
-                            'attribute' => 'zona',
+                            'attribute'=> 'zona',
                             'format' => 'raw',
                             'value' => function ($model) {
                                 return  Html::a($model->zona->name, \yii\helpers\Url::toRoute(['zona/view', 'id' =>  $model->zona->id]));
                             },
                             'label' => 'Zona',
+                            'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
+                            'filter' => \yii\helpers\ArrayHelper::map(\app\models\Zona::find()->orderBy(['name'=>SORT_ASC])->all(), 'id', 'name'),
+                            'filterWidgetOptions' => [
+                                'pluginOptions' => ['allowClear' => true]
+                            ],
+                            'filterInputOptions' => ['placeholder' => 'Zona']
                         ],
 						[
                             'attribute'=> 'recinto',
@@ -89,6 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'jr_man',
                         'totalJuntas',
                         'count_elector',
+                        'totalVotos',
 
                         ['class' => 'yii\grid\ActionColumn'],
                     ],

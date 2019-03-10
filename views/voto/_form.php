@@ -7,6 +7,11 @@ use yii\widgets\ActiveForm;
 /* @var $model app\models\Voto */
 /* @var $form yii\widgets\ActiveForm */
 ?>
+<?php if ($model->hasErrors()) {
+//    var_dump($model->errors);die;
+    \Yii::$app->getSession()->setFlash('error', $model->getErrorSummary(true));
+}
+?>
 
 <!-- begin row -->
 <div class="row">
@@ -45,8 +50,6 @@ use yii\widgets\ActiveForm;
                         </div>
                         <div class="col-md-6">
                             <?= $form->field($model, 'vote')->textInput() ?>
-                            <?= $form->field($model, 'null_vote')->textInput() ?>
-                            <?= $form->field($model, 'blank_vote')->textInput() ?>
                         </div>
                     </div>
 

@@ -25,9 +25,12 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="box-body">
 
-                <?= GridView::widget([
+                <?= \kartik\grid\GridView::widget([
+                    'moduleId'=>'gridView',
                     'dataProvider' => $dataProvider,
                     'filterModel' => $searchModel,
+                    'striped' => true,
+                    'hover' => true,
                     'columns' => [
                         ['class' => 'yii\grid\SerialColumn'],
                         [
@@ -37,6 +40,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             'value' => function ($model) {
                                 return  Html::a($model->recintoEleccion->name, \yii\helpers\Url::toRoute(['recinto-eleccion/view', 'id' =>  $model->recintoEleccion->id]));
                             },
+                            'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
+                            'filter' => \yii\helpers\ArrayHelper::map(\app\models\RecintoEleccion::find()->joinWith('recinto')->orderBy(['recinto_electoral.name'=>SORT_ASC])->all(), 'id', 'name'),
+                            'filterWidgetOptions' => [
+                                'pluginOptions' => ['allowClear' => true]
+                            ],
+                            'filterInputOptions' => ['placeholder' => 'Recintos']
                         ],
                         'name',
                         [
@@ -46,6 +55,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             },
                             'filter' => \app\models\Junta::JUNTA_LABEL
                         ],
+                        'null_vote',
+                        'blank_vote',
                         ['class' => 'yii\grid\ActionColumn'],
                     ],
                 ]); ?>

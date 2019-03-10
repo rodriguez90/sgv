@@ -67,10 +67,20 @@ class VotoController extends Controller
         $model = new Voto();
 
         if (Yii::$app->request->isPost) {
+
             $data = Yii::$app->request->post();
             $data['Voto']['user_id'] = Yii::$app->user->id;
-            if($model->load($data) && $model->save())
-            return $this->redirect(['view', 'id' => $model->id]);
+
+            if($model->load($data))
+            {
+                $result = $this->validarVoto($model);
+                if(!$result['result']){
+
+                    $model->addError('', $result['error']);
+                }
+                else if($model->save())
+                    return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('create', [
@@ -89,8 +99,21 @@ class VotoController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if (Yii::$app->request->isPost) {
+
+            $data = Yii::$app->request->post();
+            $data['Voto']['user_id'] = Yii::$app->user->id;
+
+            if($model->load($data))
+            {
+                $result = $this->validarVoto($model);
+                if(!$result['result']){
+
+                    $model->addError('', $result['error']);
+                }
+                else if($model->save())
+                    return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [
@@ -126,5 +149,48 @@ class VotoController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    private function validarVoto($voto) {
+
+        $result = [
+            'result'=>true,
+            'error'=>'',
+        ];
+
+        if($voto)
+        {
+            $count = Voto::find()
+                ->andFilterWhere(['postulacion_id'=>$voto->postulacion_id])
+                ->andFilterWhere(['junta_id'=>$voto->junta_id])->count('id');
+
+            if ($count > 0) {
+                $result['result'] = false;
+                $result['error'] = 'Ya para esta junta y esta postulación se registró el voto.';
+                return $result;
+            }
+
+            $recinto = $voto->getRecintoEleccion();
+
+            if(intval($voto->vote) > $recinto->count_elector)
+            {
+                $result['result'] = false;
+                $result['error'] = 'El voto no puede ser mayor que la cantidad de electores en el recinto.';
+                return $result;
+            }
+
+            if(intval($voto->vote) > $recinto->getAusentismo())
+            {
+                $result['result'] = false;
+                $result['error'] = 'El voto no puede ser mayor que la cantidad de votos admitidos por el recinto.';
+                return $result;
+            }
+        }
+        else {
+            $result['result'] = false;
+            $result['error'] = 'Voto Ínvalido.';
+        }
+
+        return $result;
     }
 }

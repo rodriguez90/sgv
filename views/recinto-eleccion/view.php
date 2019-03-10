@@ -86,7 +86,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'label' => 'Coordinador JR Mujeres',
                                 'value' => $model->coordinatorJrMan->getFullName()
                             ],
-
                             'jr_woman',
                             'jr_man',
                             'count_elector',
