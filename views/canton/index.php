@@ -36,18 +36,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             },
                         ],
                         'name',
-                        [
-                            'attribute'=>'type',
-                            'value' => function ($model) {
-                                    return \app\models\Canton::CANTON_LABEL[$model->type];
-                            },
-                            'filter' => \app\models\Canton::CANTON_LABEL
-//                            'filter' =>Html::activeDropDownList($searchModel,
-//                            'type',
-//                            \app\models\Canton::CANTON_LABEL,
-//                            ['class'=>'form-control', 'multiple'=>true]
-//                            ),
-                        ],
 
                         ['class' => 'yii\grid\ActionColumn'],
                     ],

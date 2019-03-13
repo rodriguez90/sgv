@@ -42,10 +42,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         return  Html::a($model->province->name, \yii\helpers\Url::toRoute(['province/view', 'id' =>  $model->province->id]));
                                     },
                                 ],
-                                [
-                                    'attribute'=>'type',
-                                    'value' => \app\models\Canton::CANTON_LABEL[$model->type]
-                                ],
                                 'juntasMujeres',
                                 'juntasHombres',
                                 'totalJuntas',

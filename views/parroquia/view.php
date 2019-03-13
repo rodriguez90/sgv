@@ -35,6 +35,10 @@ $this->params['breadcrumbs'][] = $this->title;
                             'id',
                             'name',
                             [
+                                'attribute'=>'type',
+                                'value' => \app\models\Parroquia::PARROQUIA_LABEL[$model->type]
+                            ],
+                            [
                                 'label' => 'Provincia',
                                 'format' => 'raw',
                                 'value' => function ($model) {

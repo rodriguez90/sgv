@@ -28,11 +28,6 @@ use yii\widgets\ActiveForm;
                         ['prompt'=>'Seleccione la Provincia',
                         ]);?>
 
-                    <?= $form->field($model, 'type')->dropDownList(
-                        \yii\helpers\ArrayHelper::map(\app\models\Canton::CANTON_CHOICES,'id','name'),
-                        ['prompt'=>'Seleccione el Tipo',
-                        ]);?>
-
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
                     <div class="form-group">

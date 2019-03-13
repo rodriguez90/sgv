@@ -12,8 +12,8 @@ class m190310_181731_alter_table_voto_junta extends Migration
      */
     public function safeUp()
     {
-//        $this->dropColumn('voto', 'null_vote');
-//        $this->dropColumn('voto', 'blank_vote');
+        $this->dropColumn('voto', 'null_vote');
+        $this->dropColumn('voto', 'blank_vote');
 
         $this->addColumn('junta', 'null_vote', $this->integer()->notNull()->defaultValue(0));
         $this->addColumn('junta', 'blank_vote', $this->integer()->notNull()->defaultValue(0));

@@ -20,7 +20,7 @@ class ParroquiaSearch extends Parroquia
     public function rules()
     {
         return [
-            [['id', 'canton_id'], 'integer'],
+            [['id', 'canton_id', 'type'], 'integer'],
             [['name', 'canton', 'province'], 'safe'],
         ];
     }
@@ -76,6 +76,7 @@ class ParroquiaSearch extends Parroquia
         $query->andFilterWhere([
             'parroquia.id' => $this->id,
             'canton_id' => $this->canton_id,
+            'type' => $this->type,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);

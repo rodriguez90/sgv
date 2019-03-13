@@ -40,6 +40,12 @@ use yii\widgets\ActiveForm;
                             'prompt'=>'Seleccione el Cantón',
                         ]);?>
 
+                    <?= $form->field($model, 'type')->dropDownList(
+                        \yii\helpers\ArrayHelper::map(\app\models\Parroquia::PARROQUIA_CHOICES,'id','name'),
+                        ['prompt'=>'Seleccione el Tipo',
+                        ]);?>
+
+
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
                     <div class="form-group">

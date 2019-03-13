@@ -10,12 +10,30 @@ use Yii;
  * @property int $id
  * @property int $canton_id
  * @property string $name
+ * @property int $type
  *
  * @property Canton $canton
  * @property Zona[] $zonas
  */
 class Parroquia extends \yii\db\ActiveRecord
 {
+
+    const PARROQUIA_RURAL = 1;
+    const PARROQUIA_NORTH = 2;
+    const PARROQUIA_SOUTH = 3;
+
+    const PARROQUIA_CHOICES = [
+        ['id' => 1, 'name' => 'Rural'],
+        ['id' => 2, 'name' => 'Norte'],
+        ['id' => 3, 'name' => 'Sur']
+    ];
+
+    const PARROQUIA_LABEL = [
+        1 => 'Rural',
+        2 => 'Norte',
+        3 => 'Sur'
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -30,8 +48,8 @@ class Parroquia extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['canton_id', 'name'], 'required'],
-            [['canton_id'], 'integer'],
+            [['canton_id', 'name', 'type'], 'required'],
+            [['canton_id', 'type'], 'integer'],
             [['name'], 'string', 'max' => 255],
             [['canton_id'], 'exist', 'skipOnError' => true, 'targetClass' => Canton::className(), 'targetAttribute' => ['canton_id' => 'id']],
         ];
@@ -46,6 +64,7 @@ class Parroquia extends \yii\db\ActiveRecord
             'id' => 'No.',
             'canton_id' => 'Cantón',
             'name' => 'Nombre',
+            'type' => 'Tipo',
         ];
     }
 

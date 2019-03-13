@@ -19,7 +19,7 @@ class CantonSearch extends Canton
     public function rules()
     {
         return [
-            [['id', 'province_id', 'type'], 'integer'],
+            [['id', 'province_id'], 'integer'],
             [['name', 'province'], 'safe'],
         ];
     }
@@ -69,7 +69,6 @@ class CantonSearch extends Canton
         $query->andFilterWhere([
             'canton.id' => $this->id,
 //            'province_id' => $this->province_id,
-            'type' => $this->type,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);
