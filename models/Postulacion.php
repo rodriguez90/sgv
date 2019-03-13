@@ -106,6 +106,18 @@ class Postulacion extends \yii\db\ActiveRecord
         return $this->hasMany(Voto::className(), ['postulacion_id' => 'id']);
     }
 
+    private $_totalVotos;
+    public function getTotalVotos() {
+        $total = 0;
+
+        foreach ($this->votos as $voto)
+        {
+            $total += $voto->vote;
+        }
+
+        return $total;
+    }
+
     private $_name;
     public function getName(){
 //        $name = $this->partido->name .

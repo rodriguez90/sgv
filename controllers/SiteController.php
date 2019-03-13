@@ -2,9 +2,11 @@
 
 namespace app\controllers;
 
+use app\models\Postulacion;
 use Da\User\Filter\AccessRuleFilter;
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
@@ -30,11 +32,11 @@ class SiteController extends Controller
                         'allow' => true,
                         'roles' => ['@'],
                     ],
-                    [
-                        'actions' => ['report'],
-                        'allow' => true,
-                        'roles' => ['report_view'],
-                    ],
+//                    [
+//                        'actions' => ['report'],
+//                        'allow' => true,
+//                        'roles' => ['report_view'],
+//                    ],
                     [
                         'actions' => ['error'],
                         'allow' => true,
@@ -75,8 +77,19 @@ class SiteController extends Controller
     public function actionIndex()
     {
 
-        return $this->redirect(['/voto/index']);
-//        return $this->render('index3');
+//        return $this->redirect(['/voto/index']);
+        $postulacion = Postulacion::find()->all();
+        $labels = [];
+        $data = [];
+        foreach ($postulacion as $p) {
+            array_push($labels, $p->name);
+            array_push($data, $p->totalVotos);
+        }
+
+        return $this->render('index3', [
+            'labels' => $labels,
+            'data' => $data,
+        ]);
     }
 
     /**

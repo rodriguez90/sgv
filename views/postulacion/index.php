@@ -7,7 +7,7 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\models\PostulacionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Postulacions';
+$this->title = 'Postulaciones';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
@@ -50,6 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
 								return app\models\Postulacion::ROL_LABEL[$model->role];
 							}
 						],
+                        'totalVotos',
                         ['class' => 'yii\grid\ActionColumn'],
                     ],
                 ]); ?>

@@ -4,106 +4,163 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 
+use dosamigos\chartjs\ChartJs;
+
 /* @var $this yii\web\View */
 
 $this->title = '';
 ?>
-    <!-- Small boxes (Stat box) -->
+    <!-- Info boxes -->
     <div class="row">
-        <div class="col-lg-3 col-xs-6">
-            <!-- small box -->
-            <div class="small-box bg-aqua">
-                <div class="inner">
-                    <h3><?= 0 ?></h3>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-aqua"><i class="ion ion-ios-people-outline"></i></span>
 
-                    <p>Electores</p>
+                <div class="info-box-content">
+                    <span class="info-box-text">Electores</span>
+                    <span class="info-box-number">41,410<small>%</small></span>
                 </div>
-                <div class="icon">
-                    <i class="ion ion-bag"></i>
-                </div>
-                <a href= <?php echo \yii\helpers\Url::toRoute(['/voto/create'])?> class="small-box-footer">Nuevo Prestamo <i class="fa fa-arrow-circle-right"></i></a>
+                <!-- /.info-box-content -->
             </div>
+            <!-- /.info-box -->
         </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-            <!-- small box -->
-            <div class="small-box bg-green">
-                <div class="inner">
-                    <h3><?= 0 ?></h3>
-                    <p>Votos</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-stats-bars"></i>
-                </div>
-                <a href= <?php echo \yii\helpers\Url::toRoute(['/payment/create'])?> class="small-box-footer">Registrar Cobro <i class="fa fa-arrow-circle-right"></i></a>
-            </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-            <!-- small box -->
-            <div class="small-box bg-red">
-                <div class="inner">
-                    <h3><?= 0 ?></h3>
+        <!-- /.col -->
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-green"><i class="ion ion-android-document"></i></span>
 
-                    <p>Votos Nulos</p>
+                <div class="info-box-content">
+                    <span class="info-box-text">Votos</span>
+                    <span class="info-box-number">41,410</span>
                 </div>
-                <div class="icon">
-                    <i class="ion ion-pie-graph"></i>
-                </div>
-                <a href="<?php echo \yii\helpers\Url::toRoute(['/site/report'])?> " class="small-box-footer">Reporte <i class="fa fa-arrow-circle-right"></i></a>
+                <!-- /.info-box-content -->
             </div>
+            <!-- /.info-box -->
         </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-            <!-- small box -->
-            <div class="small-box bg-yellow">
-                <div class="inner">
-                    <h3><?= 0 ?></h3>
+        <!-- /.col -->
 
-                    <p>Votos en Blanco</p>
+        <!-- fix for small devices only -->
+        <div class="clearfix visible-sm-block"></div>
+
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-red"><i class="ion ion-ios-circle-filled"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Votos Nulos</span>
+                    <span class="info-box-number">760</span>
                 </div>
-                <div class="icon">
-                    <i class="ion ion-person-add"></i>
-                </div>
-                <a href= <?php echo \yii\helpers\Url::toRoute(['/customer/create'])?> class="small-box-footer">Registrar Cliente <i class="fa fa-arrow-circle-right"></i></a>
+                <!-- /.info-box-content -->
             </div>
+            <!-- /.info-box -->
         </div>
+        <!-- /.col -->
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-yellow"><i class="ion ion-ios-circle-outline"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Votos En Blanco</span>
+                    <span class="info-box-number">2,000</span>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
     </div>
+    <!-- /.row -->
 
     <div class="row">
 
-        <div class="col-lg-12 col-xs-12">
-            <div class="box box-solid">
+        <div class="col-md-6">
+            <!-- AREA CHART -->
+            <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Cuotas Pendientes</h3>
+                    <h3 class="box-title">Area Chart</h3>
 
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                         </button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                     </div>
-                    <!-- /.box-tools -->
                 </div>
-                <!-- /.box-header -->
                 <div class="box-body">
-                    <div class="table-responsive">
-                        <table id="data-table" class="display table table-bordered no-wrap" width="100%" cellspacing="0">
-                            <thead>
-                            <tr>
-                                <th><input type="checkbox"></th>
-                                <th class="all">Cliente</th>
-                                <th class="all">Fecha de Pago</th>
-                                <th>Cuota</th>
-                                <th>Cédula</th>
-                                <th>Cobrador</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                            </thead>
-                        </table>
+                    <div class="chart">
+                        <?= ChartJs::widget([
+                            'type' => 'bar',
+                            'options' => [
+                                'height' => 200,
+//                            'width' => 200
+                            ],
+                            'data' => [
+                                'labels' => $labels,
+                                'datasets' => [
+                                    [
+                                        'label' => "Votos por Postulación",
+//                                    'scaleBeginAtZero'=> true,
+                                        'backgroundColor' => "rgba(179,181,198,0.2)",
+                                        'borderColor' => "rgba(179,181,198,1)",
+                                        'pointBackgroundColor' => "rgba(179,181,198,1)",
+                                        'pointBorderColor' => "#fff",
+                                        'pointHoverBackgroundColor' => "#fff",
+                                        'pointHoverBorderColor' => "rgba(179,181,198,1)",
+                                        'data' => $data
+                                    ],
+                                ]
+                            ]
+                        ]);
+                        ?>
                     </div>
                 </div>
                 <!-- /.box-body -->
             </div>
+            <!-- /.box -->
+        </div>
+
+        <div class="col-md-6">
+            <!-- DONUT CHART -->
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Donut Chart</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="chart">
+                        <?= ChartJs::widget([
+                            'type' => 'pie',
+                            'options' => [
+                                'height' => 200,
+//                            'width' => 200
+                            ],
+                            'data' => [
+                                'labels' => $labels,
+                                'datasets' => [
+                                    [
+                                        'label' => "Votos por Postulación",
+//                                    'scaleBeginAtZero'=> true,
+                                        'backgroundColor' => "rgba(179,181,198,0.2)",
+                                        'borderColor' => "rgba(179,181,198,1)",
+                                        'pointBackgroundColor' => "rgba(179,181,198,1)",
+                                        'pointBorderColor' => "#fff",
+                                        'pointHoverBackgroundColor' => "#fff",
+                                        'pointHoverBorderColor' => "rgba(179,181,198,1)",
+                                        'data' => $data
+                                    ],
+                                ]
+                            ]
+                        ]);
+                        ?>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
         </div>
     </div>
 

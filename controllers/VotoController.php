@@ -172,15 +172,25 @@ class VotoController extends Controller
             }
 
             $recinto = $voto->getRecintoEleccion();
+            $count_elector = $recinto->count_elector;
+            $ausentismo = $recinto->getAusentismo();
 
-            if(intval($voto->vote) > $recinto->count_elector)
+            if(!$voto->isNewRecord)
+            {
+                $oldVote = Voto::findOne(['id' => $voto->id]);
+
+                $ausentismo += $oldVote->vote;
+
+            }
+
+            if(intval($voto->vote) > $count_elector)
             {
                 $result['result'] = false;
                 $result['error'] = 'El voto no puede ser mayor que la cantidad de electores en el recinto.';
                 return $result;
             }
 
-            if(intval($voto->vote) > $recinto->getAusentismo())
+            if(intval($voto->vote) > $ausentismo)
             {
                 $result['result'] = false;
                 $result['error'] = 'El voto no puede ser mayor que la cantidad de votos admitidos por el recinto.';

@@ -21,6 +21,7 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
 //        'css/site.css',
+        'js/plugins/Ionicons/css/ionicons.css',
         'js/plugins/jquery-confirm/jquery-confirm.min.css'
     ];
     public $js = [

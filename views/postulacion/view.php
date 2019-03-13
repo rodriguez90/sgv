@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model app\models\Postulacion */
 
 $this->title = $model->candidate->name . '-' . app\models\Postulacion::ROL_LABEL[$model->role];
-$this->params['breadcrumbs'][] = ['label' => 'Postulacions', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Postulaciones', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
@@ -49,6 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
 								'attribute' => 'role',							
 								'value' => app\models\Postulacion::ROL_LABEL[$model->role]
 							],
+                            'totalVotos',
                         ],
                         'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view'],
 
