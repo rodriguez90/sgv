@@ -106,7 +106,7 @@ class VotoController extends Controller
 
             if($model->load($data))
             {
-                $result = $this->validarVoto($model);
+                $result = $this->validarVoto($model, 2);
                 if(!$result['result']){
 
                     $model->addError('', $result['error']);
@@ -151,7 +151,8 @@ class VotoController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    private function validarVoto($voto) {
+    // mode 1 editar mode 2 crear
+    private function validarVoto($voto, $mode=1) {
 
         $result = [
             'result'=>true,

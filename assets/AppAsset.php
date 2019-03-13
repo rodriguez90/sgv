@@ -24,6 +24,7 @@ class AppAsset extends AssetBundle
         'js/plugins/jquery-confirm/jquery-confirm.min.css'
     ];
     public $js = [
+        'js/app.js',
         'js/utils.js',
         'js/plugins/moment/moment.min.js',
         'js/plugins/jquery-confirm/jquery-confirm.min.js'
