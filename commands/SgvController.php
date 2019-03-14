@@ -10,12 +10,22 @@
 namespace app\commands;
 
 use Da\User\Command\CreateController;
-use yii\console\Controller;
+use yii\base\Module;
 use yii\console\ExitCode;
 
+use justcoded\yii2\rbac\commands\RbacController;
 
-class SgvController extends Controller
+
+class SgvController extends RbacController
 {
+
+    public function __construct($id, Module $module, array $config = [])
+    {
+        parent::__construct($id, $module, $config);
+
+        $this->path = '@app/controllers';
+    }
+
     /**
      * @return int
      */
@@ -35,8 +45,8 @@ class SgvController extends Controller
 
     public function actionGeneratePermision()
     {
-        // FIXME: Check this
-        return ExitCode::OK;
+//        $rbac = new RbacController('my-rbac');
+        return $this->actionScan();
     }
 
     public function actionDefaultAssingPermision()
