@@ -8,6 +8,7 @@ use Da\User\Filter\AccessRuleFilter;
 use Da\User\Form\LoginForm;
 use yii\filters\AccessControl;
 use Yii;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
@@ -42,7 +43,7 @@ class SiteController extends Controller
                     [
                         'actions' => ['index'],
                         'allow' => true,
-                        'roles' => ['site/index'],
+                        'roles' => ['site/index', 'Registrador'],
                     ],
                     [
                         'actions' => ['error'],
@@ -82,6 +83,11 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        $users = Yii::$app->authManager->getUserIdsByRole('Registrador');
+        if(in_array(Yii::$app->user->getId(), $users))
+        {
+            $this->redirect(Url::toRoute(['voto/index']));
+        }
 
         $postulacion = Postulacion::find()->all();
         $labels = [];
