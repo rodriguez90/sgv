@@ -25,7 +25,7 @@ $config = [
         'user' => [
             'identityClass' => 'Da\User\Model\User',
             'enableAutoLogin' => true,
-            'loginUrl' => ['/user/security/login']
+            'loginUrl' => ['/user/security/login'],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -87,6 +87,13 @@ $config = [
 //                ]
 //            ],
 //        ],
+        'view' => [
+            'theme' => [
+                'pathMap' => [
+                    '@Da/User/resources/views' => '@app/views/user'
+                ]
+            ]
+        ]
     ],
     'modules' => [
         'gridView' => [
@@ -94,6 +101,7 @@ $config = [
         ],
         'user' => [
             'class' => Da\User\Module::class,
+            'viewPath' => '@app/views/user',
             'administrators'=>['root'],
             'administratorPermissionName'=>'admin',
             'enableRegistration'=>false,

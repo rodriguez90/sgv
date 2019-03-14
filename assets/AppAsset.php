@@ -20,7 +20,7 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-//        'css/site.css',
+        'css/site.css',
         'js/plugins/Ionicons/css/ionicons.css',
         'js/plugins/jquery-confirm/jquery-confirm.min.css'
     ];

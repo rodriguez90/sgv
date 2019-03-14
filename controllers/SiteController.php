@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\Eleccion;
 use app\models\Postulacion;
 use Da\User\Filter\AccessRuleFilter;
+use Da\User\Form\LoginForm;
 use yii\filters\AccessControl;
 use Yii;
 use yii\web\Controller;
@@ -28,6 +29,11 @@ class SiteController extends Controller
                 ],
 //                'only' => ['error'],
                 'rules' => [
+                    [
+                        'actions' => ['login'],
+                        'allow' => true,
+//                        'roles' => ['@'],
+                    ],
                     [
                         'actions' => ['logout'],
                         'allow' => true,
@@ -135,6 +141,11 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+
+//    public function actionLogin()
+//    {
+//        return $this->render('login');
+//    }
 
     /**
      * Displays about page.
