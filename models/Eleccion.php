@@ -93,6 +93,13 @@ class Eleccion extends \yii\db\ActiveRecord
         return $total;
     }
 
+    private $_porcientoVotos;
+    public function getPorcientoVotos() {
+        $porciento = ($this->totalVotos * 100 )/ $this->totalElectores;
+
+        return $porciento;
+    }
+
     private $_totalVotosNulos = 0;
     public function getTotalVotosNulos()
     {
@@ -103,6 +110,13 @@ class Eleccion extends \yii\db\ActiveRecord
             $total += $r->totalVotosNulos;
         }
         return $total;
+    }
+
+    private $_porcientoVotosNulos;
+    public function getPorcientoVotosNulos() {
+        $porciento = ($this->totalVotosNulos * 100 )/ $this->totalElectores;
+
+        return $porciento;
     }
 
     private $_totalVotosBlancos = 0;
@@ -117,5 +131,22 @@ class Eleccion extends \yii\db\ActiveRecord
         return $total;
     }
 
+    private $_porcientoVotosBlancos;
+    public function getPorcientoVotosBlancos() {
+        $porciento = ($this->totalVotosBlancos * 100 )/ $this->totalElectores;
 
+        return $porciento;
+    }
+
+    private $_ausentismo = 0;
+    public function getAusentismo () {
+        return $this->totalElectores - $this->totalVotos;
+    }
+
+    private $_porcientoAusentismo = 0;
+    public function getPorcientoAusentismo() {
+        $porciento = ($this->ausentismo * 100 )/ $this->totalElectores;
+
+        return $porciento;
+    }
 }

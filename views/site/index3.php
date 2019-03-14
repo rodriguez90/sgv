@@ -18,7 +18,7 @@ $this->title = '';
 
                 <div class="info-box-content">
                     <span class="info-box-text">Electores</span>
-<!--                    <span class="info-box-number">41,410<small>%</small></span>-->
+                    <!--                    <span class="info-box-number">41,410<small>%</small></span>-->
                     <span class="info-box-number"><?=$totalElectores?></span>
                 </div>
                 <!-- /.info-box-content -->
@@ -92,20 +92,22 @@ $this->title = '';
                             'type' => 'bar',
                             'options' => [
                                 'height' => 200,
-//                            'width' => 200
                             ],
                             'data' => [
                                 'labels' => $labels,
                                 'datasets' => [
                                     [
                                         'label' => "Votos por Postulación",
-//                                    'scaleBeginAtZero'=> true,
-                                        'backgroundColor' => "rgba(179,181,198,0.2)",
-                                        'borderColor' => "rgba(179,181,198,1)",
-                                        'pointBackgroundColor' => "rgba(179,181,198,1)",
-                                        'pointBorderColor' => "#fff",
-                                        'pointHoverBackgroundColor' => "#fff",
-                                        'pointHoverBorderColor' => "rgba(179,181,198,1)",
+//                                        'backgroundColor' => [
+//                                                "rgba(179,181,198,0.2)",
+//                                                "rgba(0,0,0,1)"
+//                                        ],
+//                                        'borderColor' => "rgba(179,181,198,1)",
+//                                        'pointBackgroundColor' => "rgba(179,181,198,1)",
+//                                        'pointBorderColor' => "#fff",
+//                                        'pointHoverBackgroundColor' => "#fff",
+//                                        'pointHoverBorderColor' => "rgba(179,181,198,1)",
+                                        'backgroundColor' => 'fillPattern',
                                         'data' => $data
                                     ],
                                 ]
@@ -123,7 +125,7 @@ $this->title = '';
             <!-- DONUT CHART -->
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Donut Chart</h3>
+                    <h3 class="box-title">Votos en Porcientos</h3>
 
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -140,18 +142,17 @@ $this->title = '';
 //                            'width' => 200
                             ],
                             'data' => [
-                                'labels' => $labels,
+                                'labels' => $labelsPorcientos,
                                 'datasets' => [
                                     [
                                         'label' => "Votos por Postulación",
-//                                    'scaleBeginAtZero'=> true,
-                                        'backgroundColor' => "rgba(179,181,198,0.2)",
-                                        'borderColor' => "rgba(179,181,198,1)",
-                                        'pointBackgroundColor' => "rgba(179,181,198,1)",
-                                        'pointBorderColor' => "#fff",
-                                        'pointHoverBackgroundColor' => "#fff",
-                                        'pointHoverBorderColor' => "rgba(179,181,198,1)",
-                                        'data' => $data
+                                        'backgroundColor'=> [
+                                            '#00a65a',
+                                            '#dd4b39',
+                                            '#f39c12',
+                                            '#cc65fe',
+                                        ],
+                                        'data' => $dataPorcientos
                                     ],
                                 ]
                             ]

@@ -89,7 +89,13 @@ class SiteController extends Controller
             $this->redirect(Url::toRoute(['voto/index']));
         }
 
-        $postulacion = Postulacion::find()->all();
+        $postulacion = Postulacion::find()
+            ->innerJoin('partido', 'partido.id=postulacion.partido_id')
+            ->orderBy([
+                'partido.list'=>SORT_ASC,
+                'partido.number'=>SORT_ASC,
+            ])
+            ->all();
         $labels = [];
         $data = [];
         $elecciones = Eleccion::find()->all();
@@ -108,6 +114,14 @@ class SiteController extends Controller
             array_push($data, $p->totalVotos);
         }
 
+        $labelsPorcientos = ['Votos', 'Votos Nulos', 'Votos en Blanco', 'Ausentismo'];
+        $dataPorcientos = [
+            $eleccion->porcientoVotos,
+            $eleccion->porcientoVotosNulos,
+            $eleccion->porcientoVotosBlancos,
+            $eleccion->porcientoAusentismo,
+        ];
+
         return $this->render('index3', [
             'totalElectores' => $totalElectores,
             'totalVotos' => $totalVotos,
@@ -115,6 +129,8 @@ class SiteController extends Controller
             'totalVotosBlancos' => $totalVotosBlancos,
             'labels' => $labels,
             'data' => $data,
+            'labelsPorcientos' => $labelsPorcientos,
+            'dataPorcientos' => $dataPorcientos,
         ]);
     }
 

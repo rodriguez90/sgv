@@ -367,5 +367,5 @@ var handleDataTable  = function (){
 }
 
 $(document).ready(function () {
-    handleDataTable();
+    // handleDataTable();
 });
