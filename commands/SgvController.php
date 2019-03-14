@@ -45,7 +45,6 @@ class SgvController extends RbacController
 
     public function actionGeneratePermision()
     {
-//        $rbac = new RbacController('my-rbac');
         return $this->actionScan();
     }
 

@@ -8,7 +8,8 @@ use app\models\RecintoEleccionSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use Da\User\Filter\AccessRuleFilter;
+use yii\filters\AccessControl;
 /**
  * RecintoEleccionController implements the CRUD actions for RecintoEleccion model.
  */
@@ -26,6 +27,39 @@ class RecintoEleccionController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'ruleConfig' => [
+                    'class' => AccessRuleFilter::class,
+                ],
+                'rules' => [
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                        'roles' => ['recinto-eleccion/index'],
+                    ],
+                    [
+                        'actions' => ['create'],
+                        'allow' => true,
+                        'roles' => ['recinto-eleccion/create'],
+                    ],
+                    [
+                        'actions' => ['update'],
+                        'allow' => true,
+                        'roles' => ['recinto-eleccion/update'],
+                    ],
+                    [
+                        'actions' => ['delete'],
+                        'allow' => true,
+                        'roles' => ['recinto-eleccion/delete'],
+                    ],
+                    [
+                        'actions' => ['list'],
+                        'allow' => true,
+                        'roles' => ['recinto-eleccion/list'],
+                    ],
+                ],
+            ]
         ];
     }
 

@@ -5,13 +5,13 @@ namespace app\controllers;
 use app\models\Eleccion;
 use app\models\Postulacion;
 use Da\User\Filter\AccessRuleFilter;
-use Yii;
 use yii\filters\AccessControl;
-use yii\helpers\ArrayHelper;
+use Yii;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\ContactForm;
+
 
 class SiteController extends Controller
 {
@@ -29,19 +29,18 @@ class SiteController extends Controller
 //                'only' => ['error'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'logout'],
+                        'actions' => ['logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
-//                    [
-//                        'actions' => ['report'],
-//                        'allow' => true,
-//                        'roles' => ['report_view'],
-//                    ],
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                        'roles' => ['site/index'],
+                    ],
                     [
                         'actions' => ['error'],
                         'allow' => true,
-//                        'roles' => ['?'],
                     ],
                 ],
             ],
@@ -78,20 +77,18 @@ class SiteController extends Controller
     public function actionIndex()
     {
 
-//        return $this->redirect(['/voto/index']);
         $postulacion = Postulacion::find()->all();
         $labels = [];
         $data = [];
         $elecciones = Eleccion::find()->all();
         $eleccion = null;
+
         if(count($elecciones)) $eleccion = $elecciones[0];
 
         $totalElectores = $eleccion->totalElectores;
         $totalVotos = $eleccion->totalVotos;
         $totalVotosNulos = $eleccion->totalVotosNulos;
         $totalVotosBlancos = $eleccion->totalVotosBlancos;
-
-
 
 
         foreach ($postulacion as $p) {
