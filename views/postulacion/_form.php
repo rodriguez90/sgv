@@ -31,7 +31,9 @@ use yii\widgets\ActiveForm;
                         ]);?>
 
                     <?= $form->field($model, 'candidate_id')->dropDownList(
-                        \yii\helpers\ArrayHelper::map(\Da\User\Model\Profile::find()->all(),'user_id','name'),
+                        \yii\helpers\ArrayHelper::map(\Da\User\Model\Profile::find()
+                            ->innerJoin('auth_assignment', 'profile.user_id=auth_assignment.user_id and auth_assignment.item_name="Candidato"')
+                            ->all(),'user_id','name'),
                         ['prompt'=>'Seleccione el Candidato',
                         ]);?>
 

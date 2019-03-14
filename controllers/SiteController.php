@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Eleccion;
 use app\models\Postulacion;
 use Da\User\Filter\AccessRuleFilter;
 use Yii;
@@ -81,12 +82,28 @@ class SiteController extends Controller
         $postulacion = Postulacion::find()->all();
         $labels = [];
         $data = [];
+        $elecciones = Eleccion::find()->all();
+        $eleccion = null;
+        if(count($elecciones)) $eleccion = $elecciones[0];
+
+        $totalElectores = $eleccion->totalElectores;
+        $totalVotos = $eleccion->totalVotos;
+        $totalVotosNulos = $eleccion->totalVotosNulos;
+        $totalVotosBlancos = $eleccion->totalVotosBlancos;
+
+
+
+
         foreach ($postulacion as $p) {
             array_push($labels, $p->name);
             array_push($data, $p->totalVotos);
         }
 
         return $this->render('index3', [
+            'totalElectores' => $totalElectores,
+            'totalVotos' => $totalVotos,
+            'totalVotosNulos' => $totalVotosNulos,
+            'totalVotosBlancos' => $totalVotosBlancos,
             'labels' => $labels,
             'data' => $data,
         ]);

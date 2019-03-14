@@ -177,23 +177,25 @@ class RecintoEleccion extends \yii\db\ActiveRecord
         return $total;
     }
 
+    private $_totalVotosNulos = 0;
     public function getTotalVotosNulos() {
         $juntas = $this->juntas;
         $total = 0;
 
         foreach ($juntas as $junta) {
-            $total += $juntas->null_vote;
+            $total += $junta->null_vote;
         }
 
         return $total;
     }
 
+    private $_totalVotosBlancos=0;
     public function getTotalVotosBlancos() {
         $juntas = $this->juntas;
         $total = 0;
 
         foreach ($juntas as $junta) {
-            $total += $juntas->blank_vote;
+            $total += $junta->blank_vote;
         }
 
         return $total;

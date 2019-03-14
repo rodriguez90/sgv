@@ -151,8 +151,7 @@ class VotoController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    // mode 1 editar mode 2 crear
-    private function validarVoto($voto, $mode=1) {
+    private function validarVoto($voto) {
 
         $result = [
             'result'=>true,
@@ -165,11 +164,11 @@ class VotoController extends Controller
                 ->andFilterWhere(['postulacion_id'=>$voto->postulacion_id])
                 ->andFilterWhere(['junta_id'=>$voto->junta_id])->count('id');
 
-            if ($count > 0) {
-                $result['result'] = false;
-                $result['error'] = 'Ya para esta junta y esta postulación se registró el voto.';
-                return $result;
-            }
+//            if ($count > 0) {
+//                $result['result'] = false;
+//                $result['error'] = 'Ya para esta junta y esta postulación se registró el voto.';
+//                return $result;
+//            }
 
             $recinto = $voto->getRecintoEleccion();
             $count_elector = $recinto->count_elector;

@@ -66,8 +66,20 @@ class JuntaController extends Controller
     {
         $model = new Junta();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if (Yii::$app->request->isPost) {
+
+            $data = Yii::$app->request->post();
+
+            if($model->load($data))
+            {
+                $result = $this->validarVoto($model);
+                if(!$result['result']){
+
+                    $model->addError('', $result['error']);
+                }
+                else if($model->save())
+                    return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('create', [
@@ -86,8 +98,20 @@ class JuntaController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if (Yii::$app->request->isPost) {
+
+            $data = Yii::$app->request->post();
+
+            if($model->load($data))
+            {
+                $result = $this->validarVoto($model);
+                if(!$result['result']){
+
+                    $model->addError('', $result['error']);
+                }
+                else if($model->save())
+                    return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [
@@ -142,5 +166,72 @@ class JuntaController extends Controller
         {
             echo "<option>-</option>";
         }
+    }
+
+    private function validarVoto($junta) {
+
+        $result = [
+            'result'=>true,
+            'error'=>'',
+        ];
+
+        if($junta)
+        {
+            $recinto = $junta->recintoEleccion;
+            $totalElectores = $recinto->count_elector;
+            $ausentismo = $recinto->getAusentismo();
+            $totalInvalidVotes = $junta->blank_vote + $junta->null_vote;
+
+            if(!$junta->isNewRecord)
+            {
+                $oldJunta = Junta::findOne(['id' => $junta->id]);
+                $ausentismo += $oldJunta->blank_vote + $oldJunta->null_vote;
+            }
+
+            if ($junta->null_vote > $totalElectores) {
+                $result['result'] = false;
+                $result['error'] = 'Los votos nulos no pueden ser superior a la cantida de electores del recinto.';
+                return $result;
+            }
+
+            if ($junta->blank_vote > $totalElectores) {
+                $result['result'] = false;
+                $result['error'] = 'Los votos en blanco no pueden ser superior a la cantida de electores del recinto.';
+                return $result;
+            }
+
+            if ($totalInvalidVotes > $totalElectores) {
+                $result['result'] = false;
+                $result['error'] = 'Los votos nulos y en blanco no pueden ser superior a la cantida de electores del recinto.';
+                return $result;
+            }
+
+            if($junta->null_vote > $ausentismo)
+            {
+                $result['result'] = false;
+                $result['error'] = 'Los votos nulos no pueden ser superior a la cantida de votos admitidos por el recinto.';
+                return $result;
+            }
+
+            if($junta->blank_vote > $ausentismo)
+            {
+                $result['result'] = false;
+                $result['error'] = 'Los en blanco no pueden ser superior a la cantida de votos admitidos por el recinto.';
+                return $result;
+            }
+
+            if($totalInvalidVotes > $ausentismo)
+            {
+                $result['result'] = false;
+                $result['error'] = 'Los votos nulos y en blanco no pueden ser superior a la cantida de votos admitidos por el recinto.';
+                return $result;
+            }
+        }
+        else {
+            $result['result'] = false;
+            $result['error'] = 'Voto Ínvalido.';
+        }
+
+        return $result;
     }
 }

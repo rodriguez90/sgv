@@ -7,6 +7,10 @@ use yii\widgets\ActiveForm;
 /* @var $model app\models\Junta */
 /* @var $form yii\widgets\ActiveForm */
 ?>
+<?php if ($model->hasErrors()) {
+    \Yii::$app->getSession()->setFlash('error', $model->getErrorSummary(true));
+}
+?>
 
 <!-- begin row -->
 <div class="row">

@@ -8,7 +8,6 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 <?php if ($model->hasErrors()) {
-//    var_dump($model->errors);die;
     \Yii::$app->getSession()->setFlash('error', $model->getErrorSummary(true));
 }
 ?>

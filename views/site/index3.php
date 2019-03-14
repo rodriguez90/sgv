@@ -18,7 +18,8 @@ $this->title = '';
 
                 <div class="info-box-content">
                     <span class="info-box-text">Electores</span>
-                    <span class="info-box-number">41,410<small>%</small></span>
+<!--                    <span class="info-box-number">41,410<small>%</small></span>-->
+                    <span class="info-box-number"><?=$totalElectores?></span>
                 </div>
                 <!-- /.info-box-content -->
             </div>
@@ -31,7 +32,7 @@ $this->title = '';
 
                 <div class="info-box-content">
                     <span class="info-box-text">Votos</span>
-                    <span class="info-box-number">41,410</span>
+                    <span class="info-box-number"><?=$totalVotos?></span>
                 </div>
                 <!-- /.info-box-content -->
             </div>
@@ -48,7 +49,7 @@ $this->title = '';
 
                 <div class="info-box-content">
                     <span class="info-box-text">Votos Nulos</span>
-                    <span class="info-box-number">760</span>
+                    <span class="info-box-number"><?= $totalVotosNulos ?></span>
                 </div>
                 <!-- /.info-box-content -->
             </div>
@@ -61,7 +62,7 @@ $this->title = '';
 
                 <div class="info-box-content">
                     <span class="info-box-text">Votos En Blanco</span>
-                    <span class="info-box-number">2,000</span>
+                    <span class="info-box-number"><?= $totalVotosBlancos ?></span>
                 </div>
                 <!-- /.info-box-content -->
             </div>

@@ -64,6 +64,7 @@ class Eleccion extends \yii\db\ActiveRecord
         return $this->hasMany(RecintoEleccion::className(), ['eleccion_id' => 'id']);
     }
 
+    private $_totalElectores = 0;
     /**
      * @return mixed
      */
@@ -79,5 +80,42 @@ class Eleccion extends \yii\db\ActiveRecord
         $count  = RecintoEleccion::find()->where(['eleccion_id'=>$this->id])->count('recinto_eleccion.id');
         return $count;
     }
+
+    private $_totalVotos = 0;
+    public function getTotalVotos()
+    {
+        $total = 0;
+        $recintos  = RecintoEleccion::find()->where(['eleccion_id'=>$this->id])->all();
+        foreach ($recintos as $r)
+        {
+            $total += $r->totalVotos;
+        }
+        return $total;
+    }
+
+    private $_totalVotosNulos = 0;
+    public function getTotalVotosNulos()
+    {
+        $total = 0;
+        $recintos  = RecintoEleccion::find()->where(['eleccion_id'=>$this->id])->all();
+        foreach ($recintos as $r)
+        {
+            $total += $r->totalVotosNulos;
+        }
+        return $total;
+    }
+
+    private $_totalVotosBlancos = 0;
+    public function getTotalVotosBlancos()
+    {
+        $total = 0;
+        $recintos  = RecintoEleccion::find()->where(['eleccion_id'=>$this->id])->all();
+        foreach ($recintos as $r)
+        {
+            $total += $r->totalVotosBlancos;
+        }
+        return $total;
+    }
+
 
 }

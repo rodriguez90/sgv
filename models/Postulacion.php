@@ -126,8 +126,8 @@ class Postulacion extends \yii\db\ActiveRecord
 //                ' - '.  $this->candidate->name  .
 //                ' - ' . Postulacion::ROL_LABEL[$this->role];
 
-        $name = $this->partido->list .
-                ' - ' . $this->partido->number;
+        $name = $this->candidate->name .
+            ' - ' . Postulacion::ROL_LABEL[$this->role];
 
         return $name;
     }

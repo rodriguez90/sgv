@@ -95,6 +95,21 @@ class Junta extends \yii\db\ActiveRecord
             $total += $voto->vote;
         }
 
+        $total += $this->blank_vote + $this->null_vote ;
+
+        return $total;
+    }
+
+    private $_totalVotosValidos;
+    public function getTotalVotosValidos() {
+        $votos = $this->votos;
+        $total = 0;
+
+        foreach ($votos as $voto) {
+            $total += $voto->vote;
+        }
+
+
         return $total;
     }
 
