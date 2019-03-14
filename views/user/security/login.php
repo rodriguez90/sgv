@@ -15,13 +15,13 @@ $this->params['breadcrumbs'][] = $this->title;
 $fieldOptions1 = [
     'options' => ['class' => 'form-group has-feedback'],
     'inputOptions' => ['autofocus' => 'autofocus', 'class' => 'form-control', 'tabindex' => '1'],
-    'inputTemplate' => "{input}<span class='glyphicon glyphicon-envelope form-control-feedback'></span>"
+    'inputTemplate' => "{input}</span>"
 ];
 
 $fieldOptions2 = [
     'options' => ['class' => 'form-group has-feedback'],
     'inputOptions' => ['class' => 'form-control', 'tabindex' => '2'],
-    'inputTemplate' => "{input}<span class='glyphicon glyphicon-lock form-control-feedback'></span>"
+    'inputTemplate' => "{input}</span>"
 ];
 ?>
 
