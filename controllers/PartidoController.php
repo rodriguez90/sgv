@@ -59,6 +59,11 @@ class PartidoController extends Controller
                         'allow' => true,
                         'roles' => ['partido/list'],
                     ],
+                    [
+                        'actions' => ['view'],
+                        'allow' => true,
+                        'roles' => ['partido/view'],
+                    ],
                 ],
             ]
         ];

@@ -59,6 +59,11 @@ class JuntaController extends Controller
                         'allow' => true,
                         'roles' => ['junta/list'],
                     ],
+                    [
+                        'actions' => ['view'],
+                        'allow' => true,
+                        'roles' => ['junta/view'],
+                    ],
                 ],
             ]
         ];

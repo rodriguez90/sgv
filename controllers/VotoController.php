@@ -59,6 +59,11 @@ class VotoController extends Controller
                         'allow' => true,
                         'roles' => ['voto/list'],
                     ],
+                    [
+                        'actions' => ['view'],
+                        'allow' => true,
+                        'roles' => ['voto/view'],
+                    ],
                 ],
             ]
         ];

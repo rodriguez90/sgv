@@ -59,6 +59,11 @@ class CantonController extends Controller
                         'allow' => true,
                         'roles' => ['canton/list'],
                     ],
+                    [
+                        'actions' => ['view'],
+                        'allow' => true,
+                        'roles' => ['canton/view'],
+                    ],
                 ],
             ]
         ];

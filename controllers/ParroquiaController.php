@@ -59,6 +59,11 @@ class ParroquiaController extends Controller
                         'allow' => true,
                         'roles' => ['parroquia/list'],
                     ],
+                    [
+                        'actions' => ['view'],
+                        'allow' => true,
+                        'roles' => ['parroquia/view'],
+                    ],
                 ],
             ]
         ];

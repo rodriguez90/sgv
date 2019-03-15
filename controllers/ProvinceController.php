@@ -59,6 +59,11 @@ class ProvinceController extends Controller
                         'allow' => true,
                         'roles' => ['province/list'],
                     ],
+                    [
+                        'actions' => ['view'],
+                        'allow' => true,
+                        'roles' => ['province/view'],
+                    ],
                 ],
             ]
         ];

@@ -58,6 +58,11 @@ class ZonaController extends Controller
                         'allow' => true,
                         'roles' => ['zona/list'],
                     ],
+                    [
+                        'actions' => ['view'],
+                        'allow' => true,
+                        'roles' => ['zona/view'],
+                    ],
                 ],
             ]
         ];

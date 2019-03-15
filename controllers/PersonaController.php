@@ -59,6 +59,11 @@ class PersonaController extends Controller
                         'allow' => true,
                         'roles' => ['persona/list'],
                     ],
+                    [
+                        'actions' => ['view'],
+                        'allow' => true,
+                        'roles' => ['persona/view'],
+                    ],
                 ],
             ]
         ];

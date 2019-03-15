@@ -60,6 +60,11 @@ class PostulacionController extends Controller
                         'allow' => true,
                         'roles' => ['postulacion/list'],
                     ],
+                    [
+                        'actions' => ['view'],
+                        'allow' => true,
+                        'roles' => ['postulacion/view'],
+                    ],
                 ],
             ]
         ];

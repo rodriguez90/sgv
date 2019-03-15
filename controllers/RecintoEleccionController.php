@@ -58,6 +58,11 @@ class RecintoEleccionController extends Controller
                         'allow' => true,
                         'roles' => ['recinto-eleccion/list'],
                     ],
+                    [
+                        'actions' => ['view'],
+                        'allow' => true,
+                        'roles' => ['recinto-eleccio/view'],
+                    ],
                 ],
             ]
         ];

@@ -59,6 +59,11 @@ class EleccionController extends Controller
                         'allow' => true,
                         'roles' => ['eleccion/list'],
                     ],
+                    [
+                        'actions' => ['view'],
+                        'allow' => true,
+                        'roles' => ['eleccion/view'],
+                    ],
                 ],
             ]
         ];
