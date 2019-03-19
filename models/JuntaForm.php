@@ -100,8 +100,6 @@ class JuntaForm extends Model
     {
         $vote = $key && strpos($key, 'new') === false ? Voto::findOne($key) : false;
         if (!$vote) {
-            var_dump($key);
-            var_dump($vote);die('New Vote');
             $vote = new Voto();
             $vote->loadDefaultValues();
         }
@@ -123,7 +121,6 @@ class JuntaForm extends Model
                     $this->_votes[$vote->postulacion_id]->setAttributes($vote);
                 }
                 else {
-//                    var_dump($vote->vote);die;
                     $this->_votes[$vote->id] = $vote;
                     $this->_votes[$vote->id]->setAttributes($vote);
                 }
@@ -142,6 +139,7 @@ class JuntaForm extends Model
             {
                 $newVote = new Voto();
                 $newVote->junta_id = $this->_junta->id;
+                $newVote->vote = 0;
                 $newVote->postulacion_id = $p->id;
             }
             else {
