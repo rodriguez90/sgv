@@ -212,7 +212,9 @@ class RecintoEleccion extends \yii\db\ActiveRecord
     public function getPorcientoAusentismo() {
         $ausentismo = $this->getAusentismo();
 
-        $porciento = ($ausentismo * 100 )/ $this->count_elector;
+        $porciento = 0;
+        if(intval($this->count_elector) > 0)
+            $porciento = ($ausentismo * 100 )/ $this->count_elector;
 
         return $porciento;
     }
