@@ -42,6 +42,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             'attribute'=>'type',
                             'value' => \app\models\Junta::JUNTA_LABEL[$model->type]
                         ],
+                        'count_elector',
+                        'count_vote',
                         'null_vote',
                         'blank_vote',
                     ],

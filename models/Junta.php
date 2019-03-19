@@ -13,6 +13,8 @@ use Yii;
  * @property int $type
  * @property int $null_vote
  * @property int $blank_vote
+ * @property int $count_elector
+ * @property int $count_vote
  *
  * @property RecintoEleccion $recintoEleccion
  * @property Voto[] $votos
@@ -47,7 +49,7 @@ class Junta extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['recinto_eleccion_id', 'name', 'type'], 'required'],
+            [['recinto_eleccion_id', 'name', 'type', 'count_elector', 'count_vote'], 'required'],
             [['recinto_eleccion_id', 'null_vote', 'blank_vote', 'type'], 'integer'],
             [['null_vote', 'blank_vote',], 'safe'],
             [['name'], 'string', 'max' => 255],
@@ -67,6 +69,8 @@ class Junta extends \yii\db\ActiveRecord
             'type' => 'Tipo',
             'null_vote' => 'Votos Nulos',
             'blank_vote' => 'Votos en Blanco',
+            'count_elector' => 'Cantidad Electores',
+            'count_vote' => 'Cantidad Votos',
         ];
     }
 

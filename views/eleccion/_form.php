@@ -12,8 +12,8 @@ $initDate = $model->isNewRecord ? date('d-m-Y') : date('d-m-Y', strtotime($model
 
 <!-- begin row -->
 <div class="row">
-    <!-- begin col-12 -->
-    <div class="col-12">
+    <!-- begin col-lg-12 -->
+    <div class="col-lg-12">
         <!-- begin box -->
         <div class="box box-success">
             <div class="box-body">

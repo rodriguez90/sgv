@@ -2,6 +2,9 @@
 
 namespace app\controllers;
 
+use app\models\JuntaForm;
+use app\models\Postulacion;
+use app\models\Voto;
 use Yii;
 use app\models\Junta;
 use app\models\JuntaSearch;
@@ -104,21 +107,25 @@ class JuntaController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Junta();
+        $model = new JuntaForm();
+        $model->junta = new Junta();
+        $model->junta->loadDefaultValues();
+        $model->loadVotes();
 
         if (Yii::$app->request->isPost) {
 
             $data = Yii::$app->request->post();
 
-            if($model->load($data))
-            {
-                $result = $this->validarVoto($model);
-                if(!$result['result']){
+            $model->setAttributes($data);
 
-                    $model->addError('', $result['error']);
-                }
-                else if($model->save())
-                    return $this->redirect(['view', 'id' => $model->id]);
+            $result = $this->validarVoto($model->junta);
+            if(!$result['result']){
+                $model->addError('', $result['error']);
+            }
+            else if($model->save())
+            {
+                Yii::$app->getSession()->setFlash('success', 'La junta fue creada.');
+                return $this->redirect(['view', 'id' => $model->junta->id]);
             }
         }
 
@@ -136,24 +143,28 @@ class JuntaController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model = new JuntaForm();
+        $model->junta = $this->findModel($id);
+        $model->junta->loadDefaultValues();
+        $model->loadVotes();
 
         if (Yii::$app->request->isPost) {
 
             $data = Yii::$app->request->post();
 
-            if($model->load($data))
-            {
-                $result = $this->validarVoto($model);
-                if(!$result['result']){
+            $model->setAttributes($data);
 
-                    $model->addError('', $result['error']);
-                }
-                else if($model->save())
-                    return $this->redirect(['view', 'id' => $model->id]);
+            $result = $this->validarVoto($model->junta);
+            if(!$result['result']){
+
+                $model->addError('', $result['error']);
+            }
+            else if($model->save())
+            {
+                Yii::$app->getSession()->setFlash('success', 'La junta fue creada.');
+                return $this->redirect(['view', 'id' => $model->junta->id]);
             }
         }
-
         return $this->render('update', [
             'model' => $model,
         ]);
@@ -186,7 +197,7 @@ class JuntaController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException('La junta no existe');
     }
 
     public function actionLists($id)

@@ -19,7 +19,7 @@ class JuntaSearch extends Junta
     public function rules()
     {
         return [
-            [['id', 'recinto_eleccion_id', 'null_vote', 'blank_vote', 'type'], 'integer'],
+            [['id', 'recinto_eleccion_id', 'null_vote', 'blank_vote', 'type', 'count_elector', 'count_vote'], 'integer'],
             [['name', 'recintoEleccion'], 'safe'],
         ];
     }
@@ -74,6 +74,8 @@ class JuntaSearch extends Junta
             'junta.type' => $this->type,
             'null_vote' => $this->null_vote,
             'blank_vote' => $this->blank_vote,
+            'count_elector' => $this->count_elector,
+            'count_vote' => $this->count_vote,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);

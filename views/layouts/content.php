@@ -39,7 +39,8 @@ use dmstr\widgets\Alert;
     <div class="pull-right hidden-xs">
         <b>Version</b> 1.0
     </div>
-    <strong>Copyright &copy; 2018-2019</strong>
+    <strong>Copyright &copy; 2018-2019 - </strong>
+    <span> Sistema de Gestión de Votos</span>
 </footer>
 
 <!-- Control Sidebar -->
