@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\models\JuntaForm;
+use app\models\VotoJuntaForm;
 use app\models\Postulacion;
 use app\models\Voto;
 use Yii;
@@ -107,7 +107,7 @@ class JuntaController extends Controller
      */
     public function actionCreate()
     {
-        $model = new JuntaForm();
+        $model = new VotoJuntaForm();
         $model->junta = new Junta();
         $model->junta->loadDefaultValues();
         $model->loadVotes();
@@ -143,7 +143,7 @@ class JuntaController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = new JuntaForm();
+        $model = new VotoJuntaForm();
         $model->junta = $this->findModel($id);
         $model->junta->loadDefaultValues();
         $model->loadVotes();

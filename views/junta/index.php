@@ -7,7 +7,7 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\models\JuntaSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Juntas';
+$this->title = 'Juntas Receptoras de Votos';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
                 <p>
-                    <?= Html::a('Nueva Junta', ['create'], ['class' => 'btn btn-success']) ?>
+                    <?= Html::a('Nueva JRV', ['create'], ['class' => 'btn btn-success']) ?>
                 </p>
 
             </div>

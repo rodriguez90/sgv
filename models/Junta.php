@@ -50,9 +50,10 @@ class Junta extends \yii\db\ActiveRecord
     {
         return [
             [['recinto_eleccion_id', 'name', 'type', 'count_elector', 'count_vote'], 'required'],
-            [['recinto_eleccion_id', 'null_vote', 'blank_vote', 'type'], 'integer'],
+            [['recinto_eleccion_id'], 'integer'],
             [['null_vote', 'blank_vote',], 'safe'],
             [['name'], 'string', 'max' => 255],
+            [['null_vote', 'blank_vote', 'count_elector', 'count_vote'], 'integer', 'min' => 0, 'integerOnly'=>true],
             [['recinto_eleccion_id'], 'exist', 'skipOnError' => true, 'targetClass' => RecintoEleccion::className(), 'targetAttribute' => ['recinto_eleccion_id' => 'id']],
         ];
     }
@@ -70,7 +71,7 @@ class Junta extends \yii\db\ActiveRecord
             'null_vote' => 'Votos Nulos',
             'blank_vote' => 'Votos en Blanco',
             'count_elector' => 'Cantidad Electores',
-            'count_vote' => 'Cantidad Votos',
+            'count_vote' => 'Cantidad de Vontes',
         ];
     }
 

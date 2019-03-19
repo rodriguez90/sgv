@@ -1,10 +1,6 @@
-function validationVote(inputVote, value){
-    // console.log('validationVote');
-    // console.log('validationVote', inputVote);
-    // console.log('validationVote', value);
-
+function totalVotos() {
     var votes = $('*').filter(function () {
-        return this.id.match('^Votes_[1-9][0-9]+_vote$');
+        return this.id.match('^Votes_[1-9][0-9]*_vote$');
     });
 
     var total = 0;
@@ -13,11 +9,151 @@ function validationVote(inputVote, value){
         total += parseInt(votes[i].value);
     }
 
+    total += parseInt($("#junta-null_vote").prop('value')) + parseInt($("#junta-blank_vote").prop('value'));
+
+    return total;
+}
+
+function actualizaTotalVotos(total) {
     $('#totalVotos').html(total);
-};
+}
+
+function validarVotos(total) {
+    var cantidadElectores = parseInt($("#junta-count_elector").prop('value'));
+    var cantidadVotantes = parseInt($("#junta-count_vote").prop('value'));
+
+    var result = {
+        'error': false,
+        'msg': ''
+    };
+    if(cantidadVotantes > cantidadElectores)
+    {
+        result.msg = 'La cantidad de votantes no debe ser superior a la cantidad de electores';
+        result.error = true;
+        return result;
+    }
+
+    if(total > cantidadVotantes || total > cantidadElectores )
+    {
+        result.msg = 'El total de votos no debe ser superior a la cantidad de electores y de votantes';
+        result.error = true;
+        return result;
+    }
+
+    return result;
+}
 
 $(document).ready(function () {
-    $('#junta-recinto_eleccion_id').on('change', function () {
-        console.log('junta-recinto_eleccion_id', this.value);
+
+      $("#junta-count_elector").on('keyup', function (event) {
+        var total = totalVotos();
+
+        var result = validarVotos(total);
+
+        if(!result.error)
+        {
+            actualizaTotalVotos(total);
+            $('#btnSubmit').prop('disabled','');
+            return true;
+        }
+        else
+        {
+            event.preventDefault();
+            $('#btnSubmit').prop('disabled','disabled');
+            alert(result.msg);
+            return false;
+        }
     });
+
+    $("#junta-count_vote").on('keyup', function (event) {
+        var total = totalVotos();
+
+        var result = validarVotos(total);
+
+        if(!result.error)
+        {
+            actualizaTotalVotos(total);
+            $('#btnSubmit').prop('disabled','');
+            return true;
+        }
+        else
+        {
+            event.preventDefault();
+            $('#btnSubmit').prop('disabled','disabled');
+            alert(result.msg);
+            return false;
+        }
+    });
+
+    $("#junta-null_vote").on('keyup', function (event) {
+        var total = totalVotos();
+
+        var result = validarVotos(total);
+
+        if(!result.error)
+        {
+            actualizaTotalVotos(total);
+            $('#btnSubmit').prop('disabled','');
+            return true;
+        }
+        else
+        {
+            event.preventDefault();
+            $('#btnSubmit').prop('disabled','disabled');
+            alert(result.msg);
+            return false;
+        }
+    });
+
+    $("#junta-blank_vote").on('keyup', function (event) {
+        var total = totalVotos();
+
+        var result = validarVotos(total);
+
+        if(!result.error)
+        {
+            actualizaTotalVotos(total);
+            $('#btnSubmit').prop('disabled','');
+            return true;
+        }
+        else
+        {
+            event.preventDefault();
+            $('#btnSubmit').prop('disabled','disabled');
+            alert(result.msg);
+            return false;
+        }
+    });
+
+    var votes = $('*').filter(function () {
+        return this.id.match('^Votes_[1-9][0-9]*_vote$');
+    });
+
+    for(var i = 0 ; i < votes.length; i++)
+    {
+        $(votes[i]).on('keyup', function (event) {
+            var keyup= event.which;
+
+            // console.log('keyup', keyup);
+            // console.log('input value', this.value);
+
+            var total = totalVotos();
+
+            var result = validarVotos(total);
+
+            if(!result.error)
+            {
+                actualizaTotalVotos(total);
+                $('#btnSubmit').prop('disabled','');
+                return true;
+            }
+            else
+            {
+                event.preventDefault();
+                $('#btnSubmit').prop('disabled','disabled');
+                alert(result.msg);
+                return false;
+            }
+        });
+    }
 });

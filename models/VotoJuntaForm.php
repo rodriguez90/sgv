@@ -15,7 +15,7 @@ use yii\base\Model;
 use yii\widgets\ActiveForm;
 
 
-class JuntaForm extends Model
+class VotoJuntaForm extends Model
 {
     private $_junta;
     private $_votes;

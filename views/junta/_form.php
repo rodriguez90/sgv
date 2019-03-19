@@ -51,6 +51,8 @@ use yii\widgets\ActiveForm;
                         </div>
                     </div>
 
+                    <h4>Acta de Votos</h4>
+
                     <div class="row">
 
                         <div class="col-lg-3 col-md-3 col-xs-3">
@@ -67,7 +69,6 @@ use yii\widgets\ActiveForm;
                         </div>
 
                     </div>
-
 
                     <div class="row">
                         <div class="col-lg-12">
@@ -102,7 +103,7 @@ use yii\widgets\ActiveForm;
                             echo '<tr>';
                             echo '<td>Total Votos</td>';
                             echo '<td>';
-                            echo Html::label($model->junta->totalVotosValidos, null, ['id'=>'totalVotos']);
+                            echo Html::label($model->junta->totalVotos, null, ['id'=>'totalVotos']);
                             echo '</td>';
                             echo '</tr>';
                             echo  '</tfooter>';
@@ -114,7 +115,7 @@ use yii\widgets\ActiveForm;
 
 
                 <div class="form-group">
-                    <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
+                    <?= Html::submitButton('Guardar', ['id'=>'btnSubmit', 'class' => 'btn btn-success']) ?>
                     <?= Html::button('Cancelar',['class'=>'btn btn-default','onclick'=>'window.history.go(-1)']) ?>
                 </div>
                 <?php ActiveForm::end(); ?>

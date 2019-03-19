@@ -34,36 +34,36 @@ class VotoController extends Controller
                     'class' => AccessRuleFilter::class,
                 ],
                 'rules' => [
-                    [
-                        'actions' => ['index'],
-                        'allow' => true,
-                        'roles' => ['voto/index'],
-                    ],
-                    [
-                        'actions' => ['create'],
-                        'allow' => true,
-                        'roles' => ['voto/create'],
-                    ],
-                    [
-                        'actions' => ['update'],
-                        'allow' => true,
-                        'roles' => ['voto/update'],
-                    ],
-                    [
-                        'actions' => ['delete'],
-                        'allow' => true,
-                        'roles' => ['voto/delete'],
-                    ],
-                    [
-                        'actions' => ['list'],
-                        'allow' => true,
-                        'roles' => ['voto/list'],
-                    ],
-                    [
-                        'actions' => ['view'],
-                        'allow' => true,
-                        'roles' => ['voto/view'],
-                    ],
+//                    [
+//                        'actions' => ['index'],
+//                        'allow' => true,
+//                        'roles' => ['voto/index'],
+//                    ],
+//                    [
+//                        'actions' => ['create'],
+//                        'allow' => true,
+//                        'roles' => ['voto/create'],
+//                    ],
+//                    [
+//                        'actions' => ['update'],
+//                        'allow' => true,
+//                        'roles' => ['voto/update'],
+//                    ],
+//                    [
+//                        'actions' => ['delete'],
+//                        'allow' => true,
+//                        'roles' => ['voto/delete'],
+//                    ],
+//                    [
+//                        'actions' => ['list'],
+//                        'allow' => true,
+//                        'roles' => ['voto/list'],
+//                    ],
+//                    [
+//                        'actions' => ['view'],
+//                        'allow' => true,
+//                        'roles' => ['voto/view'],
+//                    ],
                 ],
             ]
         ];

@@ -76,14 +76,18 @@ if(Yii::$app->user !== null && Yii::$app->user->identity !== null)
     if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'juntas/index')
         || Yii::$app->user->identity->getIsAdmin())
     {
-        $eleccion['items'][]=['label' => 'Juntas', 'icon' => 'archive', 'url' => ['/junta/index']];
+        $eleccion['items'][]=['label' => 'Juntas Receptoras de Votos', 'icon' => 'archive', 'url' => ['/junta/index']];
+    }
+    elseif (!Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'voto/index') &&
+        Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'voto/create')) {
+        $eleccion['items'][]=['label' => 'Juntas Receptoras de Votos', 'icon' => 'archive', 'url' => ['/junta/index']];
     }
 
-    if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'voto/index') ||
-        Yii::$app->user->identity->getIsAdmin())
-    {
-        $eleccion['items'][]=['label' => 'Voto', 'icon' => 'file', 'url' => ['/voto/index']];
-    }
+//    if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'voto/index') ||
+//        Yii::$app->user->identity->getIsAdmin())
+//    {
+//        $eleccion['items'][]=['label' => 'Voto', 'icon' => 'file', 'url' => ['/voto/index']];
+//    }
 //    elseif (!Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'voto/index') &&
 //        Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'voto/create')) {
 //        $eleccion['items'][]=['label' => 'Voto', 'icon' => 'file', 'url' => ['/voto/create']];
