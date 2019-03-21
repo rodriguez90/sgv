@@ -158,8 +158,6 @@ class JuntaController extends Controller
 
             $data = Yii::$app->request->post();
 
-//            var_dump($data);die;
-
             $model->setAttributes($data);
 
             $result = $this->validarVoto($model->junta);
