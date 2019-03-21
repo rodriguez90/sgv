@@ -63,6 +63,10 @@ class RecintoEleccionController extends Controller
                         'allow' => true,
                         'roles' => ['recinto-eleccio/view'],
                     ],
+                    [
+                        'actions' => ['lists'],
+                        'allow' => true,
+                    ],
                 ],
             ]
         ];
@@ -164,22 +168,25 @@ class RecintoEleccionController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function actionLists($id)
+    public function actionLists($id=null, $cantonId=null)
     {
 
         $results = RecintoEleccion::find()
-            ->where(['eleccion_id'=>$id])
+            ->innerJoin('recinto_electoral', 'recinto_electoral.id=recinto_eleccion.recinto_id')
+            ->innerJoin('zona', 'zona.id=recinto_electoral.zona_id')
+            ->innerJoin('parroquia', 'zona.parroquia_id=parroquia.id')
+            ->innerJoin('canton', 'canton.id=parroquia.canton_id')
+            ->andFilterWhere(['eleccion_id'=>$id])
+            ->andFilterWhere(['canton.id'=>$cantonId])
             ->all();
+
+        echo "<option>-</option>";
         if(count($results) > 0)
         {
             foreach ( $results as $model )
             {
                 echo "<option value='".$model->id."'>".$model->recinto->name."</option>";
             }
-        }
-        else
-        {
-            echo "<option>-</option>";
         }
     }
 }

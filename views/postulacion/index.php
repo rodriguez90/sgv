@@ -29,6 +29,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         'id',
                         [
+                            'attribute' => 'eleccion',
+                            'value' => 'eleccion.name',
+                            'label' => 'Elección',
+                        ],
+                        [
 							'attribute' => 'partido',
 							'value' => 'partido.name',
 							'label' => 'Partido',
@@ -39,16 +44,12 @@ $this->params['breadcrumbs'][] = $this->title;
 							'label' => 'Candidato',
 						],
 						[
-							'attribute' => 'eleccion',
-							'value' => 'eleccion.name',
-							'label' => 'Elección',
-						],
-						[
 							'attribute' => 'role',							
 							'value' => function($model)
 							{
 								return app\models\Postulacion::ROL_LABEL[$model->role];
-							}
+							},
+							'filter' => \app\models\Postulacion::ROL_LABEL
 						],
                         'totalVotos',
                         ['class' => 'yii\grid\ActionColumn'],

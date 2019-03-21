@@ -88,7 +88,13 @@ class Junta extends \yii\db\ActiveRecord
      */
     public function getVotos()
     {
-        return $this->hasMany(Voto::className(), ['junta_id' => 'id']);
+        $canton = $this->getCanton();
+        $query = $this->hasMany(Voto::className(), ['junta_id' => 'id']);
+        $query
+            ->innerJoin('postulacion', 'postulacion.id=voto.postulacion_id')
+            ->innerJoin('postulacion_canton', 'postulacion_canton.postulacion_id=postulacion.id')
+            ->where(['postulacion_canton.canton_id'=> $canton->id]);
+        return  $query;
     }
 
     private $_totalVotos;
@@ -114,10 +120,8 @@ class Junta extends \yii\db\ActiveRecord
             $total += $voto->vote;
         }
 
-
         return $total;
     }
-
 
     private $_totalVotosValidosByRole;
     public function getTotalVotosValidosByRole($role) {
@@ -147,7 +151,7 @@ class Junta extends \yii\db\ActiveRecord
 
     public function getRecinto() {
         if($this->recintoEleccion)
-        return $this->recintoEleccion->recinto;
+            return $this->recintoEleccion->recinto;
     }
 
     public function getZona() {

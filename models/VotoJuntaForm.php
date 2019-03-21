@@ -56,21 +56,21 @@ class VotoJuntaForm extends Model
 
     public function saveVotes()
     {
-//        $keep = [];
+        $keep = [];
         foreach ($this->votes as $vote) {
             $vote->junta_id = $this->junta->id;
             if (!$vote->save(false)) {
                 return false;
             }
-//            $keep[] = $voto->id;
+            $keep[] = $vote->id;
         }
-//        $query = Voto::find()->andWhere(['junta_id' => $this->junta->id]);
-//        if ($keep) {
-//            $query->andWhere(['not in', 'id', $keep]);
-//        }
-//        foreach ($query->all() as $voto) {
-//            $voto->delete();
-//        }
+        $query = Voto::find()->andWhere(['junta_id' => $this->junta->id]);
+        if ($keep) {
+            $query->andWhere(['not in', 'id', $keep]);
+        }
+        foreach ($query->all() as $voto) {
+            $voto->delete();
+        }
         return true;
     }
 
@@ -158,24 +158,27 @@ class VotoJuntaForm extends Model
         $votos = [];
 
         foreach ($postulaciones as $p) {
-            $newVote = null;
-            if($this->_junta->isNewRecord)
+            $vote = new Voto();
+            $vote->junta_id = $this->_junta->id;
+            $vote->vote = 0;
+            $vote->postulacion_id = $p->id;
+
+            if(!$this->_junta->isNewRecord)
             {
-                $newVote = new Voto();
-                $newVote->junta_id = $this->_junta->id;
-                $newVote->vote = 0;
-                $newVote->postulacion_id = $p->id;
-            }
-            else {
-                $newVote = Voto::find()
+                $oldVote = Voto::find()
                     ->andWhere(['junta_id'=>$this->_junta->id])
                     ->andWhere(['postulacion_id'=>$p->id])
                     ->one();
+
+                if($oldVote)
+                {
+                    $vote = $oldVote;
+                }
             }
 
-            $newVote->user_id = Yii::$app->user->id;
+            $vote->user_id = Yii::$app->user->id;
 
-            array_push($votos, $newVote);
+            array_push($votos, $vote);
         }
 
         $this->setVotes($votos);

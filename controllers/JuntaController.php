@@ -158,6 +158,8 @@ class JuntaController extends Controller
 
             $data = Yii::$app->request->post();
 
+//            var_dump($data);die;
+
             $model->setAttributes($data);
 
             $result = $this->validarVoto($model->junta);
@@ -305,28 +307,22 @@ class JuntaController extends Controller
         $recintoId= $data['recintoId'];
         $modelId = $data['modelId'];
 
-        $rolId = 1;
-
         $model = new VotoJuntaForm();
         if($modelId == 0) // nueva junta
         {
             $model->junta = new Junta();
-            $model->junta->recintoEleccion = RecintoEleccion::findOne(['id'=>$recintoId]);
         }
         else {
             $model->junta = Junta::findOne(['id'=>$modelId]);
         }
 
+        $model->junta->recinto_eleccion_id = $recintoId;
+
         $model->junta->loadDefaultValues();
         $model->loadVotes();
 
-        $votos = [];
-        $totalVotos = 0;
-
         return $this->renderAjax('_form_rol_actas', [
-            'rolId'=>$rolId,
-            'votos'=>$votos,
-            'totalVotos'=>$totalVotos,
+            'model'=>$model,
         ]);
 
     }

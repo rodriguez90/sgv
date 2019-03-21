@@ -49,6 +49,10 @@ class PostulacionSearch extends Postulacion
         // add conditions that should always apply here
 
         $query->joinWith(['partido', 'candidate', 'eleccion']);
+        $query->orderBy([
+            'partido.name'=>SORT_ASC,
+            'profile.name'=>SORT_ASC
+        ]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

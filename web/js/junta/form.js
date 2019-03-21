@@ -43,13 +43,62 @@ function validarVotos(total) {
     return result;
 }
 
+function handleVotes(){
+    var votes = $('*').filter(function () {
+        return this.id.match('^Votes_[1-9][0-9]*_vote$');
+    });
+
+    for(var i = 0 ; i < votes.length; i++)
+    {
+        $(votes[i]).on('keyup', function (event) {
+            var keyup= event.which;
+
+            // console.log('keyup', keyup);
+            // console.log('input value', this.value);
+
+            var total = totalVotos();
+
+            var result = validarVotos(total);
+
+            if(!result.error)
+            {
+                actualizaTotalVotos(total);
+                $('#btnSubmit').prop('disabled','');
+                return true;
+            }
+            else
+            {
+                event.preventDefault();
+                $('#btnSubmit').prop('disabled','disabled');
+                alert(result.msg);
+                return false;
+            }
+        });
+    }
+}
+
+function reloadVotos(){
+    $.ajax({
+        url: homeUrl + "/junta/ajaxcall",
+        data:{
+            "recintoId":recintoId,
+            "modelId": modelId
+        },
+        success:function (data) {
+            $("#container").html(data);
+            handleVotes();
+        }
+    });
+}
+
 $(document).ready(function () {
 
-    // $('#junta-recinto_eleccion_id').on('change', function () {
-    //     console.log('junta-recinto_eleccion_id', this.value);
-    // });
+    console.log('recintoId', recintoId);
+    console.log('modelId', modelId);
 
-      $("#junta-count_elector").on('keyup', function (event) {
+    reloadVotos();
+
+    $("#junta-count_elector").on('keyup', function (event) {
         var total = totalVotos();
 
         var result = validarVotos(total);
@@ -129,35 +178,5 @@ $(document).ready(function () {
         }
     });
 
-    var votes = $('*').filter(function () {
-        return this.id.match('^Votes_[1-9][0-9]*_vote$');
-    });
 
-    for(var i = 0 ; i < votes.length; i++)
-    {
-        $(votes[i]).on('keyup', function (event) {
-            var keyup= event.which;
-
-            // console.log('keyup', keyup);
-            // console.log('input value', this.value);
-
-            var total = totalVotos();
-
-            var result = validarVotos(total);
-
-            if(!result.error)
-            {
-                actualizaTotalVotos(total);
-                $('#btnSubmit').prop('disabled','');
-                return true;
-            }
-            else
-            {
-                event.preventDefault();
-                $('#btnSubmit').prop('disabled','disabled');
-                alert(result.msg);
-                return false;
-            }
-        });
-    }
 });

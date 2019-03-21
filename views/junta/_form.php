@@ -26,7 +26,32 @@ use yii\widgets\ActiveForm;
 
                 <fieldset>
                     <div class="row">
-                        <div class="col-lg-4 col-md-4 col-xs-4">
+                        <div class="col-lg-3 col-md-3 col-xs-3">
+                            <label class="control-label" for="canton_select2">Cantón</label>
+                            <?= \kartik\select2\Select2::widget( [
+                                'name' => 'canton_select2',
+                                'data' => \yii\helpers\ArrayHelper::map(\app\models\Canton::find()->asArray()->all(),'id','name'),
+                                'value' => $model->junta->isNewRecord ? '' : $model->junta->getCanton()->id ,
+                                'language' => 'de',
+                                'options' => ['placeholder' => 'Seleccione Cantón.',
+                                    'onchange'=>'
+                                        console.log("canton_select2", this.value);
+                                        
+                                         $.post("../recinto-eleccion/lists?cantonId='.'"+$(this).val(),function(data){
+                                                    $( "#junta-recinto_eleccion_id" ).html(data);
+                                                    console.log("#junta-recinto_eleccion_id", $("#junta-recinto_eleccion_id").val());
+                                                    recintoId = $("#junta-recinto_eleccion_id").val() === "-" ? 0 : $("#junta-recinto_eleccion_id").val();
+                                                    reloadVotos();
+                                                });'
+                                ],
+
+                                'pluginOptions' => [
+                                    'allowClear' => false
+                                ],
+                            ]);?>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-xs-3">
                             <?= $form->field($model->junta, 'recinto_eleccion_id')->widget(\kartik\select2\Select2::classname(), [
                                 'data' => \yii\helpers\ArrayHelper::map(\app\models\RecintoEleccion::find()
                                     ->select(['recinto_eleccion.id',
@@ -38,6 +63,7 @@ use yii\widgets\ActiveForm;
                                 'options' => ['placeholder' => 'Seleccione la Recinto.',
                                     'onchange'=>'
                                         console.log("junta-recinto_eleccion_id", this.value);
+                                        
                                         $.ajax({
                                             url: homeUrl + "/junta/ajaxcall",
                                             data:{
@@ -45,10 +71,9 @@ use yii\widgets\ActiveForm;
                                                  "modelId": modelId
                                             },
                                             success:function (data) {
-                                                $("#tab_1").html(data);
+                                                $("#container").html(data);
                                             }
-                                        });
-                                        
+                                        });                                        
                                         '
                                 ],
 
@@ -58,7 +83,7 @@ use yii\widgets\ActiveForm;
                             ]);?>
                         </div>
 
-                        <div class="col-lg-4 col-md-4 col-xs-4">
+                        <div class="col-lg-3 col-md-3 col-xs-3">
 
                             <?= $form->field($model->junta, 'type')->dropDownList(
                                 \yii\helpers\ArrayHelper::map(\app\models\Junta::JUNTA_CHOICES,'id','name'),
@@ -66,7 +91,7 @@ use yii\widgets\ActiveForm;
                                 ]);?>
                         </div>
 
-                        <div class="col-lg-4 col-md-4 col-xs-4">
+                        <div class="col-lg-3 col-md-3 col-xs-3">
                             <?= $form->field($model->junta, 'name')->textInput(['maxlength' => true]) ?>
                         </div>
                     </div>
@@ -94,70 +119,8 @@ use yii\widgets\ActiveForm;
 
                     <div class="row">
                         <div class="col-lg-12">
-                            <div class="nav-tabs-custom">
-                                <ul class="nav nav-tabs">
-                                    <?php
-                                    $tmp = 0;
-                                    foreach (\app\models\Postulacion::ROL_CHOICES as $rol)
-                                    {
-                                        $class = $tmp === 0 ? 'class="active"' : '';
-                                        echo '<li><a ' . $class . ' href="#tab_' . $rol['id']. '" data-toggle="tab">' . $rol['name'] .'</a></li>';
-                                        $tmp += 1;
-                                    }
-                                    ?>
-                                </ul>
-                                <div class="tab-content">
-                                    <?php
-                                    $tmp = 0;
-                                    foreach (\app\models\Postulacion::ROL_CHOICES as $rol)
-                                    {
-                                        $class = $tmp === 0 ? ' active' : '';
+                            <div id="container" class="nav-tabs-custom">
 
-                                        echo '<div class="tab-pane' . $class . '" id="tab_' . $rol['id']. '">';
-
-                                        // $voto table
-                                        $voto = new \app\models\Voto();
-                                        $voto->loadDefaultValues();
-                                        echo '<table id="junta-voto-' . $rol['id'] . '" class="table table-condensed table-bordered">';
-                                        echo '<thead>';
-                                        echo '<tr>';
-                                        echo '<th>' . $voto->getAttributeLabel('postulacion_id') . '</th>';
-                                        echo '<th>' . $voto->getAttributeLabel('vote') . '</th>';
-                                        echo '<td>&nbsp;</td>';
-                                        echo '</tr>';
-                                        echo '</thead>';
-                                        echo '<tbody>';
-
-                                        // existing votos fields
-                                        $votos = $model->getVotesByRole($rol['id']);
-                                        foreach ($votos as $key => $_voto) {
-                                            echo '<tr>';
-                                            echo $this->render('_form_junta_voto', [
-                                                'key' => $_voto->isNewRecord ? $_voto->postulacion->id : $_voto->id,
-                                                'form' => $form,
-                                                'voto' => $_voto,
-                                            ]);
-                                            echo '</tr>';
-                                        }
-
-                                        echo '</tr>';
-                                        echo '</tbody>';
-                                        echo  '<tfooter>';
-                                        echo '<tr>';
-                                        echo '<td>Total Votos</td>';
-                                        echo '<td>';
-                                        echo Html::label($model->junta->getTotalVotosValidosByRole($rol['id']), null, ['id'=>'totalVotos_'.$rol['id']]);
-                                        echo '</td>';
-                                        echo '</tr>';
-                                        echo  '</tfooter>';
-                                        echo '</table>';
-
-                                        $tmp += 1;
-
-                                        echo  '</div>';
-                                    }
-                                    ?>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -175,6 +138,7 @@ use yii\widgets\ActiveForm;
 </div>
 
 <script type="text/javascript">
+    var recintoId = '<?php echo $model->junta->isNewRecord ? 0 : $model->junta->recinto_eleccion_id; ?>';
     var modelId = '<?php echo $model->junta->isNewRecord ? 0 : $model->junta->id; ?>';
 </script>
 
