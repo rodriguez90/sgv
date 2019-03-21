@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\RecintoEleccion;
 use app\models\VotoJuntaForm;
 use app\models\Postulacion;
 use app\models\Voto;
@@ -66,6 +67,11 @@ class JuntaController extends Controller
                         'actions' => ['view'],
                         'allow' => true,
                         'roles' => ['junta/view'],
+                    ],
+                    [
+                        'actions' => ['ajaxcall'],
+                        'allow' => true,
+//                        'roles' => ['@'],
                     ],
                 ],
             ]
@@ -229,6 +235,12 @@ class JuntaController extends Controller
         if($junta)
         {
             $recinto = $junta->recintoEleccion;
+            if($recinto == null)
+            {
+                $result['result'] = false;
+                $result['error'] = 'Debe seleccionar un recinto.';
+                return $result;
+            }
             $totalElectores = $recinto->count_elector;
             $ausentismo = $recinto->getAusentismo();
             $totalInvalidVotes = $junta->blank_vote + $junta->null_vote;
@@ -284,5 +296,38 @@ class JuntaController extends Controller
         }
 
         return $result;
+    }
+
+    public function actionAjaxcall(){
+
+        $data = Yii::$app->request->get();
+
+        $recintoId= $data['recintoId'];
+        $modelId = $data['modelId'];
+
+        $rolId = 1;
+
+        $model = new VotoJuntaForm();
+        if($modelId == 0) // nueva junta
+        {
+            $model->junta = new Junta();
+            $model->junta->recintoEleccion = RecintoEleccion::findOne(['id'=>$recintoId]);
+        }
+        else {
+            $model->junta = Junta::findOne(['id'=>$modelId]);
+        }
+
+        $model->junta->loadDefaultValues();
+        $model->loadVotes();
+
+        $votos = [];
+        $totalVotos = 0;
+
+        return $this->renderAjax('_form_rol_actas', [
+            'rolId'=>$rolId,
+            'votos'=>$votos,
+            'totalVotos'=>$totalVotos,
+        ]);
+
     }
 }

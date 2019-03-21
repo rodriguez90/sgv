@@ -66,4 +66,15 @@ class RecintoElectoral extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Zona::className(), ['id' => 'zona_id']);
     }
+
+    public function getParroquia()
+    {
+        return $this->zona->parroquia;
+    }
+
+    public function getCanton()
+    {
+        return $this->getParroquia()->canton;
+    }
+
 }

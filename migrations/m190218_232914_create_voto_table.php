@@ -51,5 +51,6 @@ class m190218_232914_create_voto_table extends Migration
     public function safeDown()
     {
         $this->dropTable('voto');
+        return true;
     }
 }

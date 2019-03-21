@@ -13,6 +13,7 @@ use app\models\RecintoElectoral;
 class RecintoElectoralSearch extends RecintoElectoral
 {
     public $zona;
+    public $canton;
     /**
      * {@inheritdoc}
      */
@@ -20,7 +21,7 @@ class RecintoElectoralSearch extends RecintoElectoral
     {
         return [
             [['id', 'zona_id'], 'integer'],
-            [['name', 'address', 'zona'], 'safe'],
+            [['name', 'address', 'zona', 'canton'], 'safe'],
         ];
     }
 
@@ -47,6 +48,11 @@ class RecintoElectoralSearch extends RecintoElectoral
         // add conditions that should always apply here
 
         $query->joinWith('zona');
+        $query->innerJoin('parroquia', 'zona.parroquia_id=parroquia.id');
+        $query->innerJoin('canton', 'canton.id=parroquia.canton_id');
+        $query->orderBy([
+            'canton.name'=>SORT_ASC,
+        ]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -55,6 +61,11 @@ class RecintoElectoralSearch extends RecintoElectoral
         $dataProvider->sort->attributes['zona'] = [
             'asc'=>['zona.name' => SORT_ASC],
             'desc'=>['zona.name'=> SORT_DESC] ,
+        ];
+
+        $dataProvider->sort->attributes['canton'] = [
+            'asc'=>['canton.name' => SORT_ASC],
+            'desc'=>['canton.name'=> SORT_DESC] ,
         ];
 
         $this->load($params);
@@ -67,13 +78,13 @@ class RecintoElectoralSearch extends RecintoElectoral
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'zona_id' => $this->zona_id,
+            'recinto_electoral.id' => $this->id,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'address', $this->address])
-            ->andFilterWhere(['like', 'zona.name', $this->zona]);
+        $query->andFilterWhere(['like', 'recinto_electoral.name', $this->name])
+            ->andFilterWhere(['like', 'recinto_electoral.address', $this->address])
+            ->andFilterWhere(['zona.id'=> $this->zona])
+            ->andFilterWhere(['canton.id'=> $this->canton]);
 
         return $dataProvider;
     }

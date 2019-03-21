@@ -18,6 +18,8 @@ class RecintoEleccionSearch extends RecintoEleccion
     public $recinto;
     public $coordinator_jr_man;
     public $coordinator_jr_woman;
+    public $canton;
+
     /**
      * {@inheritdoc}
      */
@@ -25,7 +27,7 @@ class RecintoEleccionSearch extends RecintoEleccion
     {
         return [
             [['id', 'recinto_id', 'coordinator_jr_man', 'coordinator_jr_woman', 'eleccion_id', 'jr_woman', 'jr_man', 'count_elector'], 'integer'],
-            [['parroquia', 'zona', 'eleccion', 'recinto'], 'safe'],
+            [['parroquia', 'zona', 'eleccion', 'recinto', 'canton'], 'safe'],
         ];
     }
 
@@ -53,11 +55,19 @@ class RecintoEleccionSearch extends RecintoEleccion
         $query->joinWith(['recinto', 'eleccion']);
         $query->innerJoin('zona', 'zona.id=recinto_electoral.zona_id');
         $query->innerJoin('parroquia', 'zona.parroquia_id=parroquia.id');
-        $query->innerJoin('persona', 'persona.id=recinto_eleccion.coordinator_jr_man or persona.id=recinto_eleccion.coordinator_jr_woman');
-        $query->orderBy(['recinto_electoral.name'=>SORT_ASC]);
+        $query->innerJoin('canton', 'canton.id=parroquia.canton_id');
+        $query->orderBy([
+            'canton.name'=>SORT_ASC,
+            'parroquia.name'=>SORT_ASC,
+            'zona.name'=>SORT_ASC
+        ]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 10
+            ]
+//            'sort' => ['defaultOrder'=>['canton'=>SORT_ASC]]
         ]);
 
         $dataProvider->sort->attributes['recinto'] = [
@@ -80,14 +90,19 @@ class RecintoEleccionSearch extends RecintoEleccion
             'desc'=>['eleccion.name'=> SORT_DESC] ,
         ];
 
-        $dataProvider->sort->attributes['coordinator_jr_man'] = [
-            'asc'=>['coordinator_jr_man.last_name' => SORT_ASC],
-            'desc'=>['coordinator_jr_man.last_name'=> SORT_DESC] ,
-        ];
+//        $dataProvider->sort->attributes['coordinator_jr_man'] = [
+//            'asc'=>['coordinator_jr_man.last_name' => SORT_ASC],
+//            'desc'=>['coordinator_jr_man.last_name'=> SORT_DESC] ,
+//        ];
+//
+//        $dataProvider->sort->attributes['coordinator_jr_woman'] = [
+//            'asc'=>['coordinator_jr_woman.last_name' => SORT_ASC],
+//            'desc'=>['coordinator_jr_woman.last_name'=> SORT_DESC] ,
+//        ];
 
-        $dataProvider->sort->attributes['coordinator_jr_woman'] = [
-            'asc'=>['coordinator_jr_woman.last_name' => SORT_ASC],
-            'desc'=>['coordinator_jr_woman.last_name'=> SORT_DESC] ,
+        $dataProvider->sort->attributes['canton'] = [
+            'asc'=>['canton.name' => SORT_ASC],
+            'desc'=>['canton.name'=> SORT_DESC] ,
         ];
 
         $this->load($params);
@@ -110,10 +125,12 @@ class RecintoEleccionSearch extends RecintoEleccion
             'count_elector' => $this->count_elector,
         ]);
 
-        $query->andFilterWhere(['like', 'parroquia.name', $this->parroquia]);
-        $query->andFilterWhere(['like', 'zona.name', $this->zona]);
-        $query->andFilterWhere(['like', 'eleccion.name', $this->eleccion]);
-        $query->andFilterWhere(['like', 'recinto_electoral.name', $this->recinto]);
+//        var_dump($this->recinto);die;
+        $query->andFilterWhere(['parroquia.id' => $this->parroquia]);
+        $query->andFilterWhere(['zona.id' => $this->zona]);
+        $query->andFilterWhere(['eleccion.id' => $this->eleccion]);
+        $query->andFilterWhere(['recinto_electoral.id' => $this->recinto]);
+        $query->andFilterWhere(['canton.id' => $this->canton]);
 
         return $dataProvider;
     }

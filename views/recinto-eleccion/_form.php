@@ -26,10 +26,17 @@ use yii\widgets\ActiveForm;
                     </div>
 
                     <div class="col-lg-3 col-md-3 col-sm-3">
-                        <?= $form->field($model, 'recinto_id')->dropDownList(
-                            \yii\helpers\ArrayHelper::map(\app\models\RecintoElectoral::find()->all(),'id','name'),
-                            ['prompt'=>'Seleccione el Recinto',
-                            ]);?>
+                        <?= $form->field($model, 'recinto_id')->widget(\kartik\select2\Select2::classname(), [
+                            'data' => \yii\helpers\ArrayHelper::map(\app\models\RecintoElectoral::find()->asArray()->all(),'id','name'),
+                            'language' => 'de',
+                            'options' => ['placeholder' => 'Seleccione la Recinto.',
+                            ],
+
+                            'pluginOptions' => [
+                                'allowClear' => false
+                            ],
+                        ]);?>
+
                     </div>
 
                     <div class="col-lg-3 col-md-3 col-sm-3">

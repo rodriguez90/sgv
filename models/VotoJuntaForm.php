@@ -106,6 +106,15 @@ class VotoJuntaForm extends Model
         return $vote;
     }
 
+    public function getVotesByRole($role)
+    {
+        $votes = array_filter($this->_votes, function ($vote) use ($role) {
+            return $vote->role === $role;
+        });
+
+        return $votes;
+    }
+
     public function setVotes($votes)
     {
         unset($votes['__id__']); // remove the hidden "new Vote" row
@@ -130,7 +139,22 @@ class VotoJuntaForm extends Model
 
     public function loadVotes()
     {
-        $postulaciones = Postulacion::find()->all();
+//        $postulaciones = Postulacion::find()
+//            ->innerJoin('recinto_eleccion', 'recinto_eleccion.id=junta.recinto_eleccion_id')
+//            ->innerJoin('recinto_electoral', 'recinto_electoral.id=recinto_eleccion.recinto_id')
+//            ->innerJoin('zona', 'zona.id=recinto_electoral.zona_id')
+//            ->innerJoin('parroquia', 'parroquia.id=zona.parroquia_id')
+//            ->innerJoin('canton', 'canton.id=parroquia.canton_id')
+//            ->where(['recinto_eleccion.id'=> $this->_junta->recintoEleccion->id])
+//            ->all();
+
+        $canton = $this->_junta->getCanton();
+
+        $postulaciones = Postulacion::find()
+            ->innerJoin('postulacion_canton', 'postulacion_canton.postulacion_id=postulacion.id')
+            ->where(['postulacion_canton.canton_id'=> $canton->id])
+            ->all();
+
         $votos = [];
 
         foreach ($postulaciones as $p) {

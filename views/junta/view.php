@@ -70,47 +70,75 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <div class="row">
                     <div class="col-lg-12">
-                        <?php
-                        // $voto table
-                        $voto = new \app\models\Voto();
-                        $voto->loadDefaultValues();
-                        echo '<table id="junta-voto" class="table table-condensed table-bordered">';
-                        echo '<thead>';
-                        echo '<tr>';
-                        echo '<th>' . $voto->getAttributeLabel('postulacion_id') . '</th>';
-                        echo '<th>' . $voto->getAttributeLabel('vote') . '</th>';
-                        echo '<td>&nbsp;</td>';
-                        echo '</tr>';
-                        echo '</thead>';
-                        echo '<tbody>';
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                <?php
+                                $tmp = 0;
+                                foreach (\app\models\Postulacion::ROL_CHOICES as $rol)
+                                {
+                                    $class = $tmp === 0 ? 'class="active"' : '';
+                                    $tmp += 1;
 
-                        // existing votos fields
-                        foreach ($model->votos as $key => $_voto) {
-                            echo '<tr>';
-                            echo '<td>';
-                            echo $_voto->postulacion->name;
-                            echo '</td>';
-                            echo '<td>';
-                            echo $_voto->vote;
-                            echo '</td>';
-                            echo '</tr>';
-                        }
+                                    echo '<li><a ' . $class . ' href="#tab_' . $rol['id']. '" data-toggle="tab">' . $rol['name'] .'</a></li>';
+                                }
+                                ?>
+                            </ul>
+                            <div class="tab-content">
+                                <?php
+                                $tmp = 0;
+                                foreach (\app\models\Postulacion::ROL_CHOICES as $rol)
+                                {
+                                    $class = $tmp === 0 ? ' active' : '';
+                                    $tmp += 1;
 
-                        echo '</tr>';
-                        echo '</tbody>';
-                        echo  '<tfooter>';
-                        echo '<tr>';
-                        echo '<td>Total Votos</td>';
-                        echo '<td>';
-                        echo Html::label($model->totalVotosValidos, null, ['id'=>'totalVotos']);
-                        echo '</td>';
-                        echo '</tr>';
-                        echo  '</tfooter>';
-                        echo '</table>';
-                        ?>
+                                    echo '<div class="tab-pane' . $class . '" id="tab_' . $rol['id']. '">';
+
+
+                                    // $voto table
+                                    $voto = new \app\models\Voto();
+                                    $voto->loadDefaultValues();
+                                    echo '<table id="junta-voto-' . $rol['id'] . '" class="table table-condensed table-bordered">';
+                                    echo '<thead>';
+                                    echo '<tr>';
+                                    echo '<th>' . $voto->getAttributeLabel('postulacion_id') . '</th>';
+                                    echo '<th>' . $voto->getAttributeLabel('vote') . '</th>';
+                                    echo '<td>&nbsp;</td>';
+                                    echo '</tr>';
+                                    echo '</thead>';
+                                    echo '<tbody>';
+
+                                    // existing votos fields
+                                    $votos = $model->getVotesByRole($rol['id']);
+                                    foreach ($votos as $key => $_voto) {
+                                        echo '<tr>';
+                                        echo '<td>';
+                                        echo $_voto->postulacion->name;
+                                        echo '</td>';
+                                        echo '<td>';
+                                        echo $_voto->vote;
+                                        echo '</td>';
+                                        echo '</tr>';
+                                    }
+
+                                    echo '</tr>';
+                                    echo '</tbody>';
+                                    echo  '<tfooter>';
+                                    echo '<tr>';
+                                    echo '<td>Total Votos</td>';
+                                    echo '<td>';
+                                    echo Html::label($model->getTotalVotosValidosByRole($rol['id']), null);
+                                    echo '</td>';
+                                    echo '</tr>';
+                                    echo  '</tfooter>';
+                                    echo '</table>';
+
+                                    echo  '</div>';
+                                }
+                                ?>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

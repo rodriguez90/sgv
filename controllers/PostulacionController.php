@@ -2,9 +2,11 @@
 
 namespace app\controllers;
 
+use app\models\PostulacionCanton;
 use Yii;
 use app\models\Postulacion;
 use app\models\PostulacionSearch;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -107,8 +109,36 @@ class PostulacionController extends Controller
     {
         $model = new Postulacion();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if(Yii::$app->request->isPost)
+        {
+            $cantones = $_POST['Postulacion']['postulacionCantons'];
+            if($model->load(Yii::$app->request->post()))
+            {
+                $transaction = Yii::$app->db->beginTransaction();
+                if ($model->save()) {
+
+                    PostulacionCanton::deleteAll(['postulacion_id' => $model->id]);
+
+                    foreach ($cantones as $canton) {
+                        $postulacionCanton = new PostulacionCanton();
+                        $postulacionCanton->postulacion_id = $model->id;
+                        $postulacionCanton->canton_id = $canton;
+                        if (!$postulacionCanton->save()) {
+                            $transaction->rollBack();
+                            $model->addError('Ah ocurrido un error al asociar la postulación a los cantones');
+                            return $this->render('update', [
+                                'model' => $model,
+                            ]);
+                        }
+                    }
+
+                    $transaction->commit();
+
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+                else
+                    $transaction->rollBack();
+            }
         }
 
         return $this->render('create', [
@@ -127,8 +157,36 @@ class PostulacionController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if(Yii::$app->request->isPost)
+        {
+            $cantones = $_POST['Postulacion']['postulacionCantons'];
+            if($model->load(Yii::$app->request->post()))
+            {
+                $transaction = Yii::$app->db->beginTransaction();
+                if ($model->save()) {
+
+                    PostulacionCanton::deleteAll(['postulacion_id' => $model->id]);
+
+                    foreach ($cantones as $canton) {
+                        $postulacionCanton = new PostulacionCanton();
+                        $postulacionCanton->postulacion_id = $model->id;
+                        $postulacionCanton->canton_id = $canton;
+                        if (!$postulacionCanton->save()) {
+                            $transaction->rollBack();
+                            $model->addError('Ah ocurrido un error al asociar la postulación a los cantones');
+                            return $this->render('update', [
+                                'model' => $model,
+                            ]);
+                        }
+                    }
+
+                    $transaction->commit();
+
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+                else
+                    $transaction->rollBack();
+            }
         }
 
         return $this->render('update', [

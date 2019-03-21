@@ -17,25 +17,34 @@ use Da\User\Model\Profile;
  * @property Profile $candidate
  * @property Eleccion $eleccion
  * @property Partido $partido
+ * @property PostulacionCanton[] $postulacionCantons
  * @property Voto[] $votos
  */
 class Postulacion extends \yii\db\ActiveRecord
 {
-
     const ROL_ALCALDIA = 1;
     const ROL_PREFECTURA = 2;
-    const ROL_CONSEJAL = 3;
+    const ROL_CONSEJAL_URBANO = 3;
+    const ROL_CONSEJAL_RURAL = 4;
+    const ROL_VOCAL_JUNTAP_PARROQUIAL = 5;
+    const CONCEJAR_URBANO_POR_CIRCUNSCRIPCION = 6;
 
     const ROL_CHOICES = [
         ['id' => 1, 'name' => 'Alcaldía'],
         ['id' => 2, 'name' => 'Prefectura'],
-        ['id' => 3, 'name' => 'Consejal']
+        ['id' => 3, 'name' => 'Consejal_Urbano'],
+        ['id' => 4, 'name' => 'Consejal_Rular'],
+        ['id' => 5, 'name' => 'Vocal_Junta_Parroquial'],
+        ['id' => 6, 'name' => 'Concejal_Urbano_Por_Circonscripcion']
     ];
 
     const ROL_LABEL = [
         1 => 'Alcaldía',
         2 => 'Prefectura',
-        3 => 'Consejal'
+        3 => 'Consejal_Urbano',
+        4 => 'Consejal_Rural',
+        5 => 'Vocal_Junta_Parroquial',
+        6 => 'Concejal_Urbano_Por_Circonscripcion'
     ];
 
     /**
@@ -71,7 +80,16 @@ class Postulacion extends \yii\db\ActiveRecord
             'candidate_id' => 'Candidato',
             'eleccion_id' => 'Elección',
             'role' => 'Rol',
+            'postulacionCantons' => 'Cantones',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPostulacionCantons()
+    {
+        return $this->hasMany(PostulacionCanton::className(), ['postulacion_id' => 'id']);
     }
 
     /**
@@ -108,14 +126,14 @@ class Postulacion extends \yii\db\ActiveRecord
 
     private $_totalVotos;
     public function getTotalVotos() {
-        $total = 0;
+        $this->_totalVotos = 0;
 
         foreach ($this->votos as $voto)
         {
-            $total += $voto->vote;
+            $this->_totalVotos += $voto->vote;
         }
 
-        return $total;
+        return $this->_totalVotos;
     }
 
     private $_name;
@@ -126,9 +144,10 @@ class Postulacion extends \yii\db\ActiveRecord
 //                ' - '.  $this->candidate->name  .
 //                ' - ' . Postulacion::ROL_LABEL[$this->role];
 
-        $name = $this->candidate->name .
+        $this->_name = $this->candidate->name .
             ' - ' . Postulacion::ROL_LABEL[$this->role];
 
-        return $name;
+        return $this->_name;
     }
+
 }

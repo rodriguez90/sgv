@@ -71,7 +71,7 @@ class Junta extends \yii\db\ActiveRecord
             'null_vote' => 'Votos Nulos',
             'blank_vote' => 'Votos en Blanco',
             'count_elector' => 'Cantidad Electores',
-            'count_vote' => 'Cantidad de Vontes',
+            'count_vote' => 'Cantidad de Votantes',
         ];
     }
 
@@ -118,8 +118,47 @@ class Junta extends \yii\db\ActiveRecord
         return $total;
     }
 
+
+    private $_totalVotosValidosByRole;
+    public function getTotalVotosValidosByRole($role) {
+        $total = 0;
+
+        foreach ($this->votos as $voto) {
+            if($voto->role === $role)
+                $total += $voto->vote;
+        }
+
+        return $total;
+    }
+
     private $_recintoName;
     public function getRecintoName(){
         return $this->recintoEleccion->getName();
+    }
+
+    public function getVotesByRole($role)
+    {
+        $votes = array_filter($this->votos, function ($vote) use ($role) {
+            return $vote->role === $role;
+        });
+
+        return $votes;
+    }
+
+    public function getRecinto() {
+        if($this->recintoEleccion)
+        return $this->recintoEleccion->recinto;
+    }
+
+    public function getZona() {
+        return $this->getRecinto()->zona;
+    }
+
+    public function getParroquia() {
+        return $this->getZona()->parroquia;
+    }
+
+    public function getCanton() {
+        return $this->getParroquia()->canton;
     }
 }

@@ -94,4 +94,11 @@ class Voto extends \yii\db\ActiveRecord
 
         return $name;
     }
+
+    private $_role;
+    public function getRole(){
+        $role= $this->postulacion->role;
+
+        return $role;
+    }
 }

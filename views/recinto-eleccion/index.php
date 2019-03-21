@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\RecintoEleccionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -48,6 +49,20 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'pluginOptions' => ['allowClear' => true]
                             ],
                             'filterInputOptions' => ['placeholder' => 'Elección']
+                        ],
+                        [
+                            'attribute' => 'canton',
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return  Html::a($model->parroquia->canton->name, \yii\helpers\Url::toRoute(['canton/view', 'id' =>  $model->parroquia->canton->id]));
+                            },
+                            'label' => 'Cantón',
+                            'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
+                            'filter' => \yii\helpers\ArrayHelper::map(\app\models\Canton::find()->orderBy(['name'=>SORT_ASC])->all(), 'id', 'name'),
+                            'filterWidgetOptions' => [
+                                'pluginOptions' => ['allowClear' => true]
+                            ],
+                            'filterInputOptions' => ['placeholder' => 'Canton']
                         ],
                         [
                             'attribute' => 'parroquia',

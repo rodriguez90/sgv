@@ -45,6 +45,10 @@ function validarVotos(total) {
 
 $(document).ready(function () {
 
+    // $('#junta-recinto_eleccion_id').on('change', function () {
+    //     console.log('junta-recinto_eleccion_id', this.value);
+    // });
+
       $("#junta-count_elector").on('keyup', function (event) {
         var total = totalVotos();
 

@@ -34,6 +34,20 @@ $this->params['breadcrumbs'][] = $this->title;
                     'columns' => [
                         ['class' => 'yii\grid\SerialColumn'],
                         [
+                            'attribute' => 'canton',
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return  Html::a($model->getCanton()->name, \yii\helpers\Url::toRoute(['canton/view', 'id' =>  $model->getCanton()->id]));
+                            },
+                            'label' => 'Cantón',
+                            'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
+                            'filter' => \yii\helpers\ArrayHelper::map(\app\models\Canton::find()->orderBy(['name'=>SORT_ASC])->all(), 'id', 'name'),
+                            'filterWidgetOptions' => [
+                                'pluginOptions' => ['allowClear' => true]
+                            ],
+                            'filterInputOptions' => ['placeholder' => 'Canton']
+                        ],
+                        [
                             'label' => 'Recinto',
                             'attribute'=>'recintoEleccion',
                             'format' => 'raw',

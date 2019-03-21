@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Postulacion */
 
-$this->title = 'ModificarPostulacion: ' . $model->id;
+$this->title = 'Modificar Postulacion: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Postulacions', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Modificar';
 ?>
 <div class="postulacion-update">

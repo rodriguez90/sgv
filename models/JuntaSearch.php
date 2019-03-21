@@ -13,6 +13,7 @@ use app\models\Junta;
 class JuntaSearch extends Junta
 {
     public $recintoEleccion;
+    public $canton;
     /**
      * {@inheritdoc}
      */
@@ -20,7 +21,7 @@ class JuntaSearch extends Junta
     {
         return [
             [['id', 'recinto_eleccion_id', 'null_vote', 'blank_vote', 'type', 'count_elector', 'count_vote'], 'integer'],
-            [['name', 'recintoEleccion'], 'safe'],
+            [['name', 'recintoEleccion', 'canton'], 'safe'],
         ];
     }
 
@@ -49,6 +50,12 @@ class JuntaSearch extends Junta
         $query->joinWith(['recintoEleccion']);
 
         $query->innerJoin('recinto_electoral', 'recinto_electoral.id=recinto_eleccion.recinto_id');
+        $query->innerJoin('zona', 'zona.id=recinto_electoral.zona_id');
+        $query->innerJoin('parroquia', 'zona.parroquia_id=parroquia.id');
+        $query->innerJoin('canton', 'canton.id=parroquia.canton_id');
+        $query->orderBy([
+            'canton.name'=>SORT_ASC,
+        ]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,6 +64,11 @@ class JuntaSearch extends Junta
         $dataProvider->sort->attributes['recintoEleccion'] = [
             'asc'=>['recintoEleccion.name' => SORT_ASC],
             'desc'=>['recintoEleccion.name'=> SORT_DESC] ,
+        ];
+
+        $dataProvider->sort->attributes['canton'] = [
+            'asc'=>['canton.name' => SORT_ASC],
+            'desc'=>['canton.name'=> SORT_DESC] ,
         ];
 
 
@@ -78,8 +90,11 @@ class JuntaSearch extends Junta
             'count_vote' => $this->count_vote,
         ]);
 
+//        var_dump($this->recintoEleccion);die;
+
         $query->andFilterWhere(['like', 'name', $this->name]);
-        $query->andFilterWhere(['like', 'recinto_electoral.name', $this->recintoEleccion]);
+        $query->andFilterWhere(['recinto_eleccion.id' => $this->recintoEleccion]);
+        $query->andFilterWhere(['canton.id' => $this->canton]);
 
         return $dataProvider;
     }
