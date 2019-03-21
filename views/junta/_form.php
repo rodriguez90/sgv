@@ -63,17 +63,8 @@ use yii\widgets\ActiveForm;
                                 'options' => ['placeholder' => 'Seleccione la Recinto.',
                                     'onchange'=>'
                                         console.log("junta-recinto_eleccion_id", this.value);
-                                        
-                                        $.ajax({
-                                            url: homeUrl + "/junta/ajaxcall",
-                                            data:{
-                                                 "recintoId":$(this).val(),
-                                                 "modelId": modelId
-                                            },
-                                            success:function (data) {
-                                                $("#container").html(data);
-                                            }
-                                        });                                        
+                                         recintoId = $("#junta-recinto_eleccion_id").val() === "-" ? 0 : $("#junta-recinto_eleccion_id").val();
+                                        reloadVotos();                                      
                                         '
                                 ],
 
