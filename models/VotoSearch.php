@@ -23,7 +23,7 @@ class VotoSearch extends Voto
     public function rules()
     {
         return [
-            [['id', 'postulacion_id', 'junta_id', 'vote', 'user_id'], 'integer'],
+            [['id', 'postulacion_id', 'acta_id', 'vote', 'user_id'], 'integer'],
             [['postulacion', 'recintoEleccion', 'junta'], 'safe'],
         ];
     }
@@ -50,7 +50,8 @@ class VotoSearch extends Voto
 
         // add conditions that should always apply here
 
-        $query->joinWith(['postulacion', 'junta']);
+        $query->joinWith(['postulacion', 'acta']);
+        $query->innerJoin('junta', 'junta.id=acta.junta_id');
         $query->innerJoin('recinto_eleccion', 'recinto_eleccion.id=junta.recinto_eleccion_id');
         $query->innerJoin('recinto_electoral', 'recinto_electoral.id=recinto_eleccion.recinto_id');
 
@@ -86,7 +87,7 @@ class VotoSearch extends Voto
         $query->andFilterWhere([
             'voto.id' => $this->id,
             'postulacion_id' => $this->postulacion_id,
-            'junta_id' => $this->junta_id,
+            'acta_id' => $this->acta_id,
             'vote' => $this->vote,
             'user_id' => $this->user_id,
         ]);

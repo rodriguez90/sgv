@@ -11,27 +11,120 @@ use yii\widgets\ActiveForm;
 <ul class="nav nav-tabs">
     <?php
     $tmp = 0;
-    foreach (\app\models\Postulacion::ROL_CHOICES as $rol)
-    {
+    echo '<li class="pull-left header"><i class="fa fa-th"></i> Actas de Votos</li>';
+    foreach ($model->actas as $acta) {
+        $rolName = \app\models\Postulacion::ROL_LABEL[$acta->type];
+
         $class = $tmp === 0 ? 'class="active"' : '';
-        echo '<li><a ' . $class . ' href="#tab_' . $rol['id']. '" data-toggle="tab">' . $rol['name'] .'</a></li>';
         $tmp += 1;
+        echo '<li ' . $class . '><a href="#tab_' . $acta->type . '" data-toggle="tab">' . $rolName .'</a></li>';
     }
+
+
     ?>
 </ul>
 <div class="tab-content">
     <?php
     $tmp = 0;
-    foreach (\app\models\Postulacion::ROL_CHOICES as $rol)
-    {
-        $class = $tmp === 0 ? ' active' : '';
 
-        echo '<div class="tab-pane' . $class . '" id="tab_' . $rol['id']. '">';
+    foreach ($model->actas as $acta) {
+        $class = $tmp === 0 ? ' active' : '';
+        $tmp += 1;
+        $rolId = $acta->type;
+        $actaKey = $acta->isNewRecord ? $acta->type : $acta->id;
+        $actaName = 'Actas_' . $actaKey;
+
+        echo '<div class="tab-pane' . $class . '" id="tab_' . $rolId . '">';
+
+        echo '<div class="row">';
+
+
+            echo Html::textInput(
+                "Actas[$actaKey][type]",
+                $acta->type,
+                [
+                    'id' => $actaName . "_type",
+                    'data-acta' => $actaKey,
+                    'require' => true,
+                    'type'=> 'number',
+                    'style'=>"display: none;",
+                ]);
+
+            echo '<div class="col-lg-3">';
+                echo '<div class="form-group">';
+                    echo Html::label('Cantidad de Electores', "Actas[$actaKey][count_elector]");
+                    echo Html::textInput(
+                        "Actas[$actaKey][count_elector]",
+                        $acta->count_elector,
+                        [
+                            'id' => $actaName . "_count_elector",
+                            'data-acta' => $actaKey,
+                            'require' => true,
+                            'type'=> 'number',
+                            'min' => 0
+                        ]);
+                echo '</div>';
+            echo '</div>';
+
+            echo '<div class="col-lg-3">';
+                echo '<div class="form-group">';
+                    echo Html::label('Cantidad de Votantes', "Actas[$actaKey][count_vote]");
+                    echo Html::textInput(
+                        "Actas[$actaKey][count_vote]",
+                        $acta->count_vote,
+                        [
+                            'id' => $actaName . "_count_vote",
+                            'data-acta' => $actaKey,
+                            'require' => true,
+                            'type'=> 'number',
+                            'min' => 0
+                        ]);
+
+                echo '</div>';
+            echo '</div>';
+
+            echo '<div class="col-lg-3">';
+                echo '<div class="form-group">';
+                    echo Html::label('Votos Nulos', "Actas[$actaKey][null_vote]");
+                    echo Html::textInput(
+                        "Actas[$actaKey][null_vote]",
+                        $acta->null_vote,
+                        [
+                            'id' => $actaName . "_null_vote",
+                            'data-acta' => $actaKey,
+                            'require' => true,
+                            'type'=> 'number',
+                            'min' => 0
+                        ]);
+                echo '</div>';
+            echo '</div>';
+
+            echo '<div class="col-lg-3">';
+                echo '<div class="form-group">';
+                    echo Html::label('Votos en Blanco', "Actas[$actaKey][blank_vote]");
+                    echo Html::textInput(
+                        "Actas[$actaKey][blank_vote]",
+                        $acta->blank_vote,
+                        [
+                            'id' => $actaName . "_blank_vote",
+                            'data-acta' => $actaKey,
+                            'require' => true,
+                            'type'=> 'number',
+                            'min' => 0
+                        ]);
+
+                echo '</div>';
+            echo '</div>';
+        echo '</div>';
+
+        echo '<div class="row">';
+
+        echo '<div class="col-lg-12">';
 
         // $voto table
         $voto = new \app\models\Voto();
         $voto->loadDefaultValues();
-        echo '<table id="junta-voto-' . $rol['id'] . '" class="table table-condensed table-bordered">';
+        echo '<table id="junta-voto-' . $rolId . '" class="table table-condensed table-bordered">';
         echo '<thead>';
         echo '<tr>';
         echo '<th>' . $voto->getAttributeLabel('postulacion_id') . '</th>';
@@ -42,7 +135,7 @@ use yii\widgets\ActiveForm;
         echo '<tbody>';
 
         // existing votos fields
-        $votos = $model->getVotesByRole($rol['id']);
+        $votos = $model->getVotesByRole($rolId);
         foreach ($votos as $key => $voto) {
             $key = $voto->isNewRecord ? $voto->postulacion->id : $voto->id;
             $voteKey = 'Votes_' . $key;
@@ -54,12 +147,30 @@ use yii\widgets\ActiveForm;
             echo '</td>';
             echo '<td style="display: none;">';
             echo Html::textInput(
+                "Votes[$key][role]",
+                $acta->type,
+                [
+                    'id' => $voteKey . "_acta_id",
+                    'require' => true,
+                ]);
+            echo '</td>';
+            echo '<td style="display: none;">';
+            echo Html::textInput(
+                "Votes[$key][acta_id]",
+                $actaKey,
+                [
+                    'id' => $voteKey . "_acta_id",
+                    'require' => true,
+                ]);
+            echo '</td>';
+            echo '<td style="display: none;">';
+            echo Html::textInput(
                 "Votes[$key][postulacion_id]",
                 $voto->postulacion->id,
                 [
-                'id' => $voteKey . "_postulacion_id",
-                'require' => true,
-            ]);
+                    'id' => $voteKey . "_postulacion_id",
+                    'require' => true,
+                ]);
             echo '</td>';
 
             echo '<td style="display: none;">';
@@ -80,7 +191,9 @@ use yii\widgets\ActiveForm;
                     'id' => $voteKey . "_vote",
                     'require' => true,
                     'type' => 'number',
-                    'class'=>'form-control'
+                    'class'=>'form-control',
+                    'data-acta' => $actaKey,
+                    'min' => 0
                 ]);
             echo '</td>';
             echo '</tr>';
@@ -92,14 +205,13 @@ use yii\widgets\ActiveForm;
         echo '<tr>';
         echo '<td>Total Votos</td>';
         echo '<td>';
-        echo Html::label($model->junta->getTotalVotosValidosByRole($rol['id']), null, ['id'=>'totalVotos_'.$rol['id']]);
+        echo Html::label($acta->totalVotosValidos, null, ['id'=>'totalVotos_'. $rolId]);
         echo '</td>';
         echo '</tr>';
         echo  '</tfooter>';
         echo '</table>';
-
-        $tmp += 1;
-
+        echo  '</div>';
+        echo  '</div>';
         echo  '</div>';
     }
     ?>

@@ -105,13 +105,15 @@ class RecintoEleccion extends \yii\db\ActiveRecord
     }
 
     private $_votos=[];
+
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getVotos($juntaTipo = null)
     {
         return Voto::find()
-            ->joinWith('junta')
+            ->joinWith('acta')
+            ->innerJoin('junta', 'junta.id=acta.junta_id')
             ->innerJoin('recinto_eleccion', 'recinto_eleccion.id=junta.recinto_eleccion_id')
             ->where(['recinto_eleccion.id'=>$this->id])
             ->andFilterWhere(['junta.type'=>$juntaTipo])

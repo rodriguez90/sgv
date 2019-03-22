@@ -10,11 +10,11 @@ use Da\User\Model\User;
  *
  * @property int $id
  * @property int $postulacion_id
- * @property int $junta_id
+ * @property int $acta_id
  * @property int $vote
  * @property int $user_id
  *
- * @property Junta $junta
+ * @property Acta $acta
  * @property User $user
  * @property Postulacion $postulacion
  */
@@ -34,9 +34,9 @@ class Voto extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['postulacion_id', 'junta_id', 'vote', 'user_id'], 'required'],
-            [['postulacion_id', 'junta_id', 'vote', 'user_id'], 'integer'],
-            [['junta_id'], 'exist', 'skipOnError' => true, 'targetClass' => Junta::className(), 'targetAttribute' => ['junta_id' => 'id']],
+            [['postulacion_id', 'acta_id', 'vote', 'user_id'], 'required'],
+            [['postulacion_id', 'acta_id', 'vote', 'user_id'], 'integer'],
+            [['acta_id'], 'exist', 'skipOnError' => true, 'targetClass' => Acta::className(), 'targetAttribute' => ['acta_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['postulacion_id'], 'exist', 'skipOnError' => true, 'targetClass' => Postulacion::className(), 'targetAttribute' => ['postulacion_id' => 'id']],
         ];
@@ -50,7 +50,7 @@ class Voto extends \yii\db\ActiveRecord
         return [
             'id' => 'No.',
             'postulacion_id' => 'Postulación',
-            'junta_id' => 'Junta',
+            'acta_id' => 'Acta',
             'vote' => 'Votos',
             'user_id' => 'Usuario',
         ];
@@ -59,9 +59,15 @@ class Voto extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getActa()
+    {
+        return $this->hasOne(Acta::className(), ['id' => 'acta_id']);
+    }
+
+    private $_junta;
     public function getJunta()
     {
-        return $this->hasOne(Junta::className(), ['id' => 'junta_id']);
+        return $this->acta->junta;
     }
 
     /**

@@ -232,6 +232,8 @@ class JuntaController extends Controller
             'error'=>'',
         ];
 
+        return $result;
+
         if($junta)
         {
             $recinto = $junta->recintoEleccion;
@@ -248,7 +250,7 @@ class JuntaController extends Controller
             if(!$junta->isNewRecord)
             {
                 $oldJunta = Junta::findOne(['id' => $junta->id]);
-                $ausentismo += $oldJunta->blank_vote + $oldJunta->null_vote;
+                $ausentismo += $oldJunta->getTotalVotosBlancos() + $oldJunta->getTotalVotosNulos();
             }
 
             if ($junta->null_vote > $totalElectores) {
@@ -263,12 +265,6 @@ class JuntaController extends Controller
                 return $result;
             }
 
-            if ($totalInvalidVotes > $totalElectores) {
-                $result['result'] = false;
-                $result['error'] = 'Los votos nulos y en blanco no pueden ser superior a la cantida de electores del recinto.';
-                return $result;
-            }
-
             if($junta->null_vote > $ausentismo)
             {
                 $result['result'] = false;
@@ -280,6 +276,12 @@ class JuntaController extends Controller
             {
                 $result['result'] = false;
                 $result['error'] = 'Los en blanco no pueden ser superior a la cantida de votos admitidos por el recinto.';
+                return $result;
+            }
+
+            if ($totalInvalidVotes > $totalElectores) {
+                $result['result'] = false;
+                $result['error'] = 'Los votos nulos y en blanco no pueden ser superior a la cantida de electores del recinto.';
                 return $result;
             }
 

@@ -53,94 +53,104 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h4>Acta de Votos</h4>
 
                 <div class="row">
-
-                    <div class="col-lg-3 col-md-3 col-xs-3">
-                        <?= Html::label('Cantidad de Electores: '. $model->count_elector) ?>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-xs-3">
-                        <?= Html::label('Cantidad de Votos: '. $model->count_vote) ?>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-xs-3">
-                        <?= Html::label('Cantidad de Votos Nulos: '. $model->null_vote) ?>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-xs-3">
-                        <?= Html::label('Cantidad de Votos en Blanco: '. $model->blank_vote) ?>
-                    </div>
-                </div>
-
-                <div class="row">
                     <div class="col-lg-12">
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
                                 <?php
-                                $tmp = 0;
-                                foreach (\app\models\Postulacion::ROL_CHOICES as $rol)
-                                {
-                                    $class = $tmp === 0 ? 'class="active"' : '';
-                                    $tmp += 1;
+                                    $tmp = 0;
+                                    echo '<li class="pull-left header"><i class="fa fa-th"></i> Actas de Votos</li>';
+                                    foreach ($model->actas as $acta) {
+                                        $rolName = \app\models\Postulacion::ROL_LABEL[$acta->type];
 
-                                    echo '<li><a ' . $class . ' href="#tab_' . $rol['id']. '" data-toggle="tab">' . $rol['name'] .'</a></li>';
-                                }
+                                        $class = $tmp === 0 ? 'class="active"' : '';
+                                        $tmp += 1;
+                                        echo '<li ' . $class . '><a href="#tab_' . $acta->type . '" data-toggle="tab">' . $rolName .'</a></li>';
+                                    }
                                 ?>
                             </ul>
                             <div class="tab-content">
                                 <?php
                                 $tmp = 0;
-                                foreach (\app\models\Postulacion::ROL_CHOICES as $rol)
+                                foreach ($model->actas as $acta)
                                 {
                                     $class = $tmp === 0 ? ' active' : '';
                                     $tmp += 1;
 
-                                    echo '<div class="tab-pane' . $class . '" id="tab_' . $rol['id']. '">';
+                                    $rolId = $acta->type;
+
+                                    echo '<div class="tab-pane' . $class . '" id="tab_' . $rolId. '">';
+
+                                    echo '<div class="row">';
+                                        echo '<div class="col-lg-3 col-md-3 col-xs-3">';
+                                         echo Html::label('Cantidad de Electores: ' . $acta->count_elector);
+                                        echo '</div>';
+
+                                    echo '<div class="col-lg-3 col-md-3 col-xs-3">';
+                                    echo Html::label('Cantidad de Votantes: ' . $acta->count_vote);
+                                    echo '</div>';
+
+                                        echo '<div class="col-lg-3 col-md-3 col-xs-3">';
+                                            echo Html::label('Votos en Blanco: ' . $acta->blank_vote);
+                                        echo '</div>';
+
+                                        echo '<div class="col-lg-3 col-md-3 col-xs-3">';
+                                            echo Html::label('Votos Nulos: ' . $acta->null_vote);
+                                        echo '</div>';
+                                    echo '</div>';
 
 
-                                    // $voto table
-                                    $voto = new \app\models\Voto();
-                                    $voto->loadDefaultValues();
-                                    echo '<table id="junta-voto-' . $rol['id'] . '" class="table table-condensed table-bordered">';
-                                    echo '<thead>';
-                                    echo '<tr>';
-                                    echo '<th>' . $voto->getAttributeLabel('postulacion_id') . '</th>';
-                                    echo '<th>' . $voto->getAttributeLabel('vote') . '</th>';
-                                    echo '<td>&nbsp;</td>';
-                                    echo '</tr>';
-                                    echo '</thead>';
-                                    echo '<tbody>';
+                                    echo '<div class="row">';
 
-                                    // existing votos fields
-                                    $votos = $model->getVotesByRole($rol['id']);
-                                    foreach ($votos as $key => $_voto) {
-                                        echo '<tr>';
-                                        echo '<td>';
-                                        echo $_voto->postulacion->name;
-                                        echo '</td>';
-                                        echo '<td>';
-                                        echo $_voto->vote;
-                                        echo '</td>';
-                                        echo '</tr>';
-                                    }
+                                        echo '<div class="col-lg-12">';
 
-                                    echo '</tr>';
-                                    echo '</tbody>';
-                                    echo  '<tfooter>';
-                                    echo '<tr>';
-                                    echo '<td>Total Votos</td>';
-                                    echo '<td>';
-                                    echo Html::label($model->getTotalVotosValidosByRole($rol['id']), null);
-                                    echo '</td>';
-                                    echo '</tr>';
-                                    echo  '</tfooter>';
-                                    echo '</table>';
+                                            // $voto table
+                                            $voto = new \app\models\Voto();
+                                            $voto->loadDefaultValues();
+                                            echo '<table id="junta-voto-' . $rol['id'] . '" class="table table-condensed table-bordered">';
+                                            echo '<thead>';
+                                            echo '<tr>';
+                                            echo '<th>' . $voto->getAttributeLabel('postulacion_id') . '</th>';
+                                            echo '<th>' . $voto->getAttributeLabel('vote') . '</th>';
+                                            echo '<td>&nbsp;</td>';
+                                            echo '</tr>';
+                                            echo '</thead>';
+                                            echo '<tbody>';
 
+                                            // existing votos fields
+                                            $votos = $acta->votos;
+                                            foreach ($votos as $key => $_voto) {
+                                                echo '<tr>';
+                                                echo '<td>';
+                                                echo $_voto->postulacion->name;
+                                                echo '</td>';
+                                                echo '<td>';
+                                                echo $_voto->vote;
+                                                echo '</td>';
+                                                echo '</tr>';
+                                            }
+
+                                            echo '</tr>';
+                                            echo '</tbody>';
+                                            echo  '<tfooter>';
+                                            echo '<tr>';
+                                            echo '<td>Total Votos</td>';
+                                            echo '<td>';
+                                            echo Html::label($acta->totalVotosValidos, null);
+                                            echo '</td>';
+                                            echo '</tr>';
+                                            echo  '</tfooter>';
+                                            echo '</table>';
+
+                                            echo  '</div>';
+                                        echo  '</div>';
                                     echo  '</div>';
                                 }
                                 ?>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
+                        </div> <!-- end nav tabs-->
+                    </div>  <!-- end col tabs-->
+                </div> <!-- end row tabs-->
+            </div> <!-- end body box-->
+        </div> <!-- end box-->
+    </div> <!-- end col-->
+</div><!-- end row-->

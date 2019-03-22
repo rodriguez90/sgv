@@ -88,27 +88,6 @@ use yii\widgets\ActiveForm;
                     </div>
 
                     <div class="row">
-                        <div class="col-lg-6"><h4>Acta de Votos</h4></div>
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-lg-3 col-md-3 col-xs-3">
-                            <?= $form->field($model->junta, 'count_elector')->textInput() ?>
-                        </div>
-                        <div class="col-lg-3 col-md-3 col-xs-3">
-                            <?= $form->field($model->junta, 'count_vote')->textInput() ?>
-                        </div>
-                        <div class="col-lg-3 col-md-3 col-xs-3">
-                            <?= $form->field($model->junta, 'null_vote')->textInput() ?>
-                        </div>
-                        <div class="col-lg-3 col-md-3 col-xs-3">
-                            <?= $form->field($model->junta, 'blank_vote')->textInput() ?>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
                         <div class="col-lg-12">
                             <div id="container" class="nav-tabs-custom">
 

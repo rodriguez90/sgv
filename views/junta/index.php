@@ -69,8 +69,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             },
                             'filter' => \app\models\Junta::JUNTA_LABEL
                         ],
-                        'null_vote',
-                        'blank_vote',
+//                        'totalVotosNulos',
+//                        'blank_vote',
                         'totalVotos',
                         ['class' => 'yii\grid\ActionColumn'],
                     ],

@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use app\models\Acta;
 
 /**
  * This is the model class for table "junta".
@@ -11,13 +12,9 @@ use Yii;
  * @property int $recinto_eleccion_id
  * @property string $name
  * @property int $type
- * @property int $null_vote
- * @property int $blank_vote
- * @property int $count_elector
- * @property int $count_vote
  *
  * @property RecintoEleccion $recintoEleccion
- * @property Voto[] $votos
+ * @property Actas[] $actas
  */
 class Junta extends \yii\db\ActiveRecord
 {
@@ -49,11 +46,9 @@ class Junta extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['recinto_eleccion_id', 'name', 'type', 'count_elector', 'count_vote'], 'required'],
+            [['recinto_eleccion_id', 'name', 'type'], 'required'],
             [['recinto_eleccion_id'], 'integer'],
-            [['null_vote', 'blank_vote',], 'safe'],
             [['name'], 'string', 'max' => 255],
-            [['null_vote', 'blank_vote', 'count_elector', 'count_vote'], 'integer', 'min' => 0, 'integerOnly'=>true],
             [['recinto_eleccion_id'], 'exist', 'skipOnError' => true, 'targetClass' => RecintoEleccion::className(), 'targetAttribute' => ['recinto_eleccion_id' => 'id']],
         ];
     }
@@ -68,11 +63,22 @@ class Junta extends \yii\db\ActiveRecord
             'recinto_eleccion_id' => 'Recinto en Elección',
             'name' => 'Nombre',
             'type' => 'Tipo',
-            'null_vote' => 'Votos Nulos',
-            'blank_vote' => 'Votos en Blanco',
-            'count_elector' => 'Cantidad Electores',
-            'count_vote' => 'Cantidad de Votantes',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getActas()
+    {
+//        $canton = $this->getCanton();
+//        $query = $this->hasMany(Voto::className(), ['junta_id' => 'id']);
+//        $query
+//            ->innerJoin('postulacion', 'postulacion.id=voto.postulacion_id')
+//            ->innerJoin('postulacion_canton', 'postulacion_canton.postulacion_id=postulacion.id')
+//            ->where(['postulacion_canton.canton_id'=> $canton->id]);
+
+        return $this->hasMany(Acta::className(), ['junta_id' => 'id']);
     }
 
     /**
@@ -83,45 +89,62 @@ class Junta extends \yii\db\ActiveRecord
         return $this->hasOne(RecintoEleccion::className(), ['id' => 'recinto_eleccion_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
+   private $_votos;
     public function getVotos()
     {
-        $canton = $this->getCanton();
-        $query = $this->hasMany(Voto::className(), ['junta_id' => 'id']);
-        $query
-            ->innerJoin('postulacion', 'postulacion.id=voto.postulacion_id')
-            ->innerJoin('postulacion_canton', 'postulacion_canton.postulacion_id=postulacion.id')
-            ->where(['postulacion_canton.canton_id'=> $canton->id]);
-        return  $query;
+        $this->_votos = [];
+        foreach ($this->actas as $acta)
+        {
+            $this->_votos[] = $acta->votos;
+        }
+
+        return  $this->_votos;
     }
 
     private $_totalVotos;
     public function getTotalVotos() {
-        $votos = $this->votos;
         $total = 0;
 
-        foreach ($votos as $voto) {
-            $total += $voto->vote;
+        foreach ($this->actas as $acta) {
+            $total += $acta->totalVotos;
         }
-
-        $total += $this->blank_vote + $this->null_vote ;
 
         return $total;
     }
 
     private $_totalVotosValidos;
     public function getTotalVotosValidos() {
-        $votos = $this->votos;
         $total = 0;
 
-        foreach ($votos as $voto) {
-            $total += $voto->vote;
+        foreach ($this->actas as $acta) {
+            $total += $acta->totalVotosValidos;
         }
 
         return $total;
     }
+
+    private $_totalVotosNulos;
+    public function getTotalVotosNulos() {
+        $this->_totalNullVote = 0;
+
+        foreach ($this->actas as $acta) {
+            $this->_totalNullVote += $acta->null_vote ;
+        }
+
+        return $this->_totalNullVote;
+    }
+
+    private $_totalVotosBlancos;
+    public function getTotalVotosBlancos() {
+        $this->_totalVotosBlancos = 0;
+
+        foreach ($this->actas as $acta) {
+            $this->_totalVotosBlancos += $acta->blank_vote ;
+        }
+
+        return $this->_totalVotosBlancos;
+    }
+
 
     private $_totalVotosValidosByRole;
     public function getTotalVotosValidosByRole($role) {
@@ -147,6 +170,15 @@ class Junta extends \yii\db\ActiveRecord
         });
 
         return $votes;
+    }
+
+    public function getActasByRole($role)
+    {
+        $actas = array_filter($this->actas, function ($acta) use ($role) {
+            return $acta->type === $role;
+        });
+
+        return $actas;
     }
 
     public function getRecinto() {

@@ -12,6 +12,7 @@ use app\models\Junta;
 use app\models\Voto;
 use Yii;
 use yii\base\Model;
+use yii\helpers\VarDumper;
 use yii\widgets\ActiveForm;
 
 
@@ -19,12 +20,13 @@ class VotoJuntaForm extends Model
 {
     private $_junta;
     private $_votes;
+    private $_actas;
 
     public function rules()
     {
         return [
             [['Junta'], 'required'],
-            [['Votes'], 'safe'],
+            [['Actas', 'Votes'], 'safe'],
         ];
     }
 
@@ -46,6 +48,12 @@ class VotoJuntaForm extends Model
             $transaction->rollBack();
             return false;
         }
+
+        if (!$this->saveActas()) {
+            $transaction->rollBack();
+            return false;
+        }
+
         if (!$this->saveVotes()) {
             $transaction->rollBack();
             return false;
@@ -54,23 +62,50 @@ class VotoJuntaForm extends Model
         return true;
     }
 
-    public function saveVotes()
-    {
+    public function saveActas(){
         $keep = [];
-        foreach ($this->votes as $vote) {
-            $vote->junta_id = $this->junta->id;
-            if (!$vote->save(false)) {
+        foreach ($this->actas as $acta) {
+            $acta->junta_id = $this->junta->id;
+            if (!$acta->save(false)) {
                 return false;
             }
-            $keep[] = $vote->id;
+            $keep[] = $acta->id;
         }
-        $query = Voto::find()->andWhere(['junta_id' => $this->junta->id]);
-        if ($keep) {
-            $query->andWhere(['not in', 'id', $keep]);
+        if(!$this->junta->isNewRecord)
+        {
+            $query = Acta::find()->andWhere(['junta_id' =>$this->junta->id]);
+            if ($keep) {
+                $query->andWhere(['not in', 'id', $keep]);
+            }
+            foreach ($query->all() as $acta) {
+                $acta->delete();
+            }
+            return true;
         }
-        foreach ($query->all() as $voto) {
-            $voto->delete();
+    }
+
+    public function saveVotes()
+    {
+        foreach ($this->_actas as $acta)
+        {
+//            $keep = [];
+            $votos = $this->getVotesByRole($acta->type);
+            foreach ($votos as $vote) {
+                $vote->acta_id = $acta->id;
+                if (!$vote->save(false)) {
+                    return false;
+                }
+//                $keep[] = $vote->id;
+            }
+//            $query = Voto::find()->andWhere(['acta_id' =>$acta->id]);
+//            if ($keep) {
+//                $query->andWhere(['not in', 'id', $keep]);
+//            }
+//            foreach ($query->all() as $voto) {
+//                $voto->delete();
+//            }
         }
+
         return true;
     }
 
@@ -88,12 +123,53 @@ class VotoJuntaForm extends Model
         }
     }
 
+    public function getActas()
+    {
+        if ($this->_actas === null) {
+            $this->_actas = $this->junta->isNewRecord ? [] : $this->junta->actas;
+        }
+        return $this->_actas;
+    }
+
+    public function setActas($actas)
+    {
+        unset($actas['__id__']); // remove the hidden "new Acta" row
+        $this->_actas = [];
+        foreach ($actas as $key => $acta) {
+            if (is_array($acta)) {
+//                var_dump('is_array');
+//                var_dump($acta);die;
+//                $this->_actas[$key] = $this->getActa($key);
+                $this->_actas[$key] = new Acta();
+                $this->_actas[$key]->loadDefaultValues();
+                $this->_actas[$key]->setAttributes($acta);
+            } elseif ($acta instanceof Acta) {
+                if($acta->isNewRecord) {
+                    $this->_actas[$acta->type] = $acta;
+                }
+                else {
+                    $this->_actas[$acta->id] = $acta;
+                }
+            }
+        }
+    }
+
     public function getVotes()
     {
         if ($this->_votes === null) {
             $this->_votes = $this->junta->isNewRecord ? [] : $this->junta->votos;
         }
         return $this->_votes;
+    }
+
+    private function getActa($key)
+    {
+        $acta = $key && strpos($key, 'new') === false ? Acta::findOne($key) : false;
+        if (!$acta) {
+            $acta = new Acta();
+            $acta->loadDefaultValues();
+        }
+        return $acta;
     }
 
     private function getVote($key)
@@ -109,29 +185,37 @@ class VotoJuntaForm extends Model
     public function getVotesByRole($role)
     {
         $votes = array_filter($this->_votes, function ($vote) use ($role) {
-            return $vote->role === $role;
+            return array_filter($vote, function ($vote) use ($role) {
+                    return $vote->role == $role;
+            });
         });
 
-        return $votes;
+        return $votes[$role];
     }
 
-    public function setVotes($votes)
+    public function setVotes($rolesVotes)
     {
-        unset($votes['__id__']); // remove the hidden "new Vote" row
+        unset($rolesVotes['__id__']); // remove the hidden "new Vote" row
         $this->_votes = [];
-        foreach ($votes as $key => $vote) {
-            if (is_array($vote)) {
-                $this->_votes[$key] = $this->getVote($key);
-                $this->_votes[$key]->setAttributes($vote);
-            } elseif ($vote instanceof Voto) {
 
-                if($vote->isNewRecord) {
-                    $this->_votes[$vote->postulacion_id] = $vote;
-                    $this->_votes[$vote->postulacion_id]->setAttributes($vote);
-                }
-                else {
-                    $this->_votes[$vote->id] = $vote;
-                    $this->_votes[$vote->id]->setAttributes($vote);
+        foreach ($rolesVotes as $role => $votes) {
+//            var_dump($role);
+//            var_dump($votes);die;
+            foreach ($votes as $key => $vote) {
+//                var_dump($vote);die;
+                if (is_array($vote)) {
+//                    $this->_votes[$role][$key] = $this->getVote($key);
+                    $this->_votes[$role][$key] = new Voto();
+                    $this->_votes[$role][$key]->loadDefaultValues();
+                    $this->_votes[$role][$key]->setAttributes($vote);
+                } elseif ($vote instanceof Voto) {
+
+                    if($vote->isNewRecord) {
+                        $this->_votes[$role][$vote->postulacion_id] = $vote;
+                    }
+                    else {
+                        $this->_votes[$role][$vote->id] = $vote;
+                    }
                 }
             }
         }
@@ -139,47 +223,86 @@ class VotoJuntaForm extends Model
 
     public function loadVotes()
     {
-//        $postulaciones = Postulacion::find()
-//            ->innerJoin('recinto_eleccion', 'recinto_eleccion.id=junta.recinto_eleccion_id')
-//            ->innerJoin('recinto_electoral', 'recinto_electoral.id=recinto_eleccion.recinto_id')
-//            ->innerJoin('zona', 'zona.id=recinto_electoral.zona_id')
-//            ->innerJoin('parroquia', 'parroquia.id=zona.parroquia_id')
-//            ->innerJoin('canton', 'canton.id=parroquia.canton_id')
-//            ->where(['recinto_eleccion.id'=> $this->_junta->recintoEleccion->id])
-//            ->all();
 
+        // canton relacionado a traves del recinto con la junta
         $canton = $this->_junta->getCanton();
 
-        $postulaciones = Postulacion::find()
+        // roles o dignidades de acuerdo a las postulaciones que estan relacionado con el canton
+        $roles = Postulacion::find()
+            ->select('postulacion.role')
             ->innerJoin('postulacion_canton', 'postulacion_canton.postulacion_id=postulacion.id')
             ->where(['postulacion_canton.canton_id'=> $canton->id])
+            ->groupBy(['postulacion.role'])
+            ->asArray()
             ->all();
 
+        $actas = [];
         $votos = [];
 
-        foreach ($postulaciones as $p) {
-            $vote = new Voto();
-            $vote->junta_id = $this->_junta->id;
-            $vote->vote = 0;
-            $vote->postulacion_id = $p->id;
+        foreach ($roles as $role)
+        {
+            $roleId = intval($role['role']);
+            $acta = new Acta();
+            $acta->junta_id = $this->_junta->id;
+            $acta->count_elector = 0;
+            $acta->count_vote = 0;
+            $acta->null_vote = 0;
+            $acta->blank_vote = 0;
+            $acta->type = $roleId;
 
             if(!$this->_junta->isNewRecord)
             {
-                $oldVote = Voto::find()
+                $oldActa= Acta::find() // se asume q solo se tendra un acta por tipo de rol
                     ->andWhere(['junta_id'=>$this->_junta->id])
-                    ->andWhere(['postulacion_id'=>$p->id])
+                    ->andWhere(['type'=>$roleId])
                     ->one();
 
-                if($oldVote)
+                if($oldActa)
                 {
-                    $vote = $oldVote;
+                    $acta = $oldActa;
                 }
+            }else
+            {
+                var_dump('junta nueva'); die;
             }
 
-            $vote->user_id = Yii::$app->user->id;
+            $votos[$roleId] = []; // arreglo de votos por tipo de acta
 
-            array_push($votos, $vote);
+            // postulaciones por canton y roles (actas)
+            $postulaciones = Postulacion::find()
+                ->innerJoin('postulacion_canton', 'postulacion_canton.postulacion_id=postulacion.id')
+                ->where(['postulacion_canton.canton_id'=> $canton->id])
+                ->where(['postulacion.role'=> $roleId])
+                ->all();
+
+            foreach ($postulaciones as $p) {
+                $vote = new Voto();
+                $vote->acta_id = $acta->id;
+                $vote->vote = 0;
+                $vote->postulacion_id = $p->id;
+
+                if(!$acta->isNewRecord)
+                {
+                    $oldVote = Voto::find()
+                        ->andWhere(['acta_id'=>$acta->id])
+                        ->andWhere(['postulacion_id'=>$p->id])
+                        ->one();
+
+                    if($oldVote)
+                    {
+                        $vote = $oldVote;
+                    }
+                }
+
+                $vote->user_id = Yii::$app->user->id;
+
+                array_push($votos[$roleId], $vote);
+            }
+
+            array_push($actas, $acta);
         }
+
+        $this->setActas($actas);
 
         $this->setVotes($votos);
     }
@@ -202,9 +325,35 @@ class VotoJuntaForm extends Model
         $models = [
             'Junta' => $this->junta,
         ];
+        foreach ($this->actas as $id => $acta) {
+            $models['Acta.' . $id] = $this->actas[$id];
+        }
         foreach ($this->votes as $id => $vote) {
             $models['Voto.' . $id] = $this->votes[$id];
         }
         return $models;
+    }
+
+    public function getActaByRole($role){
+        foreach ($this->actas as $acta) {
+            if($acta->type == $role);
+            return $acta;
+        }
+        return null;
+    }
+
+    public function setAttributes($data) {
+        $this->_junta->setAttributes($data["Junta"]);
+        $this->setActas($data["Actas"]);
+
+        $votesData = $data["Votes"];
+
+        $votes = [];
+
+        foreach ($votesData as $voteData) {
+            $votes[$voteData['role']][] = $voteData;
+        }
+
+        $this->setVotes($votes);
     }
 }
