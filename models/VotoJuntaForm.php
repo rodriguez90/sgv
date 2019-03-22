@@ -261,9 +261,6 @@ class VotoJuntaForm extends Model
                 {
                     $acta = $oldActa;
                 }
-            }else
-            {
-                var_dump('junta nueva'); die;
             }
 
             $votos[$roleId] = []; // arreglo de votos por tipo de acta
