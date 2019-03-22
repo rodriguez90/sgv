@@ -125,13 +125,13 @@ class Junta extends \yii\db\ActiveRecord
 
     private $_totalVotosNulos;
     public function getTotalVotosNulos() {
-        $this->_totalNullVote = 0;
+        $this->_totalVotosNulos = 0;
 
         foreach ($this->actas as $acta) {
-            $this->_totalNullVote += $acta->null_vote ;
+            $this->_totalVotosNulos += $acta->null_vote ;
         }
 
-        return $this->_totalNullVote;
+        return $this->_totalVotosNulos;
     }
 
     private $_totalVotosBlancos;

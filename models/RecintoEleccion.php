@@ -185,7 +185,7 @@ class RecintoEleccion extends \yii\db\ActiveRecord
         $total = 0;
 
         foreach ($juntas as $junta) {
-            $total += $junta->null_vote;
+            $total += $junta->totalVotosNulos;
         }
 
         return $total;
@@ -197,7 +197,7 @@ class RecintoEleccion extends \yii\db\ActiveRecord
         $total = 0;
 
         foreach ($juntas as $junta) {
-            $total += $junta->blank_vote;
+            $total += $junta->totalVotosBlancos;
         }
 
         return $total;
