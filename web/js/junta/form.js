@@ -148,6 +148,9 @@ function handleVotes(){
 }
 
 function reloadVotos(){
+    var loadingHtml = '<div class="overlay">' + '<i class="fa fa-refresh fa-spin"></i>' + '</div>';
+
+    $("#container").html(loadingHtml);
     $.ajax({
         url: homeUrl + "/junta/ajaxcall",
         data:{

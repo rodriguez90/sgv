@@ -91,6 +91,10 @@ use yii\widgets\ActiveForm;
                         <div class="col-lg-12">
                             <div id="container" class="nav-tabs-custom">
 
+                                <div class="overlay">
+                                    <i class="fa fa-refresh fa-spin"></i>
+                                </div>
+
                             </div>
                         </div>
                     </div>
