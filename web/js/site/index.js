@@ -72,10 +72,21 @@ var config = {
                 min: 0
             },
             display: true,
+            scaleLabel: {
+                display: true,
+                labelString: 'Votos'
+            },
         }],
         yAxes: [{
+            ticks: {
+                stepSize: 5,
+            },
             display: true,
             type: 'category',
+            scaleLabel: {
+                display: true,
+                labelString: 'Candidatos'
+            },
         }]
     }
 };
