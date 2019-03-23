@@ -92,8 +92,15 @@ class VotoJuntaForm extends Model
             $votos = $this->getVotesByRole($acta->type);
             foreach ($votos as $vote) {
                 $vote->acta_id = $acta->id;
-                if (!$vote->save(false)) {
-                    return false;
+               try {
+                   if (!$vote->save(false)) {
+                       return false;
+                   }
+               }
+               catch (\Exception $e) {
+                   var_dump($vote->postulacion_id);die;
+                   return false;
+
                 }
 //                $keep[] = $vote->id;
             }
@@ -202,6 +209,8 @@ class VotoJuntaForm extends Model
 //                var_dump($vote);die;
                 if (is_array($vote)) {
 //                    $this->_votes[$role][$key] = $this->getVote($key);
+                    if($vote->postulacion_id == null)
+                        var_dump($vote->postulacion_id);die('setVotes');
                     $this->_votes[$role][$key] = new Voto();
                     $this->_votes[$role][$key]->loadDefaultValues();
                     $this->_votes[$role][$key]->setAttributes($vote);
@@ -345,6 +354,11 @@ class VotoJuntaForm extends Model
         $votes = [];
 
         foreach ($votesData as $voteData) {
+            if($voteData['postulacion_id'] == null ||
+                $voteData['postulacion_id'] == '')
+            {
+//                var_dump($voteData);die('setAttributes');
+            }
             $votes[$voteData['role']][] = $voteData;
         }
 

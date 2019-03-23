@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Acta;
 use app\models\RecintoEleccion;
 use app\models\VotoJuntaForm;
 use app\models\Postulacion;
@@ -14,6 +15,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use Da\User\Filter\AccessRuleFilter;
 use yii\filters\AccessControl;
+use yii\web\Response;
 
 /**
  * JuntaController implements the CRUD actions for Junta model.
@@ -46,30 +48,30 @@ class JuntaController extends Controller
                     [
                         'actions' => ['create'],
                         'allow' => true,
-                        'roles' => ['junta/create'],
+                        'roles' => ['junta/create', 'voto/create'],
                     ],
                     [
                         'actions' => ['update'],
                         'allow' => true,
-                        'roles' => ['junta/update'],
+                        'roles' => ['junta/update', 'voto/create'],
                     ],
                     [
                         'actions' => ['delete'],
                         'allow' => true,
-                        'roles' => ['junta/delete'],
+                        'roles' => ['junta/delete', 'voto/create'],
                     ],
                     [
                         'actions' => ['list'],
                         'allow' => true,
-                        'roles' => ['junta/list'],
+                        'roles' => ['junta/list', 'voto/create'],
                     ],
                     [
                         'actions' => ['view'],
                         'allow' => true,
-                        'roles' => ['junta/view'],
+                        'roles' => ['junta/view', 'voto/create'],
                     ],
                     [
-                        'actions' => ['ajaxcall'],
+                        'actions' => ['ajaxcall', 'generar-actas'],
                         'allow' => true,
 //                        'roles' => ['@'],
                     ],
@@ -113,25 +115,21 @@ class JuntaController extends Controller
      */
     public function actionCreate()
     {
-        $model = new VotoJuntaForm();
-        $model->junta = new Junta();
-        $model->junta->loadDefaultValues();
-        $model->loadVotes();
+        $model = new Junta();
 
-        if (Yii::$app->request->isPost) {
+        if (Yii::$app->request->isPost &&
+            $model->load(Yii::$app->request->post())) {
 
             $data = Yii::$app->request->post();
 
-            $model->setAttributes($data);
-
-            $result = $this->validarVoto($model->junta);
+            $result = $this->validarVoto($model);
             if(!$result['result']){
                 $model->addError('', $result['error']);
             }
             else if($model->save())
             {
                 Yii::$app->getSession()->setFlash('success', 'La junta fue creada.');
-                return $this->redirect(['view', 'id' => $model->junta->id]);
+                return $this->redirect(['view', 'id' => $model->id]);
             }
         }
 
@@ -149,18 +147,14 @@ class JuntaController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = new VotoJuntaForm();
-        $model->junta = $this->findModel($id);
-        $model->junta->loadDefaultValues();
-        $model->loadVotes();
+        $model = $this->findModel($id);
 
-        if (Yii::$app->request->isPost) {
+        if (Yii::$app->request->isPost &&
+            $model->load(Yii::$app->request->post())) {
 
             $data = Yii::$app->request->post();
 
-            $model->setAttributes($data);
-
-            $result = $this->validarVoto($model->junta);
+            $result = $this->validarVoto($model);
             if(!$result['result']){
 
                 $model->addError('', $result['error']);
@@ -325,5 +319,145 @@ class JuntaController extends Controller
             'model'=>$model,
         ]);
 
+    }
+
+    public function actionGenerarActas(){
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $response = array();
+        $response['success'] = true;
+        $response['msg'] = '';
+        $response['data'] = [];
+        $response['msg_dev'] = '';
+
+        $canton = Yii::$app->request->get('canton');
+        $juntaId = Yii::$app->request->get('junta');
+        $recintoId = Yii::$app->request->get('recinto');
+
+        $junta = Junta::findOne(['id'=>$juntaId]);
+        $recinto = RecintoEleccion::findOne(['id'=>$recintoId]);
+
+        if($junta == null) // junta nueva
+        {
+            $junta = new Junta();
+            $junta->loadDefaultValues();
+        }
+
+        $roles = Postulacion::find()
+            ->select('postulacion.role')
+            ->innerJoin('postulacion_canton', 'postulacion_canton.postulacion_id=postulacion.id')
+            ->where(['postulacion_canton.canton_id'=> $canton])
+            ->groupBy(['postulacion.role'])
+            ->asArray()
+            ->all();
+
+        $rolesIds = [];
+        $postulacionesMapRol = [];
+
+        foreach ($roles as $role) {
+            array_push($postulacionesMapRol, []);
+            array_push($rolesIds, $role['role']);
+        }
+
+        $postulaciones = Postulacion::find()
+            ->select([
+                'postulacion.id',
+                'postulacion.role',
+                'profile.name'
+            ])
+            ->innerJoin('postulacion_canton', 'postulacion_canton.postulacion_id=postulacion.id')
+            ->innerJoin('profile', 'profile.user_id=postulacion.candidate_id')
+            ->where(['postulacion_canton.canton_id'=> $canton])
+            ->where(['in','postulacion.role' , $rolesIds])
+            ->asArray()
+            ->all();
+
+        foreach ($postulaciones as $postulacion) {
+            array_push($postulacionesMapRol[$postulacion['role']], $postulacion);
+        }
+
+        $actas = [];
+
+        $userId = Yii::$app->user->id;
+
+        foreach ($roles as $role)
+        {
+            $roleId = intval($role['role']);
+            $acta = new Acta();
+            $acta->junta_id = $juntaId;
+            $acta->count_elector = 0;
+            $acta->count_vote = 0;
+            $acta->null_vote = 0;
+            $acta->blank_vote = 0;
+            $acta->type = $roleId;
+
+            if(!$junta->isNewRecord)
+            {
+                $oldActa= Acta::find() // se asume q solo se tendra un acta por tipo de rol
+                ->andWhere(['junta_id'=>$juntaId])
+                    ->andWhere(['type'=>$roleId])
+                    ->one();
+
+                if($oldActa)
+                {
+                    $acta = $oldActa;
+                }
+            }
+
+            $actaData = [
+                'id' => $acta->id,
+                'junta_id' => $juntaId,
+                'count_elector' =>  $acta->count_elector,
+                'count_vote' => $acta->count_vote,
+                'null_vote' => $acta->null_vote,
+                'blank_vote' => $acta->blank_vote,
+                'type' => $roleId,
+                'typeName' => Postulacion::ROL_LABEL[$roleId],
+                'votos' => []
+            ];
+
+            // postulaciones por canton y roles (actas)
+            $postulaciones = $postulacionesMapRol[$roleId];
+
+            foreach ($postulaciones as $p) {
+                $vote = new Voto();
+                $vote->acta_id = $acta->id;
+                $vote->vote = 0;
+                $vote->postulacion_id = $p['id'];
+
+                if(!$acta->isNewRecord)
+                {
+                    $oldVote = Voto::find()
+                        ->andWhere(['acta_id'=>$acta->id])
+                        ->andWhere(['postulacion_id'=>$p['id']])
+                        ->one();
+
+                    if($oldVote)
+                    {
+                        $vote = $oldVote;
+                    }
+                }
+
+                $voteData = [
+                    'id' => $vote->id,
+                    'acta_id' => $vote->acta_id,
+                    'vote' =>  $vote->vote,
+                    'postulacion_id' => $p['id'],
+                    'postulacion_name' => $p['name'],
+                    'user_id' => $userId,
+                    'type' => $p['role'],
+                    'typeName' => Postulacion::ROL_LABEL[$p['role']],
+                ];
+
+                array_push($actaData['votos'], $voteData);
+            }
+
+            array_push($actas, $actaData);
+        }
+
+        $response['data'] = $actas;
+
+        return $response;
     }
 }

@@ -38,7 +38,6 @@ use yii\widgets\ActiveForm;
 
         echo '<div class="row">';
 
-
             echo Html::textInput(
                 "Actas[$actaKey][type]",
                 $acta->type,
@@ -150,7 +149,7 @@ use yii\widgets\ActiveForm;
                 "Votes[$key][role]",
                 $acta->type,
                 [
-                    'id' => $voteKey . "_acta_id",
+                    'id' => $voteKey . "_role",
                     'require' => true,
                 ]);
             echo '</td>';
