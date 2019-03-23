@@ -32,6 +32,9 @@ class JuntaController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'save-junta' => ['POST'],
+                    'save-actas' => ['POST'],
+                    'save-votos' => ['POST'],
                 ],
             ],
             'access' => [
@@ -71,7 +74,13 @@ class JuntaController extends Controller
                         'roles' => ['junta/view', 'voto/create'],
                     ],
                     [
-                        'actions' => ['ajaxcall', 'generar-actas'],
+                        'actions' => [
+                            'ajaxcall',
+                            'generar-actas',
+                            'save-junta',
+                            'save-actas',
+                            'save-votos'
+                        ],
                         'allow' => true,
 //                        'roles' => ['@'],
                     ],
@@ -115,23 +124,8 @@ class JuntaController extends Controller
      */
     public function actionCreate()
     {
+
         $model = new Junta();
-
-        if (Yii::$app->request->isPost &&
-            $model->load(Yii::$app->request->post())) {
-
-            $data = Yii::$app->request->post();
-
-            $result = $this->validarVoto($model);
-            if(!$result['result']){
-                $model->addError('', $result['error']);
-            }
-            else if($model->save())
-            {
-                Yii::$app->getSession()->setFlash('success', 'La junta fue creada.');
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        }
 
         return $this->render('create', [
             'model' => $model,
@@ -149,22 +143,6 @@ class JuntaController extends Controller
     {
         $model = $this->findModel($id);
 
-        if (Yii::$app->request->isPost &&
-            $model->load(Yii::$app->request->post())) {
-
-            $data = Yii::$app->request->post();
-
-            $result = $this->validarVoto($model);
-            if(!$result['result']){
-
-                $model->addError('', $result['error']);
-            }
-            else if($model->save())
-            {
-                Yii::$app->getSession()->setFlash('success', 'La junta fue creada.');
-                return $this->redirect(['view', 'id' => $model->junta->id]);
-            }
-        }
         return $this->render('update', [
             'model' => $model,
         ]);
@@ -394,7 +372,7 @@ class JuntaController extends Controller
 
             if(!$junta->isNewRecord)
             {
-                $oldActa= Acta::find() // se asume q solo se tendra un acta por tipo de rol
+                $oldActa = Acta::find() // se asume q solo se tendra un acta por tipo de rol
                 ->andWhere(['junta_id'=>$juntaId])
                     ->andWhere(['type'=>$roleId])
                     ->one();
@@ -425,6 +403,7 @@ class JuntaController extends Controller
                 $vote->acta_id = $acta->id;
                 $vote->vote = 0;
                 $vote->postulacion_id = $p['id'];
+                $vote->user_id = $userId;
 
                 if(!$acta->isNewRecord)
                 {
@@ -445,9 +424,8 @@ class JuntaController extends Controller
                     'vote' =>  $vote->vote,
                     'postulacion_id' => $p['id'],
                     'postulacion_name' => $p['name'],
-                    'user_id' => $userId,
+                    'user_id' => $vote->user_id,
                     'type' => $p['role'],
-                    'typeName' => Postulacion::ROL_LABEL[$p['role']],
                 ];
 
                 array_push($actaData['votos'], $voteData);
@@ -457,6 +435,240 @@ class JuntaController extends Controller
         }
 
         $response['data'] = $actas;
+
+        return $response;
+    }
+
+    private function saveActas($actas, $junta){
+        try{
+            $keep = [];
+            foreach ($actas as $acta) {
+                $actaModel = new Acta();
+                $actaModel->loadDefaultValues();
+                if($acta['id'] !== null && $acta['id'] !== "")
+                {
+                    $actaModel = Acta::findOne(['type'=>intval($acta['type'])]);
+                }
+
+                $actaModel->count_elector = $acta['count_elector'];
+                $actaModel->count_vote = $acta['count_vote'];
+                $actaModel->null_vote = $acta['null_vote'];
+                $actaModel->blank_vote = $acta['blank_vote'];
+                $actaModel->type = $acta['type'];
+                $actaModel->junta_id = $junta->id;
+
+                if (!$actaModel->save()) {
+                    return false;
+                }
+
+                $keep[] = $actaModel->id;
+            }
+
+            $query = Acta::find()->where(['junta_id' => $junta->id]);
+            if ($keep) {
+                $query->andWhere(['not in', 'id', $keep]);
+            }
+            foreach ($query->all() as $acta) {
+
+                $acta->delete();
+            }
+
+            return true;
+        }
+        catch (\Exception $e)
+        {
+            var_dump($e);die;
+            return false;
+        }
+    }
+
+    private function saveVotes($votos, $acta){
+        try {
+            foreach ($votos as $vote) {
+                $voteModel = new Voto();
+                $voteModel->loadDefaultValues();
+
+                if($vote->id !== null && $vote->id !== '')
+                {
+                    $voteModel = Voto::findOne(['id'=>$vote->id]);
+                }
+
+                $voteModel->acta_id = $acta['id'];
+                $voteModel->vote = $vote['vote'];
+                $voteModel->postulacion_id = $vote['postulacion_id'];
+                $voteModel->user_id = $vote['user_id'];
+
+                if (!$voteModel->save()) {
+                    var_dump($voteModel->getErrorSummary(true));die;
+                    return false;
+                }
+//                $keep[] = $vote->id;
+            }
+
+            //            $query = Voto::find()->andWhere(['acta_id' =>$acta->id]);
+//            if ($keep) {
+//                $query->andWhere(['not in', 'id', $keep]);
+//            }
+//            foreach ($query->all() as $voto) {
+//                $voto->delete();
+//            }
+
+            return true;
+        }
+        catch (\Exception $e) {
+            var_dump($e);die;
+            return false;
+        }
+    }
+
+    public function actionSaveJunta(){
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $response = array();
+        $response['success'] = true;
+        $response['msg'] = '';
+        $response['data'] = [];
+        $response['msg_dev'] = '';
+
+        $juntaData = Yii::$app->request->post();
+
+        $model = Junta::findOne(['id'=>$juntaData['id']]);
+
+        if($model == null)
+        {
+            $model =  new Junta();
+        }
+
+        $model->recinto_eleccion_id =  $juntaData['recinto'];
+        $model->type =  $juntaData['type'];
+        $model->name =  $juntaData['name'];
+
+        if ($model->validate()) {
+            if(!$model->save()) {
+                $response['success'] = false;
+                $response['msg'] = $model->getErrorSummary(false);
+            }
+            else
+            {
+                $response['data'] = $model;
+            }
+        }
+        else {
+            $response['success'] = false;
+            $response['msg'] = $model->getErrorSummary(false);
+        }
+
+        return $response;
+    }
+
+    public function actionSaveActas(){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $response = array();
+        $response['success'] = true;
+        $response['msg'] = '';
+        $response['data'] = [];
+        $response['msg_dev'] = '';
+
+        $data = Yii::$app->request->post();
+
+        $juntaId = $data['juntaId'];
+        $actas = $data['actas'];
+
+        $junta = $this->findModel($juntaId);
+
+        if($junta == null)
+        {
+            $response['success'] = false;
+            $response['msg'] = 'La junta no existe';
+
+            return $response;
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        if(!$this->saveActas($actas, $junta)) {
+            $transaction->rollBack();
+            $response['success'] = false;
+            $response['msg'] = 'Ah ocurrido un error al registrar las actas';
+            return $response;
+        }
+        $transaction->commit();
+
+        $actas = Acta::find()
+            ->where(['junta_id'=>$juntaId])
+            ->asArray()->all();
+
+        foreach ($actas as $acta) {
+
+            $actaData = [
+                'id' => $acta['id'],
+                'junta_id' => $juntaId,
+                'count_elector' =>  $acta['count_elector'],
+                'count_vote' => $acta['count_vote'],
+                'null_vote' => $acta['null_vote'],
+                'blank_vote' => $acta['blank_vote'],
+                'type' => $acta['type'],
+                'typeName' => Postulacion::ROL_LABEL[$acta['type']],
+                'votos' => []
+            ];
+
+            $response['data'][] = $actaData;
+        }
+
+        return $response;
+    }
+
+    public function actionSaveVotos() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $response = array();
+        $response['success'] = true;
+        $response['msg'] = '';
+        $response['data'] = [];
+        $response['msg_dev'] = '';
+
+        $data = Yii::$app->request->post();
+
+        $acta = $data['acta'];
+        $votos = $data['votos'];
+
+        $actaModel = Acta::findOne(['id'=>$acta['id']]);
+
+        if($actaModel == null)
+        {
+            $response['success'] = false;
+            $response['msg'] = 'El acta no existe';
+
+            return $response;
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        if(!$this->saveVotes($votos, $acta)) {
+            $transaction->rollBack();
+            $response['success'] = false;
+            $response['msg'] = 'Ah ocurrido un error al registrar los votos';
+            return $response;
+        }
+        $transaction->commit();
+
+        $acta['votos'] = Voto::find()
+            ->select([
+                'voto.id',
+                'voto.vote',
+                'voto.acta_id',
+                'voto.user_id',
+                'voto.postulacion_id',
+                'profile.name as postulacion_name',
+                'postulacion.role as type',
+            ])
+            ->where(['acta_id'=>$acta['id']])
+            ->innerJoin('postulacion', 'postulacion.id=voto.postulacion_id')
+            ->innerJoin('profile', 'profile.user_id=postulacion.candidate_id')
+            ->asArray()->all();
+
+        $response['data'] = $acta ;
 
         return $response;
     }

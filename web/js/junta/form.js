@@ -1,16 +1,17 @@
-var actas = [];
+
+var actaMap = new Map();
 
 function totalVotos(acta) {
-    var votes = $('*').filter(function () {
-        return this.id.match('^Votes_[1-9][0-9]*_vote$');
-    });
+    var table = $('#table-acta-' + acta).DataTable();
 
     var total = 0;
-    for(var i = 0 ; i < votes.length; i++)
-    {
-        if($(votes[i]).attr('data-acta') === acta)
-            total += parseInt(votes[i].value);
-    }
+
+    table
+        .rows( )
+        .data()
+        .each( function ( voto, index ) {
+            total += voto.vote;
+        });
 
     total += getValueFromActa(acta, 'null_vote') +  getValueFromActa(acta, 'blank_vote');
 
@@ -30,15 +31,17 @@ function actualizaTotalVotos(total, acta, classValue) {
         $('#totalVotos_' + acta).removeAttr('class').attr('class', classValue);
         $('#totalVotos_' + acta).html(total);
     }
-
 }
 
 function validarVotos(total, acta) {
     var cantidadElectores = parseInt(getValueFromActa(acta, 'count_elector'));
     var cantidadVotantes = parseInt(getValueFromActa(acta, 'count_vote'));
 
+    console.log('validando votos para acta ', acta);
+    console.log('total', total);
     console.log('cantidadElectores', cantidadElectores);
     console.log('cantidadVotantes', cantidadVotantes);
+
 
     var result = {
         'error': false,
@@ -59,6 +62,8 @@ function validarVotos(total, acta) {
         return result;
     }
 
+    console.log('result', result);
+
     return result;
 }
 
@@ -76,9 +81,14 @@ function handleActas(){
 
         for(var j = 0 ; j < actas.length; j++)
         {
-            $(actas[j]).on('keyup', function (event) {
+            $(actas[j]).on('focusout', function (event) {
                 var keyup= event.which;
                 var acta = $(this).attr('data-acta');
+                var actaAttr = $(this).data('attr');
+
+                actaModel = actaMap.get(acta);
+                console.log('Actualizando acta', actaModel);
+                console.log('Actualizando valor en acta', actaAttr);
 
                 var total = totalVotos(acta);
 
@@ -89,6 +99,8 @@ function handleActas(){
                 if(!result.error)
                 {
                     $('#btnSubmit').prop('disabled','');
+                    actaModel[actaAttr] = $(this).val();
+                    actaMap.set(acta, actaModel);
                 }
                 else
                 {
@@ -98,53 +110,10 @@ function handleActas(){
                     alert(result.msg);
                 }
 
-                actualizaTotalVotos(total, acta, classValue);
+                // actualizaTotalVotos(total, acta, classValue);
                 return result.error;
             });
         }
-    }
-}
-
-function handleVotes(){
-    var votes = $('*').filter(function () {
-        return this.id.match('^Votes_[1-9][0-9]*_vote$');
-    });
-
-    for(var i = 0 ; i < votes.length; i++)
-    {
-        $(votes[i]).on('keyup', function (event) {
-            var keyup= event.which;
-
-            // console.log('keyup', keyup);
-            // console.log('input value', this.value);
-
-            var acta = $(this).attr('data-acta');
-
-            console.log('acta', acta);
-
-            var total = totalVotos(acta);
-
-            console.log('total', total);
-
-            var result = validarVotos(total, acta);
-
-            var classValue = 'text-green';
-
-            if(!result.error)
-            {
-                $('#btnSubmit').prop('disabled','');
-            }
-            else
-            {
-                classValue = 'text-red';
-                event.preventDefault();
-                $('#btnSubmit').prop('disabled','disabled');
-                alert(result.msg);
-            }
-
-            actualizaTotalVotos(total, acta, classValue);
-            return result.error;
-        });
     }
 }
 
@@ -160,7 +129,7 @@ function reloadVotos(){
             "junta": modelId
         },
         success:function (response) {
-            actas = response.data;
+            var actas = response.data;
             var tabsHtml = generateTabsHtml(actas);
             tabsHtml += generateTabsConten(actas);
             renderTabs(tabsHtml);
@@ -168,15 +137,14 @@ function reloadVotos(){
                 renderTable(acta);
             });
 
-            // handleActas();
-            // handleVotes();
+            handleActas();
         }
     });
 }
 
 function generateTabsHtml(actas)
 {
-      var tabsHtml = '';
+    var tabsHtml = '';
     tabsHtml += '<ul class="nav nav-tabs">';
     tabsHtml += '<li class="pull-left header"><i class="fa fa-th"></i> Actas de Votos</li>' ;
     var firstActa = 0;
@@ -190,7 +158,7 @@ function generateTabsHtml(actas)
 
 function generateRowActa(acta) {
 
-    var actaKey = acta.id == null ? acta.type : acta.id;
+    var actaKey = acta.type;
     var actaName = 'Actas_' + actaKey;
 
     var row = $('<div>', {
@@ -201,32 +169,22 @@ function generateRowActa(acta) {
         'class':"col-lg-12"
     });
 
-    var inputType = $('<input>', {
-        'id' : actaName + "_type",
-        'name' : 'Actas[' + actaKey +'][type]',
-        'data-acta' : actaKey,
-        'value': acta.type,
-        'require' : true,
-        'type': 'number',
-        'style':"display: none;",
-    });
-
-    colInputs.append(inputType);
-
     var formGroup = $('<div>', {
         class : "form-group"
     });
 
     var label = $('<label>', {
-        'for':  actaName + "_type",
+        'for':  actaName + "_count_elector",
     }).html('Cantidad de Electores');
 
     var inputCountElector = $('<input>', {
         'id' : actaName + "_count_elector",
         'name' : 'Actas[' + actaKey +'][count_elector]',
         'data-acta' : actaKey,
+        'data-attr' : 'count_elector',
         'value': acta.count_elector,
         'require' : true,
+        'min': 0,
         'type': 'number',
     });
 
@@ -244,16 +202,18 @@ function generateRowActa(acta) {
     });
 
     label = $('<label>', {
-        'for':  actaName + "_type",
+        'for':  actaName + "_count_vote",
     }).html('Cantidad de Votantes');
 
     var inputCountVote = $('<input>', {
         'id' : actaName + "_count_vote",
         'name' : 'Actas[' + actaKey +'][count_vote]',
         'data-acta' : actaKey,
+        'data-attr' : 'count_vote',
         'value': acta.count_vote,
         'require' : true,
         'type': 'number',
+        'min': 0
     });
 
     formGroup.append(label);
@@ -270,16 +230,18 @@ function generateRowActa(acta) {
     });
 
     label = $('<label>', {
-        'for':  actaName + "_type",
+        'for':  actaName + "_null_vote",
     }).html('Votos Anulados');
 
     var inputVotosNulos = $('<input>', {
         'id' : actaName + "_null_vote",
         'name' : 'Actas[' + actaKey +'][null_vote]',
         'data-acta' : actaKey,
+        'data-attr' : 'null_vote',
         'value': acta.null_vote,
         'require' : true,
         'type': 'number',
+        'min': 0
     });
 
     formGroup.append(label);
@@ -296,16 +258,18 @@ function generateRowActa(acta) {
     });
 
     label = $('<label>', {
-        'for':  actaName + "_type",
+        'for':  actaName + "_blank_vote",
     }).html('Votos en Blanco');
 
     var inputVotosBlancos = $('<input>', {
         'id' : actaName + "_blank_vote",
         'name' : 'Actas[' + actaKey +'][blank_vote]',
         'data-acta' : actaKey,
+        'data-attr' : 'blank_vote',
         'value': acta.blank_vote,
         'require' : true,
         'type': 'number',
+        'min': 0
     });
 
     formGroup.append(label);
@@ -327,10 +291,13 @@ function generateTabsConten(actas) {
     tabsHtml += '<div class="tab-content">';
     var firstActa = 0;
     actas.forEach(acta => {
+
         var rolId = acta.type;
-        var actaKey = acta.id == null ? acta.type : acta.id;
+        var actaKey = acta.type;
         var actaName = 'Actas_' + actaKey;
         var classHtml = firstActa === 0 ? ' active' : ''; firstActa++;
+
+        actaMap.set(String(acta.type), acta);
 
         var tabPane = $('<div>', {
             'id' : 'tab_' + acta.type,
@@ -437,8 +404,10 @@ function renderTable(acta) {
                                 'value': data,
                                 'data-id': key,
                                 'data-row': meta.row,
+                                'data-acta': full.type,
                                 'require' : true,
                                 'type': 'number',
+                                'min': 0,
                             });
 
                             return inputVotosBlancos.get(0).outerHTML;
@@ -455,11 +424,34 @@ function renderTable(acta) {
             // }
         });
 
-        $(tableId).on('change', 'input', function() {
+        $(tableId).on('focusout', 'input', function(event) {
             var id = $(this).data('id');
             var row = $(this).data('row');
+            var acta = $(this).data('acta');
             // console.log('Voto: ' + $(this).val());
-            table.cell({row: row, column: 1}).data($(this).val());
+            table.cell({row: row, column: 1}).data(parseInt($(this).val()));
+
+            actaModel = actaMap.get(acta);
+            console.log('Actualizando acta', actaModel);
+
+            var total = totalVotos(acta);
+            var result = validarVotos(total, acta);
+            var classValue = 'text-green';
+            if(!result.error)
+            {
+                $('#btnSubmit').prop('disabled','');
+                actaMap.set(acta, actaModel);
+            }
+            else
+            {
+                classValue = 'text-red';
+                event.preventDefault();
+                $('#btnSubmit').prop('disabled','disabled');
+                alert(result.msg);
+            }
+
+            // actualizaTotalVotos(total, acta, classValue);
+            return result.error;
 
         })
     }
@@ -469,57 +461,179 @@ function renderTabs(tabsHtml) {
     $("#container").html(tabsHtml);
 }
 
-function dataFromActas() {
-    var actaValues = ['count_elector', 'count_vote', 'blank_vote', 'null_vote'];
+function votosFromTableActa(acta){
+    var votos = [];
 
-    for(var i = 0 ; i < actaValues.length; i++)
-    {
-        var actaValue = actaValues[i];
+    var table = $('#table-acta-' + acta).DataTable();
 
-        var actas = $('*').filter(function () {
-            var reg = '^Actas_[1-9][0-9]*_' + actaValue + '$';
-            return this.id.match(reg);
+    table
+        .rows( )
+        .data()
+        .each( function ( voto, index ) {
+            // if(parseInt(voto.vote) !== 0)
+            votos.push(voto);
         });
 
-        for(var j = 0 ; j < actas.length; j++)
-        {
-            $(actas[j]).on('keyup', function (event) {
-                var keyup= event.which;
-                var acta = $(this).attr('data-acta');
+    return votos;
+}
 
-                var total = totalVotos(acta);
+function getActas() {
+    var actas = [];
+    actaMap.forEach(function(acta, clave) {
+        if(typeof acta !== 'undefined')
+            acta.votos = [];
+        actas.push(acta);
+    });
+    return actas;
+}
 
-                var result = validarVotos(total, acta);
+function ajaxSaveJunta(){
 
-                var classValue = 'text-green';
+    var valid = true;
+    var msg = '';
+    if($('#junta-recinto_eleccion_id').val() === '' || $('#junta-recinto_eleccion_id').val() === '-')
+    {
+        valid = false;
+        msg = 'Debe especificar el recinto al que pertenece de la junta';
+    }
+    else if($('#junta-type').val() == '')
+    {
 
-                if(!result.error)
-                {
-                    $('#btnSubmit').prop('disabled','');
+        valid = false;
+        msg = 'Debe especificar el tipo de la junta';
+    }
+    else if($('#junta-name').val() == '')
+    {
+
+        valid = false;
+        msg = 'Debe especificar el nombre de la junta';
+    }
+
+    if(!valid)
+    {
+        $.alert(
+            {
+                title:'Advertencia!',
+                content: msg,
+                buttons: {
+                    confirm: {
+                        text:'Aceptar',
+                        action:function () {
+                            return;
+                        }
+                    }
                 }
-                else
-                {
-                    classValue = 'text-red';
-                    event.preventDefault();
-                    $('#btnSubmit').prop('disabled','disabled');
-                    alert(result.msg);
-                }
+            }
+        );
+        return;
+    }
 
-                actualizaTotalVotos(total, acta, classValue);
-                return result.error;
-            });
+
+    var junta = {
+        id: modelId,
+        type: $('#junta-type').val(),
+        recinto: recintoId,
+        name: $('#junta-name').val()
+    } ;
+
+    $.ajax({
+        url: homeUrl + 'junta/save-junta',
+        type: "POST",
+        data:junta,
+        success:function (response) {
+
+            if(response.success)
+            {
+                modelId = response.data.id;
+                ajaxSaveActas();
+            }
+
+            if(!response.success)
+                alert(response.msg);
         }
+    });
+}
+
+function ajaxSaveActas(){
+    var actas = getActas();
+
+    $.ajax({
+        url: homeUrl + 'junta/save-actas',
+        type: "POST",
+        data:{
+            juntaId: modelId,
+            actas: actas,
+        },
+        success:function (response) {
+
+            if(response.success)
+            {
+                var  actas = response.data
+                pendingSaveVotes = [];
+                for(var i = 0 ; i < actas.length; i++)
+                {
+                    var acta = actas[i];
+                    actaMap.set(acta.type, acta);
+                    pendingSaveVotes.push(acta.type);
+                }
+
+                ajaxSaveVotes();
+                return;
+            }
+
+            if(!response.success)
+                alert(response.msg);
+        }
+    });
+}
+
+var pendingSaveVotes = [];
+
+function ajaxSaveVotes() {
+    if(pendingSaveVotes.length == 0) return;
+
+    var actaType = pendingSaveVotes.pop();
+
+    ajaxSaveActaVotes(votosFromTableActa(actaType), actaMap.get(actaType));
+}
+
+function ajaxSaveActaVotes(votos, acta) {
+
+    if(acta !== null && votos.length > 0)
+    {
+        $.ajax({
+            url: homeUrl + 'junta/save-votos',
+            type: "POST",
+            data:{
+                acta: acta,
+                votos: votos,
+            },
+            success:function (response) {
+
+                if(response.success)
+                {
+                    if(pendingSaveVotes.length == 0) return;
+                    ajaxSaveVotes();
+                }
+
+                if(!response.success) {
+                    alert(response.msg);
+                    pendingSaveVotes.push(acta.type);
+                }
+
+            }
+        });
     }
 }
 
 function handleFormSubmit(){
     // form submit
-    $('#aceptBtn').on('click', function(){
-        var formData = $('#w0').serialize();
+    $('#btnSubmit').on('click', function(event){
+        event.preventDefault();
 
-        console.log(formData);
+        ajaxSaveJunta();
 
-        $('#w0').submit();
+        // $('#w0').submit();
     });
 }
 

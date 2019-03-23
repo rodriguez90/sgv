@@ -172,12 +172,17 @@ class RecintoEleccionController extends Controller
     {
 
         $results = RecintoEleccion::find()
+            ->select([
+                'recinto_eleccion.id',
+                'recinto_electoral.name'
+            ])
             ->innerJoin('recinto_electoral', 'recinto_electoral.id=recinto_eleccion.recinto_id')
             ->innerJoin('zona', 'zona.id=recinto_electoral.zona_id')
             ->innerJoin('parroquia', 'zona.parroquia_id=parroquia.id')
             ->innerJoin('canton', 'canton.id=parroquia.canton_id')
             ->andFilterWhere(['eleccion_id'=>$id])
             ->andFilterWhere(['canton.id'=>$cantonId])
+            ->asArray()
             ->all();
 
         echo "<option>-</option>";
@@ -185,7 +190,7 @@ class RecintoEleccionController extends Controller
         {
             foreach ( $results as $model )
             {
-                echo "<option value='".$model->id."'>".$model->recinto->name."</option>";
+                echo "<option value='".$model['id']."'>".$model['name']."</option>";
             }
         }
     }

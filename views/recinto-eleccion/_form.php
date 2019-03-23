@@ -28,7 +28,7 @@ use yii\widgets\ActiveForm;
                     <div class="col-lg-3 col-md-3 col-sm-3">
                         <?= $form->field($model, 'recinto_id')->widget(\kartik\select2\Select2::classname(), [
                             'data' => \yii\helpers\ArrayHelper::map(\app\models\RecintoElectoral::find()->asArray()->all(),'id','name'),
-                            'language' => 'de',
+                            'language' => 'es',
                             'options' => ['placeholder' => 'Seleccione la Recinto.',
                             ],
 
