@@ -103,7 +103,6 @@ function handleActas(){
             });
         }
     }
-
 }
 
 function handleVotes(){
@@ -371,25 +370,26 @@ function generateTable(acta)
         'cellspacing':"0",
     });
 
-    var tableFooter = $('<tfooter>', {})
-        .append($('<tr>', {})
-        .append($('<td>', {}).html('Total Votos'))
-        .append($('<td>', {}).append($('<label>', {
-            'id': 'totalVotos_' + acta.type
-        })).html(0)));
-
-    console.log(tableFooter.get(0).outerHTML);
-
-    table.append(tableFooter);
+    // var tableFooter = $('<tfooter>', {})
+    //     .append($('<tr>', {})
+    //     .append($('<td>', {}).html('Total Votos'))
+    //     .append($('<td>', {}).append($('<label>', {
+    //         'id': 'totalVotos_' + acta.type
+    //     })).html(0)));
+    //
+    // console.log(tableFooter.get(0).outerHTML);
+    //
+    // table.append(tableFooter);
 
     return table;
 }
 
 function renderTable(acta) {
-    if ($('#' + 'table-acta-' + acta.type).length !== 0) {
-        var table = $('#' + 'table-acta-' + acta.type);
+    var tableId = '#' + 'table-acta-' + acta.type;
+    if ($(tableId).length !== 0) {
+        var table = $(tableId);
 
-        table.DataTable({
+        table = table.DataTable({
             // dom: '<"top"iflp<"clear">>rt',
             // dom: '<"top"i>flBpt<"bottom"Bp><"clear">',
             // dom: '<"top"ip<"clear">>t',
@@ -435,6 +435,8 @@ function renderTable(acta) {
                             var inputVotosBlancos = $('<input>', {
                                 'id' : voteKey,
                                 'value': data,
+                                'data-id': key,
+                                'data-row': meta.row,
                                 'require' : true,
                                 'type': 'number',
                             });
@@ -445,13 +447,21 @@ function renderTable(acta) {
                     }
                 },
             ],
-            "createdRow": function( row, data, dataIndex ) {
-                // console.log($('td input', row).eq(0));
-                $('td input', row).eq(0).on('change', function () {
-                    alert('Voto: ' + $(this).val());
-                });
-            }
+            // "createdRow": function( row, data, dataIndex ) {
+            //     // console.log($('td input', row).eq(0));
+            //     $('td input', row).eq(0).on('change', function () {
+            //         alert('Voto: ' + $(this).val());
+            //     });
+            // }
         });
+
+        $(tableId).on('change', 'input', function() {
+            var id = $(this).data('id');
+            var row = $(this).data('row');
+            // console.log('Voto: ' + $(this).val());
+            table.cell({row: row, column: 1}).data($(this).val());
+
+        })
     }
 }
 
@@ -459,10 +469,54 @@ function renderTabs(tabsHtml) {
     $("#container").html(tabsHtml);
 }
 
+function dataFromActas() {
+    var actaValues = ['count_elector', 'count_vote', 'blank_vote', 'null_vote'];
+
+    for(var i = 0 ; i < actaValues.length; i++)
+    {
+        var actaValue = actaValues[i];
+
+        var actas = $('*').filter(function () {
+            var reg = '^Actas_[1-9][0-9]*_' + actaValue + '$';
+            return this.id.match(reg);
+        });
+
+        for(var j = 0 ; j < actas.length; j++)
+        {
+            $(actas[j]).on('keyup', function (event) {
+                var keyup= event.which;
+                var acta = $(this).attr('data-acta');
+
+                var total = totalVotos(acta);
+
+                var result = validarVotos(total, acta);
+
+                var classValue = 'text-green';
+
+                if(!result.error)
+                {
+                    $('#btnSubmit').prop('disabled','');
+                }
+                else
+                {
+                    classValue = 'text-red';
+                    event.preventDefault();
+                    $('#btnSubmit').prop('disabled','disabled');
+                    alert(result.msg);
+                }
+
+                actualizaTotalVotos(total, acta, classValue);
+                return result.error;
+            });
+        }
+    }
+}
+
 function handleFormSubmit(){
     // form submit
     $('#aceptBtn').on('click', function(){
         var formData = $('#w0').serialize();
+
         console.log(formData);
 
         $('#w0').submit();

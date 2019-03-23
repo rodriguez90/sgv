@@ -356,7 +356,7 @@ class JuntaController extends Controller
         $postulacionesMapRol = [];
 
         foreach ($roles as $role) {
-            array_push($postulacionesMapRol, []);
+            $postulacionesMapRol[$role['role']] = [];
             array_push($rolesIds, $role['role']);
         }
 
@@ -369,7 +369,7 @@ class JuntaController extends Controller
             ->innerJoin('postulacion_canton', 'postulacion_canton.postulacion_id=postulacion.id')
             ->innerJoin('profile', 'profile.user_id=postulacion.candidate_id')
             ->where(['postulacion_canton.canton_id'=> $canton])
-            ->where(['in','postulacion.role' , $rolesIds])
+            ->andWhere(['in','postulacion.role' , $rolesIds])
             ->asArray()
             ->all();
 

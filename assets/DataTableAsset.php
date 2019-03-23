@@ -31,7 +31,7 @@ class DataTableAsset extends AssetBundle
 //        'js/plugins/DataTables/extensions/pdfmake/pdfmake.js',
 //        'js/plugins/DataTables/extensions/pdfmake/pdfmake.min.js.map',
         'js/plugins/DataTables/media/js/jquery.dataTables.min.js',
-//        'js/plugins/DataTables/media/js/datatables.min.js',
+        'js/plugins/DataTables/media/js/datatables.min.js',
         'js/plugins/DataTables/media/js/dataTables.bootstrap.min.js',
         'js/plugins/DataTables/extensions/Buttons/js/dataTables.buttons.min.js',
         'js/plugins/DataTables/extensions/Buttons/js/buttons.bootstrap.min.js',

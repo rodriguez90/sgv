@@ -94,6 +94,9 @@ use yii\widgets\ActiveForm;
                             </div>
                         </div>
                     </div>
+
+                    <?= Html::hiddenInput('actas', [], ['id'=>'votos'])?>
+                    <?= Html::hiddenInput('votos', [], ['id'=>'votos'])?>
                 </fieldset>
 
 
