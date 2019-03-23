@@ -29,9 +29,10 @@ use yii\widgets\ActiveForm;
                         <div class="col-lg-3 col-md-3 col-xs-3">
                             <label class="control-label" for="canton_select2">Cantón</label>
                             <?= \kartik\select2\Select2::widget( [
+                                'id' => 'canton_select2',
                                 'name' => 'canton_select2',
                                 'data' => \yii\helpers\ArrayHelper::map(\app\models\Canton::find()->asArray()->all(),'id','name'),
-                                'value' => $model->junta->isNewRecord ? '' : $model->junta->getCanton()->id ,
+                                'value' => $model->isNewRecord ? '' : $model->getCanton()->id ,
                                 'language' => 'de',
                                 'options' => ['placeholder' => 'Seleccione Cantón.',
                                     'onchange'=>'
@@ -52,7 +53,7 @@ use yii\widgets\ActiveForm;
                         </div>
 
                         <div class="col-lg-3 col-md-3 col-xs-3">
-                            <?= $form->field($model->junta, 'recinto_eleccion_id')->widget(\kartik\select2\Select2::classname(), [
+                            <?= $form->field($model, 'recinto_eleccion_id')->widget(\kartik\select2\Select2::classname(), [
                                 'data' => \yii\helpers\ArrayHelper::map(\app\models\RecintoEleccion::find()
                                     ->select(['recinto_eleccion.id',
                                         'recinto_electoral.name'
@@ -64,10 +65,9 @@ use yii\widgets\ActiveForm;
                                     'onchange'=>'
                                         console.log("junta-recinto_eleccion_id", this.value);
                                          recintoId = $("#junta-recinto_eleccion_id").val() === "-" ? 0 : $("#junta-recinto_eleccion_id").val();
-                                        reloadVotos();                                      
+                                        // reloadVotos();                                      
                                         '
                                 ],
-
                                 'pluginOptions' => [
                                     'allowClear' => false
                                 ],
@@ -76,14 +76,14 @@ use yii\widgets\ActiveForm;
 
                         <div class="col-lg-3 col-md-3 col-xs-3">
 
-                            <?= $form->field($model->junta, 'type')->dropDownList(
+                            <?= $form->field($model, 'type')->dropDownList(
                                 \yii\helpers\ArrayHelper::map(\app\models\Junta::JUNTA_CHOICES,'id','name'),
                                 ['prompt'=>'Seleccione el Tipo',
                                 ]);?>
                         </div>
 
                         <div class="col-lg-3 col-md-3 col-xs-3">
-                            <?= $form->field($model->junta, 'name')->textInput(['maxlength' => true]) ?>
+                            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
                         </div>
                     </div>
 
@@ -108,8 +108,8 @@ use yii\widgets\ActiveForm;
 </div>
 
 <script type="text/javascript">
-    var recintoId = '<?php echo $model->junta->isNewRecord ? 0 : $model->junta->recinto_eleccion_id; ?>';
-    var modelId = '<?php echo $model->junta->isNewRecord ? 0 : $model->junta->id; ?>';
+    var recintoId = '<?php echo $model->isNewRecord ? 0 : $model->recinto_eleccion_id; ?>';
+    var modelId = '<?php echo $model->isNewRecord ? 0 : $model->id; ?>';
 </script>
 
-<?php $this->registerJsFile('@web/js/junta/form.js', ['depends' => ['app\assets\AppAsset']]) ?>
+<?php $this->registerJsFile('@web/js/junta/form.js', ['depends' => ['app\assets\DataTableAsset']]) ?>
