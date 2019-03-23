@@ -41,7 +41,7 @@ class SiteController extends Controller
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['index'],
+                        'actions' => ['index', 'votospostulacion', 'report'],
                         'allow' => true,
                         'roles' => ['site/index', 'Registrador'],
                     ],
@@ -83,14 +83,15 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $users = Yii::$app->authManager->getUserIdsByRole('Registrador');
+        $users = Yii::$app->authManager->getUserIdsByRole('Digitador');
         if(in_array(Yii::$app->user->getId(), $users))
         {
             $this->redirect(Url::toRoute(['voto/index']));
         }
 
-        $postulacion = Postulacion::find()
+        $postulacionAlcaldia = Postulacion::find()
             ->innerJoin('partido', 'partido.id=postulacion.partido_id')
+//            ->where(['role'=>Postulacion::ROL_ALCALDIA])
             ->orderBy([
                 'partido.list'=>SORT_ASC,
                 'partido.number'=>SORT_ASC,
@@ -109,7 +110,7 @@ class SiteController extends Controller
         $totalVotosBlancos = $eleccion->totalVotosBlancos;
 
 
-        foreach ($postulacion as $p) {
+        foreach ($postulacionAlcaldia as $p) {
             array_push($labels, $p->name);
             array_push($data, $p->totalVotos);
         }
@@ -181,131 +182,56 @@ class SiteController extends Controller
 
     public function actionReport()
     {
-//        if(Yii::$app->request->isGet && Yii::$app->request->isAjax)
-//        {
-//            Yii::$app->response->format = Response::FORMAT_JSON;
-//
-//            $params = Yii::$app->request->get();
-//
-////            var_dump($params);die;
-//
-//            $response = array();
-//            $response['success'] = true;
-//            $response['data'] = [];
-//            $response['msg'] = '';
-//            $response['msg_dev'] = '';
-//
-//            $startDate =  strtotime($params['start_date']);
-//            $endDate = strtotime($params['end_date']);
-//            $option = $params['option'];
-//
-//            $select = [];
-//            $groupBy = [];
-//            $having = [];
-//
-//            $query = Loan::find();
-//
-//            if(isset($option) && $option == 'customerUnPaid')
-//            {
-//                $select []= "concat(customer.first_name,' ', customer.last_name) as customerName";
-//                $select []= "customer.dni";
-//                $select []= "sum(payment.amount) as amount";
-//                $select []= "payment_date";
-//
-//                $query->innerJoin('customer', 'customer.id = loan.customer_id');
-//                $query->innerJoin('payment', 'payment.loan_id = loan.id');
-//
-//                $query->andWhere(['loan.status'=>Loan::ACTIVE]);
-//                $query->andFilterWhere(['payment.status'=>Payment::PENDING]);
-//                $query->andFilterWhere(['<','payment.payment_date',date('Y-m-d')]);
-//
-//                if($startDate != false and $endDate != false) // period
-//                {
-//                    $query->andFilterWhere([
-//                        'BETWEEN',
-//                        'payment.payment_date',
-//                        date('Y-m-d', $startDate),
-//                        date('Y-m-d', $endDate)]);
-//                }
-//
-//                $groupBy []= 'loan.id';
-//                $groupBy []= 'payment.id';
-//
-//            }
-//
-//            if(isset($option) && $option == 'loanAmount')
-//            {
-//                $select[] = "sum(loan.amount) as loanAmount";
-//
-////                $groupBy []= 'loan.id';
-//
-////                $query->innerJoin('customer', 'customer.id = loan.customer_id');
-//
-//                $query->andWhere(['loan.status'=>Loan::ACTIVE])
-//                    ->orWhere(['loan.status'=>Loan::CLOSE]);
-//
-//                if($startDate != false and $endDate != false) // period
-//                {
-//                    $query->andFilterWhere([
-//                        'BETWEEN',
-//                        'loan.start_date',
-//                        date('Y-m-d', $startDate),
-//                        date('Y-m-d', $endDate)]);
-//
-//                    $query->andFilterWhere([
-//                        'BETWEEN',
-//                        'loan.end_date',
-//                        date('Y-m-d', $startDate),
-//                        date('Y-m-d', $endDate)]);
-//                }
-//            }
-//
-//            if(isset($option) && $option == 'amountPaid')
-//            {
-//                $select []= "sum(payment.amount) as amountPaid";
-//
-//                $query->innerJoin('payment', 'payment.loan_id = loan.id');
-//                $query->andWhere(['loan.status'=>Loan::ACTIVE]);
-//                $query->andFilterWhere(['payment.status'=>Payment::PENDING]);
-//
-//                if($startDate != false and $endDate != false) // period
-//                {
-//                    $query->andFilterWhere([
-//                        'BETWEEN',
-//                        'payment.payment_date',
-//                        date('Y-m-d', $startDate),
-//                        date('Y-m-d', $endDate)]);
-//                }
-//            }
-//
-//            if(isset($option) && $option == 'earnings')
-//            {
-//                $select[] = "sum((loan.amount*loan.porcent_interest)/100) as earnings";
-//
-//                $query->andWhere(['loan.status'=>Loan::ACTIVE])
-//                ->orWhere(['loan.status'=>Loan::CLOSE]);
-//            }
-//
-//            try
-//            {
-//                $query->select($select)->groupBy($groupBy)->having($having);
-//                $command = $query->createCommand();
-//                $response['data'] = $query
-//                                    ->asArray()
-//                                    ->all();
-//
-//                $response['msg_dev'] = $command->getRawSql();
-//            }
-//            catch ( Exception $e)
-//            {
-//                $response['success'] = false;
-//                $response['msg'] = "Ah ocurrido al recuperar los datos.";
-//                $response['msg_dev'] = $e->getMessage();
-//                $response['data'] = [];
-//            }
-//            return $response;
-//        }
+        $elecciones = Eleccion::find()->all();
+        $eleccion = null;
 
-        return $this->render('report');
+        if(count($elecciones)) $eleccion = $elecciones[0];
+
+        $labelsPorcientos = ['Votos', 'Votos Nulos', 'Votos en Blanco', 'Ausentismo'];
+        $dataPorcientos = [
+            $eleccion->porcientoVotos,
+            $eleccion->porcientoVotosNulos,
+            $eleccion->porcientoVotosBlancos,
+            $eleccion->porcientoAusentismo,
+        ];
+
+        return $this->render('report', [
+            'labelsPorcientos' => $labelsPorcientos,
+            'dataPorcientos' => $dataPorcientos,
+        ]);
+    }
+
+    function actionVotospostulacion() {
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $response = array();
+        $response['success'] = true;
+        $response['msg'] = '';
+        $response['data'] = [];
+        $response['msg_dev'] = '';
+        $canton = Yii::$app->request->get('canton');
+        $recinto = Yii::$app->request->get('recinto');
+        $dignidad= Yii::$app->request->get('dignidad');
+
+        $response['data'] = Postulacion::find()
+                    ->select([
+                        'profile.name',
+                        'SUM(voto.vote) as vote'
+                    ])
+                    ->leftJoin('voto', 'voto.postulacion_id = postulacion.id')
+                    ->innerJoin('profile', 'profile.user_id = postulacion.candidate_id')
+                    ->innerJoin('postulacion_canton', 'postulacion_canton.postulacion_id = postulacion.id')
+                    ->innerJoin('acta', 'acta.id = voto.acta_id')
+                    ->innerJoin('junta', 'junta.id = acta.junta_id')
+                    ->andFilterWhere(['postulacion_canton.canton_id'=>$canton])
+                    ->andFilterWhere(['postulacion.role'=>$dignidad])
+                    ->andFilterWhere(['junta.recinto_eleccion_id'=>$recinto])
+                    ->groupBy(['postulacion.id'])
+                    ->having(['>', 'vote', 0])
+                    ->asArray()
+                    ->all();
+
+        return $response;
     }
 }

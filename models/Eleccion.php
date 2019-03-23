@@ -93,6 +93,18 @@ class Eleccion extends \yii\db\ActiveRecord
         return $total;
     }
 
+    private $_totalVotosValidos = 0;
+    public function getTotalVotosValidos()
+    {
+        $total = 0;
+        $recintos  = RecintoEleccion::find()->where(['eleccion_id'=>$this->id])->all();
+        foreach ($recintos as $r)
+        {
+            $total += $r->totalVotos;
+        }
+        return $total;
+    }
+
     private $_porcientoVotos;
     public function getPorcientoVotos() {
         $porciento = 0;
@@ -146,14 +158,15 @@ class Eleccion extends \yii\db\ActiveRecord
 
     private $_ausentismo = 0;
     public function getAusentismo () {
-        return $this->totalElectores - $this->totalVotos;
+        $this->_ausentismo = $this->totalElectores - $this->totalVotos;
+        return $this->_ausentismo;
     }
 
     private $_porcientoAusentismo = 0;
     public function getPorcientoAusentismo() {
         $porciento = 0;
         if(intval($this->totalElectores) > 0)
-            $porciento = ($this->ausentismo * 100 )/ $this->totalElectores;
+            $porciento = round(($this->ausentismo * 100 )/ $this->totalElectores, 2);
 
         return $porciento;
     }

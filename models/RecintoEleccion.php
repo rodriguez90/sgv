@@ -147,13 +147,23 @@ class RecintoEleccion extends \yii\db\ActiveRecord
 
     private $_totalVotos;
     public function getTotalVotos() {
-        $votos = $this->votos;
         $total = 0;
 
-        foreach ($votos as $voto) {
-            $total += $voto->vote;
+        foreach ($this->juntas as $junta) {
+            $total += $junta->getTotalVotos();
         }
 
+        return $total;
+    }
+
+    private $_totalVotosValidos = 0;
+    public function getTotalVotosValidos()
+    {
+        $total = 0;
+        foreach ($this->getVotos() as $voto)
+        {
+            $total += $voto->vote;
+        }
         return $total;
     }
 

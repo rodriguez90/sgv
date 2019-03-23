@@ -148,7 +148,7 @@ function handleVotes(){
 }
 
 function reloadVotos(){
-    var loadingHtml = '<div class="overlay">' + '<i class="fa fa-refresh fa-spin"></i>' + '</div>';
+    var loadingHtml = '<div class="overlay">' + '<i class="fa fa-circle-o-notch fa-spin"></i>' + '</div>';
 
     $("#container").html(loadingHtml);
     $.ajax({

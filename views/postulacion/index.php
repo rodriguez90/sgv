@@ -33,6 +33,20 @@ $this->params['breadcrumbs'][] = $this->title;
                             'value' => 'eleccion.name',
                             'label' => 'Elección',
                         ],
+//                        [
+//                            'attribute' => 'canton',
+//                            'format' => 'raw',
+//                            'value' => function ($model) {
+//                                return  Html::a($model->parroquia->canton->name, \yii\helpers\Url::toRoute(['canton/view', 'id' =>  $model->parroquia->canton->id]));
+//                            },
+//                            'label' => 'Cantón',
+//                            'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
+//                            'filter' => \yii\helpers\ArrayHelper::map(\app\models\Canton::find()->orderBy(['name'=>SORT_ASC])->all(), 'id', 'name'),
+//                            'filterWidgetOptions' => [
+//                                'pluginOptions' => ['allowClear' => true]
+//                            ],
+//                            'filterInputOptions' => ['placeholder' => 'Canton']
+//                        ],
                         [
 							'attribute' => 'partido',
 							'value' => 'partido.name',

@@ -15,6 +15,8 @@ class PostulacionSearch extends Postulacion
     public $partido;
     public $candidate;
     public $eleccion;
+    public $canton;
+
     /**
      * {@inheritdoc}
      */
@@ -22,7 +24,7 @@ class PostulacionSearch extends Postulacion
     {
         return [
             [['id', 'partido_id', 'candidate_id', 'eleccion_id', 'role'], 'integer'],
-            [['partido', 'candidate', 'eleccion'], 'safe'],
+            [['partido', 'candidate', 'eleccion', 'canton'], 'safe'],
         ];
     }
 
@@ -49,6 +51,9 @@ class PostulacionSearch extends Postulacion
         // add conditions that should always apply here
 
         $query->joinWith(['partido', 'candidate', 'eleccion']);
+//        $query->innerJoin('postulacion_canton', 'postulacion_canton.postulacion_id = postulacion.id');
+//        $query->innerJoin('canton', 'canton.id = postulacion_canton.canton_id');
+
         $query->orderBy([
             'partido.name'=>SORT_ASC,
             'profile.name'=>SORT_ASC
@@ -74,6 +79,11 @@ class PostulacionSearch extends Postulacion
         ];
 
 
+//        $dataProvider->sort->attributes['canton'] = [
+//            'asc'=>['canton.name' => SORT_ASC],
+//            'desc'=>['canton.name'=> SORT_DESC] ,
+//        ];
+
         $this->load($params);
 
         if (!$this->validate()) {
@@ -85,15 +95,13 @@ class PostulacionSearch extends Postulacion
         // grid filtering conditions
         $query->andFilterWhere([
             'postulacion.id' => $this->id,
-//            'partido_id' => $this->partido_id,
-//            'candidate_id' => $this->candidate_id,
-//            'eleccion_id' => $this->eleccion_id,
             'role' => $this->role,
         ]);
 
         $query->andFilterWhere(['like', 'partido.name', $this->partido]);
         $query->andFilterWhere(['like', 'eleccion.name', $this->eleccion]);
         $query->andFilterWhere(['like', 'candidate.name', $this->candidate]);
+//        $query->andFilterWhere(['canton.id', $this->canton]);
 
         return $dataProvider;
     }

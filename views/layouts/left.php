@@ -1,9 +1,9 @@
 <?php
 //$items = [['label' => 'Menu', 'options' => ['class' => 'header']]];
 
-$items = [['label' => 'Menu', 
-	'options' => ['class' => 'header'],
-	'items' =>[]
+$items = [['label' => 'Menu',
+    'options' => ['class' => 'header'],
+    'items' =>[]
 ]];
 
 $eleccion = [
@@ -14,10 +14,10 @@ $eleccion = [
 ];
 
 $localization = [
-	'label' => 'Localización',
+    'label' => 'Localización',
     'icon' => 'map',
     'url' => '#',
-	'items' => []
+    'items' => []
 ];
 
 
@@ -28,6 +28,12 @@ if(Yii::$app->user !== null && Yii::$app->user->identity !== null)
         Yii::$app->user->identity->getIsAdmin())
     {
         $items[]=['label' => 'Inicio', 'icon' => 'home', 'url' => ['/site/index']];
+    }
+
+    if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'site/report')
+        || Yii::$app->user->identity->getIsAdmin())
+    {
+        $items[]=['label' => 'Gráficas', 'icon' => 'line-chart', 'url' => ['/site/report']];
     }
 
     if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'province/index')
@@ -114,11 +120,6 @@ if(Yii::$app->user !== null && Yii::$app->user->identity !== null)
     if(count($eleccion['items']) > 0) // Menus de Localización
         $items[] = $eleccion;
 
-//if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'report/view')
-//    || Yii::$app->user->identity->getIsAdmin())
-//{
-//    $items[]=['label' => 'Reporte', 'icon' => 'line-chart', 'url' => ['/site/report']];
-//}
 
     if(count($localization['items']) > 0) // Menus de Localización
         $items[] = $localization;

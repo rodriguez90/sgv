@@ -137,9 +137,6 @@ class VotoJuntaForm extends Model
         $this->_actas = [];
         foreach ($actas as $key => $acta) {
             if (is_array($acta)) {
-//                var_dump('is_array');
-//                var_dump($acta);die;
-//                $this->_actas[$key] = $this->getActa($key);
                 $this->_actas[$key] = new Acta();
                 $this->_actas[$key]->loadDefaultValues();
                 $this->_actas[$key]->setAttributes($acta);

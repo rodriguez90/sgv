@@ -74,7 +74,7 @@ $this->title = '';
 
     <div class="row">
 
-        <div class="col-md-6">
+        <div class="col-lg-12">
             <!-- AREA CHART -->
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -83,82 +83,76 @@ $this->title = '';
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                         </button>
-                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                     </div>
                 </div>
                 <div class="box-body">
-                    <div class="chart">
-                        <?= ChartJs::widget([
-                            'type' => 'bar',
-                            'options' => [
-                                'height' => 200,
-                            ],
-                            'data' => [
-                                'labels' => $labels,
-                                'datasets' => [
-                                    [
-                                        'label' => "Votos por Postulación",
-//                                        'backgroundColor' => [
-//                                                "rgba(179,181,198,0.2)",
-//                                                "rgba(0,0,0,1)"
-//                                        ],
-//                                        'borderColor' => "rgba(179,181,198,1)",
-//                                        'pointBackgroundColor' => "rgba(179,181,198,1)",
-//                                        'pointBorderColor' => "#fff",
-//                                        'pointHoverBackgroundColor' => "#fff",
-//                                        'pointHoverBorderColor' => "rgba(179,181,198,1)",
-                                        'backgroundColor' => 'fillPattern',
-                                        'data' => $data
-                                    ],
-                                ]
-                            ]
-                        ]);
-                        ?>
-                    </div>
-                </div>
-                <!-- /.box-body -->
-            </div>
-            <!-- /.box -->
-        </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-xs-4">
+                            <label class="control-label" for="canton_select2">Cantón</label>
+                            <?= \kartik\select2\Select2::widget( [
+                                'id' => 'canton_select2',
+                                'name' => 'canton_select2',
+                                'data' => \yii\helpers\ArrayHelper::map(\app\models\Canton::find()->asArray()->all(),'id','name'),
+                                'language' => 'es',
+                                'options' => ['placeholder' => 'Seleccione Cantón.',
+                                    'onchange'=>'
+                                         $.post("../recinto-eleccion/lists?cantonId='.'"+$(this).val(),function(data){
+                                                    $( "#recinto_select2" ).html(data);
+                                                    reloadVotos();
+                                                });'
+                                ],
 
-        <div class="col-md-6">
-            <!-- DONUT CHART -->
-            <div class="box box-info">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Votos en Porcientos</h3>
+                                'pluginOptions' => [
+                                    'allowClear' => true
+                                ],
+                            ]);?>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-xs-4">
+                            <label class="control-label" for="canton_select2">Recinto</label>
+                            <?= \kartik\select2\Select2::widget( [
+                                'id' => 'recinto_select2',
+                                'name' => 'recinto_select2',
+                                'language' => 'es',
+                                'options' => ['placeholder' => 'Seleccione Recinto.',
+                                    'onchange'=>'
+                                        console.log("recinto_select2", this.value);
+                                        reloadVotos();
+                                        '
+                                ],
 
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                        </button>
-                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                'pluginOptions' => [
+                                    'allowClear' => true
+                                ],
+                            ]);?>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-xs-4">
+                            <label class="control-label" for="canton_select2">Dignidad</label>
+                            <?= \kartik\select2\Select2::widget( [
+                                'id' => 'dignidad_select2',
+                                'name' => 'dignidad_select2',
+                                'language' => 'es',
+                                'data' => \yii\helpers\ArrayHelper::map(\app\models\Postulacion::ROL_CHOICES,'id','name'),
+                                'options' => [
+                                    'placeholder' => 'Seleccione Dignidad.',
+                                    'onchange'=>'
+                                        reloadVotos();
+                                        '
+                                ],
+
+                                'pluginOptions' => [
+                                    'allowClear' => true
+                                ],
+                            ]);?>
+                        </div>
                     </div>
-                </div>
-                <div class="box-body">
-                    <div class="chart">
-                        <?= ChartJs::widget([
-                            'type' => 'pie',
-                            'options' => [
-                                'height' => 200,
-//                            'width' => 200
-                            ],
-                            'data' => [
-                                'labels' => $labelsPorcientos,
-                                'datasets' => [
-                                    [
-                                        'label' => "Votos por Postulación",
-                                        'backgroundColor'=> [
-                                            '#00a65a',
-                                            '#dd4b39',
-                                            '#f39c12',
-                                            '#cc65fe',
-                                        ],
-                                        'data' => $dataPorcientos
-                                    ],
-                                ]
-                            ]
-                        ]);
-                        ?>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="chart">
+                                <canvas id="postulacion_voto_chart"></canvas>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -166,4 +160,5 @@ $this->title = '';
         </div>
     </div>
 
-<?php $this->registerJsFile('@web/js/site/index.js', ['depends' => ['app\assets\DataTableAsset']]) ?>
+
+<?php $this->registerJsFile('@web/js/site/index.js', ['depends' => ['app\assets\ChartAsset']]) ?>
