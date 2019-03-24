@@ -747,7 +747,7 @@ function ajaxSaveActas(){
             $.alert(
                 {
                     title:'Error!',
-                    content: 'Ah ocurrido un error al registrar las juntas',
+                    content: 'Ah ocurrido un error al registrar las actas',
                     buttons: {
                         confirm: {
                             text:'Aceptar',

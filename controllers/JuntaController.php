@@ -453,11 +453,11 @@ class JuntaController extends Controller
                                  ->one();
                 }
 
-                $actaModel->count_elector = $acta['count_elector'];
-                $actaModel->count_vote = $acta['count_vote'];
-                $actaModel->null_vote = $acta['null_vote'];
-                $actaModel->blank_vote = $acta['blank_vote'];
-                $actaModel->type = $acta['type'];
+                $actaModel->count_elector = intval($acta['count_elector']);
+                $actaModel->count_vote = intval( $acta['count_vote']);
+                $actaModel->null_vote = intval($acta['null_vote']);
+                $actaModel->blank_vote = intval($acta['blank_vote']);
+                $actaModel->type = intval($acta['type']);
                 $actaModel->junta_id = $junta->id;
 
 //                $result = $this->validarActa($acta);
@@ -468,6 +468,7 @@ class JuntaController extends Controller
 //                }
 
                 if (!$actaModel->save()) {
+                    var_dump($acta);die;
                     return false;
                 }
 
@@ -515,6 +516,8 @@ class JuntaController extends Controller
                 $voteModel->user_id = intval($vote['user_id']) == 0 || intval($vote['user_id']) == null ? Yii::$app->user->id: intval($vote['user_id']) ;
 
                 if (!$voteModel->save()) {
+                    var_dump($vote);
+                    var_dump($acta);die;
                     $result = [
                         'error' => true,
                         'msg' => $voteModel->getErrorSummary(false),
@@ -608,7 +611,7 @@ class JuntaController extends Controller
         $juntaId = $data['juntaId'];
         $actas = $data['actas'];
 
-        $junta = $this->findModel($juntaId);
+        $junta = $this->findModel(intval($juntaId));
 
         if($junta == null)
         {
