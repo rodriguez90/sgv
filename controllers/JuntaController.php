@@ -498,6 +498,7 @@ class JuntaController extends Controller
             'error' => false,
             'msg' => '',
         ];
+
         try {
             foreach ($votos as $vote) {
                 $voteModel = new Voto();
@@ -533,7 +534,7 @@ class JuntaController extends Controller
 //                $voto->delete();
 //            }
 
-            return true;
+            return $result;
         }
         catch (\Exception $e) {
             $result = [
