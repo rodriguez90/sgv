@@ -787,7 +787,7 @@ function ajaxSaveActaVotes(votos, acta) {
 
                 if(response.success)
                 {
-                    if(pendingSaveVotes.length == 0) {
+                    if(pendingSaveVotes.length === 0) {
                         dialog.close();
                         reloadVotos();
                         return;
@@ -796,7 +796,7 @@ function ajaxSaveActaVotes(votos, acta) {
                 }
 
                 if(!response.success) {
-                    pendingSaveVotes.push(acta.type);
+                    pendingSaveVotes = [];
                     dialog.close();
                     $.alert(
                         {

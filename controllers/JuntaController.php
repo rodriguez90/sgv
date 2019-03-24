@@ -493,6 +493,10 @@ class JuntaController extends Controller
     }
 
     private function saveVotes($votos, $acta){
+        $result = [
+            'error' => false,
+            'msg' => '',
+        ];
         try {
             foreach ($votos as $vote) {
                 $voteModel = new Voto();
@@ -505,14 +509,17 @@ class JuntaController extends Controller
                     $voteModel = Voto::findOne(['id'=>intval($vote['id'])]);
                 }
 
-                $voteModel->acta_id = $acta['id'];
-                $voteModel->vote = $vote['vote'];
-                $voteModel->postulacion_id = $vote['postulacion_id'];
-                $voteModel->user_id = $vote['user_id'];
+                $voteModel->acta_id = intval($acta['id']);
+                $voteModel->vote = intval($vote['vote']);
+                $voteModel->postulacion_id = intval($vote['postulacion_id']);
+                $voteModel->user_id = intval($vote['user_id']) == 0 || intval($vote['user_id']) == null ? Yii::$app->user->id: intval($vote['user_id']) ;
 
                 if (!$voteModel->save()) {
-                    var_dump($voteModel->getErrorSummary(true));die;
-                    return false;
+                    $result = [
+                        'error' => true,
+                        'msg' => $voteModel->getErrorSummary(false),
+                    ];
+                    return $result;
                 }
 //                $keep[] = $vote->id;
             }
@@ -528,8 +535,11 @@ class JuntaController extends Controller
             return true;
         }
         catch (\Exception $e) {
-            var_dump($e);die;
-            return false;
+            $result = [
+                'error' => true,
+                'msg' => $e->getMessage()
+            ];
+            return $result;
         }
     }
 
@@ -666,29 +676,30 @@ class JuntaController extends Controller
         }
 
         $transaction = Yii::$app->db->beginTransaction();
-
-        if(!$this->saveVotes($votos, $acta)) {
+        $result = $this->saveVotes($votos, $acta);
+        if($result['error']) {
             $transaction->rollBack();
             $response['success'] = false;
-            $response['msg'] = 'Ah ocurrido un error al registrar los votos';
+            $response['msg'] = $result['msg'];
             return $response;
         }
         $transaction->commit();
 
-        $acta['votos'] = Voto::find()
-            ->select([
-                'voto.id',
-                'voto.vote',
-                'voto.acta_id',
-                'voto.user_id',
-                'voto.postulacion_id',
-                'profile.name as postulacion_name',
-                'postulacion.role as type',
-            ])
-            ->where(['acta_id'=>$acta['id']])
-            ->innerJoin('postulacion', 'postulacion.id=voto.postulacion_id')
-            ->innerJoin('profile', 'profile.user_id=postulacion.candidate_id')
-            ->asArray()->all();
+//        $acta['votos'] = Voto::find()
+//            ->select([
+//                'voto.id',
+//                'voto.vote',
+//                'voto.acta_id',
+//                'voto.user_id',
+//                'voto.postulacion_id',
+//                'profile.name as postulacion_name',
+//                'postulacion.role as type',
+//            ])
+//            ->where(['acta_id'=>$acta['id']])
+//            ->innerJoin('postulacion', 'postulacion.id=voto.postulacion_id')
+//            ->innerJoin('profile', 'profile.user_id=postulacion.candidate_id')
+//            ->asArray()
+//            ->all();
 
         $response['data'] = $acta ;
 
