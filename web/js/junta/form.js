@@ -97,6 +97,7 @@ function handleActas(){
                 actaModel = actaMap.get(acta);
                 console.log('Actualizando acta', actaModel);
                 console.log('Actualizando valor en acta', actaAttr);
+                console.log('Actualizando valor en acta', parseInt($(this).val()));
 
                 var total = totalVotos(acta);
 
@@ -104,11 +105,12 @@ function handleActas(){
 
                 var classValue = 'text-green';
 
+                actaModel[actaAttr] = parseInt($(this).val());
+                actaMap.set(acta, actaModel);
+
                 if(!result.error)
                 {
                     $('#btnSubmit').prop('disabled','');
-                    actaModel[actaAttr] = $(this).val();
-                    actaMap.set(acta, actaModel);
                 }
                 else
                 {
@@ -447,12 +449,13 @@ function renderTable(acta) {
                     title:'Voto',
                     render: function ( data, type, full, meta )
                     {
+                        data = parseInt(data);
                         if(type == 'display')
                         {
                             var key = full.id == null ? full.postulacion_id : full.id;
                             var voteKey = 'Votes_' + key;
 
-                            var inputVotosBlancos = $('<input>', {
+                            var inputVoto = $('<input>', {
                                 'id' : voteKey,
                                 'value': data,
                                 'data-id': key,
@@ -463,7 +466,7 @@ function renderTable(acta) {
                                 'min': 0,
                             });
 
-                            return inputVotosBlancos.get(0).outerHTML;
+                            return inputVoto.get(0).outerHTML;
                         }
                         return data;
                     }
@@ -592,7 +595,6 @@ function ajaxSaveJunta(){
         return;
     }
 
-
     var junta = {
         id: modelId,
         type: $('#junta-type').val(),
@@ -617,7 +619,7 @@ function ajaxSaveJunta(){
                 alert(response.msg);
         },
         error: function(data) {
-            $.alert('Ha ocurrido un error al intenar eliminar el préstamo!');
+            $.alert('Ha ocurrido un error al registrar las actas!');
         }
     });
 }
