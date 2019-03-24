@@ -55,9 +55,17 @@ function validarVotos(total, acta) {
         return result;
     }
 
-    if(total > cantidadVotantes || total > cantidadElectores )
+    if( total > cantidadElectores )
     {
-        result.msg = 'El total de votos no debe ser superior a la cantidad de electores y de votantes';
+        result.msg = 'El total de votos no debe ser superior a la cantidad de electores.';
+        result.error = true;
+        return result;
+    }
+
+
+    if(total !== cantidadVotantes)
+    {
+        result.msg = 'El total de votos no debe ser diferente a la cantidad de votantes';
         result.error = true;
         return result;
     }
@@ -107,7 +115,20 @@ function handleActas(){
                     classValue = 'text-red';
                     event.preventDefault();
                     $('#btnSubmit').prop('disabled','disabled');
-                    alert(result.msg);
+                    $.alert(
+                        {
+                            title:'Error!',
+                            content: result.msg,
+                            buttons: {
+                                confirm: {
+                                    text:'Aceptar',
+                                    action:function () {
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    );
                 }
 
                 actualizaTotalVotos(total, acta, classValue);
@@ -155,7 +176,7 @@ function reloadVotos(){
                 dialog.close();
                 $.alert(
                     {
-                        title:'Error!',
+                        title:'Advertencia!',
                         content: response.msg,
                         buttons: {
                             confirm: {
@@ -448,38 +469,6 @@ function renderTable(acta) {
                     }
                 },
             ],
-            "footerCallback": function ( row, data, start, end, display ) {
-                // var api = this.api(), data;
-                //
-                // // Remove the formatting to get integer data for summation
-                // var intVal = function ( i ) {
-                //     return typeof i === 'string' ?
-                //         i.replace(/[\$,]/g, '')*1 :
-                //         typeof i === 'number' ?
-                //             i : 0;
-                // };
-                //
-                // // Total over all pages
-                // total = api
-                //     .column( 2)
-                //     .data()
-                //     .reduce( function (a, b) {
-                //         return intVal(a) + intVal(b);
-                //     }, 0 );
-                //
-                // // Total over this page
-                // pageTotal = api
-                //     .column( 4, { page: 'current'} )
-                //     .data()
-                //     .reduce( function (a, b) {
-                //         return intVal(a) + intVal(b);
-                //     }, 0 );
-                //
-                // // Update footer
-                // $( api.column( 3 ).footer() ).html(
-                //     '$'+pageTotal +' ( $'+ total +' total)'
-                // );
-            }
         });
 
         $(tableId).on('focusout', 'input', function(event) {
@@ -505,7 +494,20 @@ function renderTable(acta) {
                 classValue = 'text-red';
                 event.preventDefault();
                 $('#btnSubmit').prop('disabled','disabled');
-                alert(result.msg);
+                $.alert(
+                    {
+                        title:'Advertencia!',
+                        content: result.msg,
+                        buttons: {
+                            confirm: {
+                                text:'Aceptar',
+                                action:function () {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                );
             }
 
             actualizaTotalVotos(total, acta, classValue);
