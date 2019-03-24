@@ -98,7 +98,7 @@ class VotoJuntaForm extends Model
                    }
                }
                catch (\Exception $e) {
-                   var_dump($vote->postulacion_id);die;
+//                   var_dump($vote->postulacion_id);die;
                    return false;
 
                 }
@@ -210,7 +210,7 @@ class VotoJuntaForm extends Model
                 if (is_array($vote)) {
 //                    $this->_votes[$role][$key] = $this->getVote($key);
                     if($vote->postulacion_id == null)
-                        var_dump($vote->postulacion_id);die('setVotes');
+//                        var_dump($vote->postulacion_id);die('setVotes');
                     $this->_votes[$role][$key] = new Voto();
                     $this->_votes[$role][$key]->loadDefaultValues();
                     $this->_votes[$role][$key]->setAttributes($vote);

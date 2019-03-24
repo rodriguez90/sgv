@@ -468,7 +468,7 @@ class JuntaController extends Controller
 //                }
 
                 if (!$actaModel->save()) {
-                    var_dump($acta);die;
+//                    var_dump($acta);die;
                     return false;
                 }
 
@@ -488,7 +488,7 @@ class JuntaController extends Controller
         }
         catch (\Exception $e)
         {
-            var_dump($e);die;
+//            var_dump($e);die;
             return false;
         }
     }
@@ -516,8 +516,6 @@ class JuntaController extends Controller
                 $voteModel->user_id = intval($vote['user_id']) == 0 || intval($vote['user_id']) == null ? Yii::$app->user->id: intval($vote['user_id']) ;
 
                 if (!$voteModel->save()) {
-                    var_dump($vote);
-                    var_dump($acta);die;
                     $result = [
                         'error' => true,
                         'msg' => $voteModel->getErrorSummary(false),
