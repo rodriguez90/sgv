@@ -19,10 +19,6 @@ function reloadVotos() {
 
     var dignidad = $("#dignidad_select2").val();
 
-    console.log('canton', canton);
-    console.log('recinto', recinto);
-    console.log('dignidad', dignidad);
-
     $.ajax({
         url: homeUrl + 'site/votospostulacion',
         data: {
@@ -32,27 +28,26 @@ function reloadVotos() {
         },
         type: "GET",
         success: function (response) {
-            console.log('response', response.data);
             var postulaciones = [];
             var votos = [];
-            response.data.forEach(function (element) {
-                chart.data.labels.push(element.name);
-                chart.data.datasets.forEach((dataset) => {
-                    dataset.data.push(element.vote);
+            if(response.success)
+            {
+                response.data.forEach(function (element) {
+                    chart.data.labels.push(element.name);
+                    chart.data.datasets.forEach((dataset) => {
+                        dataset.data.push(element.vote);
+                    });
                 });
-            });
 
-            // chart.data.labels.push(label);
-            // chart.data.datasets.forEach((dataset) => {
-            //     dataset.data.push(data);
-            // });
-            chart.options = config;
-            chart.update();
-
-            // renderVotoChart({postulaciones, votos});
+                chart.options = config;
+                chart.update();
+            }
+            else {
+                $.alert('No sea ha encontrado ninguna información.!');
+            }
         },
         error: function(data) {
-            $.alert('Ha ocurrido un error al intenar recuperar los votos!');
+            $.alert('No sea ha encontrado ninguna información.!');
         }
     });
 

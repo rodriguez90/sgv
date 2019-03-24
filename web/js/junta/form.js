@@ -110,7 +110,7 @@ function handleActas(){
                     alert(result.msg);
                 }
 
-                // actualizaTotalVotos(total, acta, classValue);
+                actualizaTotalVotos(total, acta, classValue);
                 return result.error;
             });
         }
@@ -369,18 +369,16 @@ function generateTable(acta)
         'class': 'display table table-bordered  table-striped table-condensed no-wrap',
         'style': 'width:100%;',
         'cellspacing':"0",
-    });
-
-    // var tableFooter = $('<tfooter>', {})
-    //     .append($('<tr>', {})
-    //     .append($('<td>', {}).html('Total Votos'))
-    //     .append($('<td>', {}).append($('<label>', {
-    //         'id': 'totalVotos_' + acta.type
-    //     })).html(0)));
-    //
-    // console.log(tableFooter.get(0).outerHTML);
-    //
-    // table.append(tableFooter);
+    })
+    .append($('<thead>', {})
+       .append($('<tr>',{})
+        .append($('<th>',{}).html('Postulación'))
+        .append($('<th>',{}).html('Voto'))
+    .append($('<tbody>',{}))
+    .append($('<tfooter>', {})
+        .append($('<tr>', {})
+            .append($('<td>', {}).html('Total Votos'))
+            .append($('<td>', {}).append($('<label>', {'id': 'totalVotos_' + acta.type}).html(0)))))));
 
     return table;
 }
@@ -450,12 +448,38 @@ function renderTable(acta) {
                     }
                 },
             ],
-            // "createdRow": function( row, data, dataIndex ) {
-            //     // console.log($('td input', row).eq(0));
-            //     $('td input', row).eq(0).on('change', function () {
-            //         alert('Voto: ' + $(this).val());
-            //     });
-            // }
+            "footerCallback": function ( row, data, start, end, display ) {
+                // var api = this.api(), data;
+                //
+                // // Remove the formatting to get integer data for summation
+                // var intVal = function ( i ) {
+                //     return typeof i === 'string' ?
+                //         i.replace(/[\$,]/g, '')*1 :
+                //         typeof i === 'number' ?
+                //             i : 0;
+                // };
+                //
+                // // Total over all pages
+                // total = api
+                //     .column( 2)
+                //     .data()
+                //     .reduce( function (a, b) {
+                //         return intVal(a) + intVal(b);
+                //     }, 0 );
+                //
+                // // Total over this page
+                // pageTotal = api
+                //     .column( 4, { page: 'current'} )
+                //     .data()
+                //     .reduce( function (a, b) {
+                //         return intVal(a) + intVal(b);
+                //     }, 0 );
+                //
+                // // Update footer
+                // $( api.column( 3 ).footer() ).html(
+                //     '$'+pageTotal +' ( $'+ total +' total)'
+                // );
+            }
         });
 
         $(tableId).on('focusout', 'input', function(event) {
@@ -484,10 +508,14 @@ function renderTable(acta) {
                 alert(result.msg);
             }
 
-            // actualizaTotalVotos(total, acta, classValue);
+            actualizaTotalVotos(total, acta, classValue);
             return result.error;
 
-        })
+        });
+
+        var total = totalVotos(acta.type);
+
+        actualizaTotalVotos(total , acta.type, 'text-green');
     }
 }
 

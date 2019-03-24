@@ -70,13 +70,6 @@ class Acta extends \yii\db\ActiveRecord
      */
     public function getVotos()
     {
-//        $canton = $this->getCanton();
-//        $query = $this->hasMany(Voto::className(), ['junta_id' => 'id']);
-//        $query
-//            ->innerJoin('postulacion', 'postulacion.id=voto.postulacion_id')
-//            ->innerJoin('postulacion_canton', 'postulacion_canton.postulacion_id=postulacion.id')
-//            ->where(['postulacion_canton.canton_id'=> $canton->id]);
-
         return $this->hasMany(Voto::className(), ['acta_id' => 'id']);
     }
 
