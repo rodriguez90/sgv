@@ -20,7 +20,7 @@ $this->title = '';
                 <div class="info-box-content">
                     <span class="info-box-text">Recintos en Elección</span>
                     <!--                    <span class="info-box-number">41,410<small>%</small></span>-->
-                    <span class="info-box-number"><?=$totalRecintos?></span>
+                    <span id="totalRecintos" class="info-box-number"><?=$totalRecintos?></span>
                 </div>
                 <!-- /.info-box-content -->
             </div>
@@ -33,7 +33,7 @@ $this->title = '';
 
                 <div class="info-box-content">
                     <span class="info-box-text">Juntas</span>
-                    <span class="info-box-number"><?=$totalJunta?></span>
+                    <span id="totalJunta"  class="info-box-number"><?=$totalJunta?></span>
                 </div>
                 <!-- /.info-box-content -->
             </div>
@@ -50,7 +50,7 @@ $this->title = '';
 
                 <div class="info-box-content">
                     <span class="info-box-text">Actas</span>
-                    <span class="info-box-number"><?= $totalActas ?></span>
+                    <span id="totalActas" class="info-box-number"><?= $totalActas ?></span>
                 </div>
                 <!-- /.info-box-content -->
             </div>
@@ -63,7 +63,7 @@ $this->title = '';
 
                 <div class="info-box-content">
                     <span class="info-box-text">Postulaciones</span>
-                    <span class="info-box-number"><?= $totalPostulacion ?></span>
+                    <span id="totalPostulacion" class="info-box-number"><?= $totalPostulacion ?></span>
                 </div>
                 <!-- /.info-box-content -->
             </div>

@@ -19,7 +19,7 @@ $this->title = '';
                 <div class="info-box-content">
                     <span class="info-box-text">Electores</span>
                     <!--                    <span class="info-box-number">41,410<small>%</small></span>-->
-                    <span class="info-box-number"><?=$totalElectores?></span>
+                    <span id="totalElectores" class="info-box-number"><?=$totalElectores?></span>
                 </div>
                 <!-- /.info-box-content -->
             </div>
@@ -32,7 +32,7 @@ $this->title = '';
 
                 <div class="info-box-content">
                     <span class="info-box-text">Votos</span>
-                    <span class="info-box-number"><?=$totalVotos?></span>
+                    <span id="totalVotos" class="info-box-number"><?=$totalVotos?></span>
                 </div>
                 <!-- /.info-box-content -->
             </div>
@@ -49,7 +49,7 @@ $this->title = '';
 
                 <div class="info-box-content">
                     <span class="info-box-text">Votos Nulos</span>
-                    <span class="info-box-number"><?= $totalVotosNulos ?></span>
+                    <span id="totalVotosNulos" class="info-box-number"><?= $totalVotosNulos ?></span>
                 </div>
                 <!-- /.info-box-content -->
             </div>
@@ -62,7 +62,7 @@ $this->title = '';
 
                 <div class="info-box-content">
                     <span class="info-box-text">Votos En Blanco</span>
-                    <span class="info-box-number"><?= $totalVotosBlancos ?></span>
+                    <span id="totalVotosBlancos"  class="info-box-number"><?= $totalVotosBlancos ?></span>
                 </div>
                 <!-- /.info-box-content -->
             </div>
@@ -98,7 +98,7 @@ $this->title = '';
                                     'onchange'=>'                                        
                                          $.get(homeUrl + "recinto-eleccion/lists?cantonId='.'"+$(this).val(),function(data){
                                                     $( "#recinto_select2" ).html(data);
-                                                    reloadVotos();
+                                                    fetchData();
                                                });'
                                 ],
 
@@ -116,7 +116,7 @@ $this->title = '';
                                 'options' => ['placeholder' => 'Seleccione Recinto.',
                                     'onchange'=>'
                                         console.log("recinto_select2", this.value);
-                                        reloadVotos();
+                                        fetchData();
                                         '
                                 ],
 
@@ -135,7 +135,8 @@ $this->title = '';
                                 'options' => [
                                     'placeholder' => 'Seleccione Dignidad.',
                                     'onchange'=>'
-                                        reloadVotos();
+                                        clearInterval(id);
+                                        fetchData();
                                         '
                                 ],
 

@@ -1,3 +1,7 @@
+var interval = null;
+
+var timeOut = 10000;
+
 var chart = null;
 var config = {
     responsive: true,
@@ -39,7 +43,7 @@ function removeData(chart) {
     chart.update();
 }
 
-function reloadVotos() {
+function fetchRecintoActas() {
     removeData(chart);
 
     var canton = $("#canton_select2").val();
@@ -64,7 +68,15 @@ function reloadVotos() {
             var votos = [];
             if(response.success)
             {
-                response.data.forEach(function (element) {
+                var totales =  response.data.totales;
+                var rentintoActas = response.data.rentintoActas;
+
+                $('#totalRecintos').html(totales.totalRecintos);
+                $('#totalJunta').html(totales.totalJunta);
+                $('#totalActas').html(totales.totalActas);
+                $('#totalPostulacion').html(totales.totalPostulacion);
+
+                rentintoActas.forEach(function (element) {
                     chart.data.labels.push(element.name);
                     chart.data.datasets.forEach((dataset) => {
                         dataset.data.push(element.cantidad);
@@ -105,10 +117,15 @@ function init() {
     });
 }
 
-$(document).ready(function () {
+function fetchData() {
+    clearInterval(interval);
+    fetchRecintoActas();
+    interval = setInterval(fetchData, timeOut);
+}
 
+$(document).ready(function () {
     init();
-    reloadVotos();
-    setInterval(reloadVotos, 30000);
+    fetchData();
+    setInterval(fetchData, timeOut);
 
 });

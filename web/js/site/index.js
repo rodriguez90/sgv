@@ -1,3 +1,26 @@
+var interval = null;
+
+var timeOut = 10000;
+
+// $.xhrPool = [];
+// $.xhrPool.abortAll = function() {
+//     $(this).each(function(idx, jqXHR) {
+//         jqXHR.abort();
+//     });
+//     $.xhrPool = [];
+// };
+//
+// $.ajaxSetup({
+//     beforeSend: function(jqXHR) {
+//         $.xhrPool.push(jqXHR);
+//     },
+//     complete: function(jqXHR) {
+//         var index = $.xhrPool.indexOf(jqXHR);
+//         if (index > -1) {
+//             $.xhrPool.splice(index, 1);
+//         }
+//     }
+// });
 
 function removeData(chart) {
     chart.data.labels = [];
@@ -7,7 +30,7 @@ function removeData(chart) {
     chart.update();
 }
 
-function reloadVotos() {
+function fetchVotos() {
     removeData(chart);
 
     var canton = $("#canton_select2").val();
@@ -129,9 +152,41 @@ function renderVotoChart(data) {
     });
 }
 
+function fetchTotales(){
+
+    $.ajax({
+        url: homeUrl + 'site/elecciones-totales',
+        type: "GET",
+        success: function (response) {
+            if(response.success)
+            {
+                $('#totalElectores').html(response.data.totalElectores);
+                $('#totalVotos').html(response.data.totalVotos);
+                $('#totalVotosNulos').html(response.data.totalVotosNulos);
+                $('#totalVotosBlancos').html(response.data.totalVotosBlancos);
+            }
+        },
+        error: function(data) {
+            $.alert('No sea ha encontrado ninguna información.!');
+        }
+    });
+
+}
+
+function fetchData() {
+    clearInterval(interval);
+
+    fetchTotales();
+    fetchVotos();
+
+    interval = setInterval(fetchData, timeOut);
+}
+
 $(document).ready(function () {
     init();
-    reloadVotos();
+    fetchData();
     // stop watch
-    setInterval(reloadVotos, 30000);
+    interval = setInterval(fetchData, timeOut);
 });
+
+// $.xhrPool and $.ajaxSetup are the solution

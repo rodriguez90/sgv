@@ -43,7 +43,12 @@ class SiteController extends Controller
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['index', 'votospostulacion', 'report', 'recintoactas'],
+                        'actions' => [
+                            'index',
+                            'votospostulacion',
+                            'report',
+                            'recintoactas',
+                            'elecciones-totales'],
                         'allow' => true,
                         'roles' => ['site/index', 'junta/index'],
                     ],
@@ -91,49 +96,16 @@ class SiteController extends Controller
             $this->redirect(Url::toRoute(['junta/index']));
         }
 
-        $postulacionAlcaldia = Postulacion::find()
-            ->innerJoin('partido', 'partido.id=postulacion.partido_id')
-//            ->where(['role'=>Postulacion::ROL_ALCALDIA])
-            ->orderBy([
-                'partido.list'=>SORT_ASC,
-                'partido.number'=>SORT_ASC,
-            ])
-            ->all();
-        $labels = [];
-        $data = [];
-        $elecciones = Eleccion::find()->all();
-        $eleccion = null;
-
-        if(count($elecciones)) $eleccion = $elecciones[0];
-
-        $totalElectores = $eleccion->totalElectores;
-        $totalVotos = $eleccion->totalVotos;
-        $totalVotosNulos = $eleccion->totalVotosNulos;
-        $totalVotosBlancos = $eleccion->totalVotosBlancos;
-
-
-        foreach ($postulacionAlcaldia as $p) {
-            array_push($labels, $p->name);
-            array_push($data, $p->totalVotos);
-        }
-
-        $labelsPorcientos = ['Votos', 'Votos Nulos', 'Votos en Blanco', 'Ausentismo'];
-        $dataPorcientos = [
-            $eleccion->porcientoVotos,
-            $eleccion->porcientoVotosNulos,
-            $eleccion->porcientoVotosBlancos,
-            $eleccion->porcientoAusentismo,
-        ];
+        $totalElectores = 0;
+        $totalVotos = 0;
+        $totalVotosNulos = 0;
+        $totalVotosBlancos = 0;
 
         return $this->render('index3', [
             'totalElectores' => $totalElectores,
             'totalVotos' => $totalVotos,
             'totalVotosNulos' => $totalVotosNulos,
             'totalVotosBlancos' => $totalVotosBlancos,
-            'labels' => $labels,
-            'data' => $data,
-            'labelsPorcientos' => $labelsPorcientos,
-            'dataPorcientos' => $dataPorcientos,
         ]);
     }
 
@@ -204,11 +176,6 @@ class SiteController extends Controller
                 $eleccion->porcientoVotosBlancos,
                 $eleccion->porcientoAusentismo,
             ];
-
-            $totalRecintos = $eleccion->getTotalRecintos();
-            $totalJunta = $eleccion->getTotalJuntas();
-            $totalActas = $eleccion->getTotalActas();
-            $totalPostulacion = $eleccion->getTotalPostulacion();
         }
 
         return $this->render('report', [
@@ -268,7 +235,33 @@ class SiteController extends Controller
         $recinto = Yii::$app->request->get('recinto');
         $dignidad= Yii::$app->request->get('dignidad');
 
-        $response['data'] = Acta::find()
+
+
+        $elecciones = Eleccion::find()->all();
+        $eleccion = null;
+
+        $totalRecintos = 0;
+        $totalJunta = 0;
+        $totalActas = 0;
+        $totalPostulacion = 0;
+
+        if(count($elecciones)) {
+            $eleccion = $elecciones[0];
+
+            $totalRecintos = $eleccion->getTotalRecintos();
+            $totalJunta = $eleccion->getTotalJuntas();
+            $totalActas = $eleccion->getTotalActas();
+            $totalPostulacion = $eleccion->getTotalPostulacion();
+        }
+
+        $response['data']['totales'] = [
+            'totalRecintos' => $totalRecintos,
+            'totalJunta' => $totalJunta,
+            'totalActas' => $totalActas,
+            'totalPostulacion' => $totalPostulacion,
+        ] ;
+
+        $response['data']['rentintoActas'] = Acta::find()
             ->select([
                 'recinto_electoral.name',
                 'count(acta.id) as cantidad'
@@ -286,6 +279,38 @@ class SiteController extends Controller
             ->groupBy(['recinto_eleccion.id'])
             ->asArray()
             ->all();
+
+        return $response;
+    }
+
+    function actionEleccionesTotales() {
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $response = array();
+        $response['success'] = true;
+        $response['msg'] = '';
+        $response['data'] = [];
+        $response['msg_dev'] = '';
+
+        $elecciones = Eleccion::find()->all();
+        $eleccion = null;
+
+        if(count($elecciones)) {
+            $eleccion = $elecciones[0];
+
+            $totalElectores = $eleccion->totalElectores;
+            $totalVotos = $eleccion->totalVotos;
+            $totalVotosNulos = $eleccion->totalVotosNulos;
+            $totalVotosBlancos = $eleccion->totalVotosBlancos;
+        }
+
+        $response['data'] = [
+            'totalElectores' => $totalElectores,
+            'totalVotos' => $totalVotos,
+            'totalVotosNulos' => $totalVotosNulos,
+            'totalVotosBlancos' => $totalVotosBlancos,
+        ];
 
         return $response;
     }
