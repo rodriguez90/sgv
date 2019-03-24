@@ -543,7 +543,19 @@ class JuntaController extends Controller
 
         $juntaData = Yii::$app->request->post();
 
-        $model = Junta::findOne(['id'=>$juntaData['id']]);
+
+
+        $model = Junta::find()
+            ->where(['Lower(name)'=>strtolower($juntaData['name'])])
+            ->andWhere(['recinto_eleccion_id'=>$juntaData['recinto']])
+            ->one();
+
+        if($model !== null && $model->id !== $juntaData['id'])
+        {
+            $response['success'] = false;
+            $response['msg'] = 'Ya existe una junta con ese nombre en el recinto.';
+            return $response;
+        }
 
         if($model == null)
         {

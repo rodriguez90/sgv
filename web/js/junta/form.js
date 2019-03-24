@@ -616,10 +616,32 @@ function ajaxSaveJunta(){
             }
 
             if(!response.success)
-                alert(response.msg);
+            {
+                $.alert(
+                    {
+                        title:'Advertencia!!!',
+                        content: response.msg,
+                        buttons: {
+                            confirm: {
+                                text:'Aceptar',
+                            }
+                        }
+                    }
+                );
+            }
         },
         error: function(data) {
-            $.alert('Ha ocurrido un error al registrar las actas!');
+            $.alert(
+                {
+                    title:'Advertencia!!!',
+                    content: 'Ha ocurrido un error al registrar las actas',
+                    buttons: {
+                        confirm: {
+                            text:'Aceptar',
+                        }
+                    }
+                }
+            );
         }
     });
 }
