@@ -45,7 +45,7 @@ class SiteController extends Controller
                     [
                         'actions' => ['index', 'votospostulacion', 'report', 'recintoactas'],
                         'allow' => true,
-                        'roles' => ['site/index', 'Registrador'],
+                        'roles' => ['site/index', 'junta/index'],
                     ],
                     [
                         'actions' => ['error'],
@@ -88,7 +88,7 @@ class SiteController extends Controller
         $users = Yii::$app->authManager->getUserIdsByRole('Digitador');
         if(in_array(Yii::$app->user->getId(), $users))
         {
-            $this->redirect(Url::toRoute(['voto/index']));
+            $this->redirect(Url::toRoute(['junta/index']));
         }
 
         $postulacionAlcaldia = Postulacion::find()

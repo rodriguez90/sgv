@@ -85,7 +85,7 @@ if(Yii::$app->user !== null && Yii::$app->user->identity !== null)
     {
         $eleccion['items'][]=['label' => 'Juntas Receptoras de Votos', 'icon' => 'archive', 'url' => ['/junta/index']];
     }
-    
+
 
     if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'partido/index')
         || Yii::$app->user->identity->getIsAdmin())
