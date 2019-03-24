@@ -42,7 +42,7 @@ use yii\widgets\ActiveForm;
                                                     $( "#junta-recinto_eleccion_id" ).html(data);
                                                     console.log("#junta-recinto_eleccion_id", $("#junta-recinto_eleccion_id").val());
                                                     recintoId = $("#junta-recinto_eleccion_id").val() === "-" ? 0 : $("#junta-recinto_eleccion_id").val();
-//                                                    reloadVotos();
+                                                    reloadVotos();
                                                 });'
                                 ],
 
