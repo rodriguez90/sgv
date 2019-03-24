@@ -33,7 +33,7 @@ use yii\widgets\ActiveForm;
                             [
                                 'prompt'=>'Seleccione la Provincia',
                                 'onchange' =>'
-                                    $.get("../canton/lists?id='.'"+$(this).val(),function(data){
+                                    $.get(homeUrl + "canton/lists?id='.'"+$(this).val(),function(data){
                                     $( "select#canton" ).html(data);
                                     });',
                                 'class' =>'form-control',
@@ -49,7 +49,7 @@ use yii\widgets\ActiveForm;
                             [
                                 'prompt'=>'Seleccione la Provincia',
                                 'onchange' =>'
-                                    $.get("../parroquia/lists?id='.'"+$(this).val(),function(data){
+                                    $.get(homeUrl + "parroquia/lists?id='.'"+$(this).val(),function(data){
                                     $( "select#parroquia-parroquia_id" ).html(data);
                                     });',
                                 'class' =>'form-control',

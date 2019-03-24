@@ -95,11 +95,11 @@ $this->title = '';
                                 'data' => \yii\helpers\ArrayHelper::map(\app\models\Canton::find()->asArray()->all(),'id','name'),
                                 'language' => 'es',
                                 'options' => ['placeholder' => 'Seleccione Cantón.',
-                                    'onchange'=>'
-                                         $.post("../recinto-eleccion/lists?cantonId='.'"+$(this).val(),function(data){
+                                    'onchange'=>'                                        
+                                         $.get(homeUrl + "recinto-eleccion/lists?cantonId='.'"+$(this).val(),function(data){
                                                     $( "#recinto_select2" ).html(data);
                                                     reloadVotos();
-                                                });'
+                                               });'
                                 ],
 
                                 'pluginOptions' => [
@@ -108,7 +108,7 @@ $this->title = '';
                             ]);?>
                         </div>
                         <div class="col-lg-4 col-md-4 col-xs-4">
-                            <label class="control-label" for="canton_select2">Recinto</label>
+                            <label class="control-label" for="recinto_select2">Recinto</label>
                             <?= \kartik\select2\Select2::widget( [
                                 'id' => 'recinto_select2',
                                 'name' => 'recinto_select2',

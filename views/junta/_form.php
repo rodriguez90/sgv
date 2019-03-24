@@ -38,11 +38,11 @@ use yii\widgets\ActiveForm;
                                     'onchange'=>'
                                         console.log("canton_select2", this.value);
                                         
-                                         $.post("../recinto-eleccion/lists?cantonId='.'"+$(this).val(),function(data){
+                                         $.get(homeUrl + "/recinto-eleccion/lists?cantonId='.'"+$(this).val(),function(data){
                                                     $( "#junta-recinto_eleccion_id" ).html(data);
                                                     console.log("#junta-recinto_eleccion_id", $("#junta-recinto_eleccion_id").val());
                                                     recintoId = $("#junta-recinto_eleccion_id").val() === "-" ? 0 : $("#junta-recinto_eleccion_id").val();
-                                                    reloadVotos();
+//                                                    reloadVotos();
                                                 });'
                                 ],
 
@@ -54,12 +54,17 @@ use yii\widgets\ActiveForm;
 
                         <div class="col-lg-3 col-md-3 col-xs-3">
                             <?= $form->field($model, 'recinto_eleccion_id')->widget(\kartik\select2\Select2::classname(), [
+                                'data' => \yii\helpers\ArrayHelper::map(\app\models\RecintoEleccion::find()
+                                    ->select(['recinto_eleccion.id',
+                                        'recinto_electoral.name'
+                                    ])->innerJoin('recinto_electoral',
+                                        'recinto_electoral.id=recinto_eleccion.recinto_id')
+                                    ->asArray()->all(),'id','name'),
                                 'language' => 'es',
                                 'options' => ['placeholder' => 'Seleccione la Recinto.',
                                     'onchange'=>'
                                         console.log("junta-recinto_eleccion_id", this.value);
                                          recintoId = $("#junta-recinto_eleccion_id").val() === "-" ? 0 : $("#junta-recinto_eleccion_id").val();
-                                        // reloadVotos();                                      
                                         '
                                 ],
                                 'pluginOptions' => [

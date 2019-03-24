@@ -32,7 +32,7 @@ use yii\widgets\ActiveForm;
                                     [
                                         'prompt'=>'Seleccione el Recinto',
                                         'onchange' =>'
-                                    $.get("../junta/lists?id='.'"+$(this).val(),function(data){
+                                    $.get(homeUrl + "junta/lists?id='.'"+$(this).val(),function(data){
                                     $( "select#voto-junta_id" ).html(data);
                                     });',
                                         'class' =>'form-control',

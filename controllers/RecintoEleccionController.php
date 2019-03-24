@@ -66,6 +66,7 @@ class RecintoEleccionController extends Controller
                     [
                         'actions' => ['lists'],
                         'allow' => true,
+                        'roles' => ['@'],
                     ],
                 ],
             ]

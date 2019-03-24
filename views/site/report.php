@@ -97,7 +97,7 @@ $this->title = '';
                                 'language' => 'es',
                                 'options' => ['placeholder' => 'Seleccione Cantón.',
                                     'onchange'=>'
-                                         $.post("../recinto-eleccion/lists?cantonId='.'"+$(this).val(),function(data){
+                                         $.get(homeUrl + "recinto-eleccion/lists?cantonId='.'"+$(this).val(),function(data){
                                                     $( "#recinto_select2" ).html(data);
                                                     reloadVotos();
                                                 });'

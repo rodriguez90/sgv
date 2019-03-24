@@ -32,7 +32,7 @@ use yii\widgets\ActiveForm;
                             [
                                 'prompt'=>'Seleccione la Provincia',
                                 'onchange' =>'
-                                    $.get("../canton/lists?id='.'"+$(this).val(),function(data){
+                                    $.get(homeUrl + "canton/lists?id='.'"+$(this).val(),function(data){
                                     $( "select#parroquia-canton_id" ).html(data);
                                     });',
                                 'class' =>'form-control',
