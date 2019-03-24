@@ -234,7 +234,7 @@ function generateRowActa(acta) {
 
     var label = $('<label>', {
         'for':  actaName + "_count_elector",
-    }).html('Cantidad de Electores');
+    }).html('Electores');
 
     var inputCountElector = $('<input>', {
         'id' : actaName + "_count_elector",
@@ -262,7 +262,7 @@ function generateRowActa(acta) {
 
     label = $('<label>', {
         'for':  actaName + "_count_vote",
-    }).html('Cantidad de Votantes');
+    }).html('Votantes');
 
     var inputCountVote = $('<input>', {
         'id' : actaName + "_count_vote",
