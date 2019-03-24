@@ -445,12 +445,12 @@ class JuntaController extends Controller
             foreach ($actas as $acta) {
                 $actaModel = new Acta();
                 $actaModel->loadDefaultValues();
-                if($acta['id'] !== null && $acta['id'] !== "")
+                if($acta['id'] !== null && $acta['id'] !== "" && intval($acta['id']) !== 0)
                 {
                     $actaModel = Acta::find()
                                  ->where(['type'=>intval($acta['type'])])
                                  ->andWhere(['junta_id'=>$junta->id])
-                        ->one();
+                                 ->one();
                 }
 
                 $actaModel->count_elector = $acta['count_elector'];
@@ -498,9 +498,11 @@ class JuntaController extends Controller
                 $voteModel = new Voto();
                 $voteModel->loadDefaultValues();
 
-                if($vote['id'] !== null && $vote['id'] !== '')
+                if($vote['id'] !== null &&
+                    $vote['id'] !== '' &&
+                intval($vote['id']) !== 0)
                 {
-                    $voteModel = Voto::findOne(['id'=>$vote['id'] ]);
+                    $voteModel = Voto::findOne(['id'=>intval($vote['id'])]);
                 }
 
                 $voteModel->acta_id = $acta['id'];
@@ -543,11 +545,9 @@ class JuntaController extends Controller
 
         $juntaData = Yii::$app->request->post();
 
-
-
         $model = Junta::find()
             ->where(['Lower(name)'=>strtolower($juntaData['name'])])
-            ->andWhere(['recinto_eleccion_id'=>$juntaData['recinto']])
+            ->andWhere(['recinto_eleccion_id'=>intval($juntaData['recinto'])])
             ->one();
 
         if($model !== null && $model->id !== intval($juntaData['id']))
@@ -655,9 +655,9 @@ class JuntaController extends Controller
         $acta = $data['acta'];
         $votos = $data['votos'];
 
-        $actaModel = Acta::findOne(['id'=>$acta['id']]);
+        $actaModel = Acta::findOne(['id'=>intval($acta['id'])]);
 
-        if($actaModel == null)
+        if($actaModel == null )
         {
             $response['success'] = false;
             $response['msg'] = 'El acta no existe';

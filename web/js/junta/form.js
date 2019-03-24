@@ -106,7 +106,7 @@ function handleActas(){
                 var classValue = 'text-green';
 
                 actaModel[actaAttr] = parseInt($(this).val());
-                actaMap.set(acta, actaModel);
+                actaMap.set(String(acta), actaModel);
 
                 if(!result.error)
                 {
@@ -490,7 +490,7 @@ function renderTable(acta) {
             if(!result.error)
             {
                 $('#btnSubmit').prop('disabled','');
-                actaMap.set(acta, actaModel);
+                actaMap.set(String(acta), actaModel);
             }
             else
             {
@@ -715,8 +715,8 @@ function ajaxSaveActas(){
                 for(var i = 0 ; i < actas.length; i++)
                 {
                     var acta = actas[i];
-                    actaMap.set(acta.type, acta);
-                    pendingSaveVotes.push(acta.type);
+                    actaMap.set(String(acta.type), acta);
+                    pendingSaveVotes.push(String(acta.type));
                 }
 
                 ajaxSaveVotes();
