@@ -51,8 +51,6 @@ class PostulacionSearch extends Postulacion
         // add conditions that should always apply here
 
         $query->joinWith(['partido', 'candidate', 'eleccion']);
-//        $query->innerJoin('postulacion_canton', 'postulacion_canton.postulacion_id = postulacion.id');
-//        $query->innerJoin('canton', 'canton.id = postulacion_canton.canton_id');
 
         $query->orderBy([
             'partido.name'=>SORT_ASC,
@@ -100,8 +98,7 @@ class PostulacionSearch extends Postulacion
 
         $query->andFilterWhere(['like', 'partido.name', $this->partido]);
         $query->andFilterWhere(['like', 'eleccion.name', $this->eleccion]);
-        $query->andFilterWhere(['like', 'candidate.name', $this->candidate]);
-//        $query->andFilterWhere(['canton.id', $this->canton]);
+        $query->andFilterWhere(['like', 'profile.name', $this->candidate]);
 
         return $dataProvider;
     }
