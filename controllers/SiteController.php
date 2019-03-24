@@ -280,7 +280,7 @@ class SiteController extends Controller
             ->innerJoin('parroquia', 'zona.parroquia_id=parroquia.id')
             ->innerJoin('canton', 'canton.id=parroquia.canton_id')
             ->where(['>', 'acta.count_vote', 0])
-            ->andFilterWhere(['canton.canton_id'=>$canton])
+            ->andFilterWhere(['canton.id'=>$canton])
             ->andFilterWhere(['acta.type'=>$dignidad])
             ->andFilterWhere(['junta.recinto_eleccion_id'=>$recinto])
             ->groupBy(['recinto_eleccion.id'])
