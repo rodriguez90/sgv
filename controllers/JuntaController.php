@@ -197,7 +197,7 @@ class JuntaController extends Controller
         }
     }
 
-    private function validarVoto($junta) {
+    private function validarActa($acta) {
 
         $result = [
             'result'=>true,
@@ -206,45 +206,45 @@ class JuntaController extends Controller
 
         return $result;
 
-        if($junta)
+        if($acta)
         {
-            $recinto = $junta->recintoEleccion;
+            $recinto = $acta->recintoEleccion;
             if($recinto == null)
             {
                 $result['result'] = false;
-                $result['error'] = 'Debe seleccionar un recinto.';
+                $result['error'] = 'El acta debe estar asociada a una junta';
                 return $result;
             }
             $totalElectores = $recinto->count_elector;
             $ausentismo = $recinto->getAusentismo();
-            $totalInvalidVotes = $junta->blank_vote + $junta->null_vote;
+            $totalInvalidVotes = $acta->blank_vote + $acta->null_vote;
 
-            if(!$junta->isNewRecord)
+            if(!$acta->isNewRecord)
             {
-                $oldJunta = Junta::findOne(['id' => $junta->id]);
-                $ausentismo += $oldJunta->getTotalVotosBlancos() + $oldJunta->getTotalVotosNulos();
+                $oldActa = Acta::findOne(['id' => $acta->id]);
+                $ausentismo += $oldActa->blank_vote + $oldActa->null_vote;
             }
 
-            if ($junta->null_vote > $totalElectores) {
+            if ($acta->null_vote > $totalElectores) {
                 $result['result'] = false;
                 $result['error'] = 'Los votos nulos no pueden ser superior a la cantida de electores del recinto.';
                 return $result;
             }
 
-            if ($junta->blank_vote > $totalElectores) {
+            if ($acta->blank_vote > $totalElectores) {
                 $result['result'] = false;
                 $result['error'] = 'Los votos en blanco no pueden ser superior a la cantida de electores del recinto.';
                 return $result;
             }
 
-            if($junta->null_vote > $ausentismo)
+            if($acta->null_vote > $ausentismo)
             {
                 $result['result'] = false;
                 $result['error'] = 'Los votos nulos no pueden ser superior a la cantida de votos admitidos por el recinto.';
                 return $result;
             }
 
-            if($junta->blank_vote > $ausentismo)
+            if($acta->blank_vote > $ausentismo)
             {
                 $result['result'] = false;
                 $result['error'] = 'Los en blanco no pueden ser superior a la cantida de votos admitidos por el recinto.';
@@ -447,7 +447,10 @@ class JuntaController extends Controller
                 $actaModel->loadDefaultValues();
                 if($acta['id'] !== null && $acta['id'] !== "")
                 {
-                    $actaModel = Acta::findOne(['type'=>intval($acta['type'])]);
+                    $actaModel = Acta::find()
+                                 ->where(['type'=>intval($acta['type'])])
+                                 ->andWhere(['junta_id'=>$junta->id])
+                        ->one();
                 }
 
                 $actaModel->count_elector = $acta['count_elector'];
@@ -456,6 +459,13 @@ class JuntaController extends Controller
                 $actaModel->blank_vote = $acta['blank_vote'];
                 $actaModel->type = $acta['type'];
                 $actaModel->junta_id = $junta->id;
+
+//                $result = $this->validarActa($acta);
+//                if(!$result['result'])
+//                {
+//                    $error = $result['error'];
+//                    return false;
+//                }
 
                 if (!$actaModel->save()) {
                     return false;

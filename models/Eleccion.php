@@ -81,6 +81,30 @@ class Eleccion extends \yii\db\ActiveRecord
         return $count;
     }
 
+    public function getTotalJuntas()
+    {
+        $count  = Junta::find()
+            ->innerJoin('recinto_eleccion', 'recinto_eleccion.id=junta.recinto_eleccion_id')
+            ->where(['eleccion_id'=>$this->id])->count('junta.id');
+        return $count;
+    }
+
+    public function getTotalActas()
+    {
+        $count  = Acta::find()
+            ->innerJoin('junta', 'junta.id=acta.junta_id')
+            ->innerJoin('recinto_eleccion', 'recinto_eleccion.id=junta.recinto_eleccion_id')
+            ->where(['eleccion_id'=>$this->id])->count('acta.id');
+        return $count;
+    }
+
+    public function getTotalPostulacion()
+    {
+        $count  = Postulacion::find()
+            ->where(['eleccion_id'=>$this->id])->count('postulacion.id');
+        return $count;
+    }
+
     private $_totalVotos = 0;
     public function getTotalVotos()
     {
@@ -100,7 +124,7 @@ class Eleccion extends \yii\db\ActiveRecord
         $recintos  = RecintoEleccion::find()->where(['eleccion_id'=>$this->id])->all();
         foreach ($recintos as $r)
         {
-            $total += $r->totalVotos;
+            $total += $r->totalVotosValidos ;
         }
         return $total;
     }
@@ -109,7 +133,16 @@ class Eleccion extends \yii\db\ActiveRecord
     public function getPorcientoVotos() {
         $porciento = 0;
         if(intval($this->totalElectores) > 0)
-            $porciento = ($this->totalVotos * 100 )/ $this->totalElectores;
+            $porciento = round(($this->totalVotos * 100 )/ $this->totalElectores, 2);
+
+        return $porciento;
+    }
+
+    private $_porcientoVotosValidos;
+    public function getPorcientoVotosValidos() {
+        $porciento = 0;
+        if(intval($this->totalElectores) > 0)
+            $porciento = round(($this->totalVotosValidos * 100 )/ $this->totalElectores, 2);
 
         return $porciento;
     }
@@ -130,7 +163,7 @@ class Eleccion extends \yii\db\ActiveRecord
     public function getPorcientoVotosNulos() {
         $porciento = 0;
         if(intval($this->totalElectores) > 0)
-            $porciento = ($this->totalVotosNulos * 100 )/ $this->totalElectores;
+            $porciento = round(($this->totalVotosNulos * 100 )/ $this->totalElectores, 2);
 
         return $porciento;
     }
@@ -151,7 +184,7 @@ class Eleccion extends \yii\db\ActiveRecord
     public function getPorcientoVotosBlancos() {
         $porciento = 0;
         if(intval($this->totalElectores) > 0)
-            $porciento = ($this->totalVotosBlancos * 100 )/ $this->totalElectores;
+            $porciento = round(($this->totalVotosBlancos * 100 )/ $this->totalElectores, 2);
 
         return $porciento;
     }

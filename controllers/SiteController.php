@@ -2,8 +2,10 @@
 
 namespace app\controllers;
 
+use app\models\Acta;
 use app\models\Eleccion;
 use app\models\Postulacion;
+use app\models\RecintoEleccion;
 use Da\User\Filter\AccessRuleFilter;
 use Da\User\Form\LoginForm;
 use yii\filters\AccessControl;
@@ -41,7 +43,7 @@ class SiteController extends Controller
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['index', 'votospostulacion', 'report'],
+                        'actions' => ['index', 'votospostulacion', 'report', 'recintoactas'],
                         'allow' => true,
                         'roles' => ['site/index', 'Registrador'],
                     ],
@@ -185,19 +187,37 @@ class SiteController extends Controller
         $elecciones = Eleccion::find()->all();
         $eleccion = null;
 
-        if(count($elecciones)) $eleccion = $elecciones[0];
+        $labelsPorcientos = [];
+        $dataPorcientos = [];
+        $totalRecintos = 0;
+        $totalJunta = 0;
+        $totalActas = 0;
+        $totalPostulacion = 0;
 
-        $labelsPorcientos = ['Votos', 'Votos Nulos', 'Votos en Blanco', 'Ausentismo'];
-        $dataPorcientos = [
-            $eleccion->porcientoVotos,
-            $eleccion->porcientoVotosNulos,
-            $eleccion->porcientoVotosBlancos,
-            $eleccion->porcientoAusentismo,
-        ];
+        if(count($elecciones)) {
+            $eleccion = $elecciones[0];
+            $labelsPorcientos = ['Votos Validos', 'Votos Nulos', 'Votos en Blanco', 'Ausentismo'];
+
+            $dataPorcientos = [
+                $eleccion->porcientoVotos,
+                $eleccion->porcientoVotosNulos,
+                $eleccion->porcientoVotosBlancos,
+                $eleccion->porcientoAusentismo,
+            ];
+
+            $totalRecintos = $eleccion->getTotalRecintos();
+            $totalJunta = $eleccion->getTotalJuntas();
+            $totalActas = $eleccion->getTotalActas();
+            $totalPostulacion = $eleccion->getTotalPostulacion();
+        }
 
         return $this->render('report', [
             'labelsPorcientos' => $labelsPorcientos,
             'dataPorcientos' => $dataPorcientos,
+            'totalRecintos' => $totalRecintos,
+            'totalJunta' => $totalJunta,
+            'totalActas' => $totalActas,
+            'totalPostulacion' => $totalPostulacion,
         ]);
     }
 
@@ -215,22 +235,57 @@ class SiteController extends Controller
         $dignidad= Yii::$app->request->get('dignidad');
 
         $response['data'] = Postulacion::find()
-                    ->select([
-                        'profile.name',
-                        'SUM(voto.vote) as vote'
-                    ])
-                    ->leftJoin('voto', 'voto.postulacion_id = postulacion.id')
-                    ->innerJoin('profile', 'profile.user_id = postulacion.candidate_id')
-                    ->innerJoin('postulacion_canton', 'postulacion_canton.postulacion_id = postulacion.id')
-                    ->innerJoin('acta', 'acta.id = voto.acta_id')
-                    ->innerJoin('junta', 'junta.id = acta.junta_id')
-                    ->andFilterWhere(['postulacion_canton.canton_id'=>$canton])
-                    ->andFilterWhere(['postulacion.role'=>$dignidad])
-                    ->andFilterWhere(['junta.recinto_eleccion_id'=>$recinto])
-                    ->groupBy(['postulacion.id'])
-                    ->having(['>', 'vote', 0])
-                    ->asArray()
-                    ->all();
+            ->select([
+                'profile.name',
+                'SUM(voto.vote) as vote'
+            ])
+            ->leftJoin('voto', 'voto.postulacion_id = postulacion.id')
+            ->innerJoin('profile', 'profile.user_id = postulacion.candidate_id')
+            ->innerJoin('postulacion_canton', 'postulacion_canton.postulacion_id = postulacion.id')
+            ->innerJoin('acta', 'acta.id = voto.acta_id')
+            ->innerJoin('junta', 'junta.id = acta.junta_id')
+            ->andFilterWhere(['postulacion_canton.canton_id'=>$canton])
+            ->andFilterWhere(['postulacion.role'=>$dignidad])
+            ->andFilterWhere(['junta.recinto_eleccion_id'=>$recinto])
+            ->groupBy(['postulacion.id'])
+            ->having(['>', 'vote', 0])
+            ->asArray()
+            ->all();
+
+        return $response;
+    }
+
+    function actionRecintoactas() {
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $response = array();
+        $response['success'] = true;
+        $response['msg'] = '';
+        $response['data'] = [];
+        $response['msg_dev'] = '';
+        $canton = Yii::$app->request->get('canton');
+        $recinto = Yii::$app->request->get('recinto');
+        $dignidad= Yii::$app->request->get('dignidad');
+
+        $response['data'] = Acta::find()
+            ->select([
+                'recinto_electoral.name',
+                'count(acta.id) as cantidad'
+            ])
+            ->innerJoin('junta', 'junta.id = acta.junta_id')
+            ->innerJoin('recinto_eleccion', 'recinto_eleccion.id=junta.recinto_eleccion_id')
+            ->innerJoin('recinto_electoral', 'recinto_electoral.id=recinto_eleccion.recinto_id')
+            ->innerJoin('zona', 'zona.id=recinto_electoral.zona_id')
+            ->innerJoin('parroquia', 'zona.parroquia_id=parroquia.id')
+            ->innerJoin('canton', 'canton.id=parroquia.canton_id')
+            ->where(['>', 'acta.count_vote', 0])
+            ->andFilterWhere(['canton.canton_id'=>$canton])
+            ->andFilterWhere(['acta.type'=>$dignidad])
+            ->andFilterWhere(['junta.recinto_eleccion_id'=>$recinto])
+            ->groupBy(['recinto_eleccion.id'])
+            ->asArray()
+            ->all();
 
         return $response;
     }

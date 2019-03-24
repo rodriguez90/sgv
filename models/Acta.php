@@ -98,4 +98,9 @@ class Acta extends \yii\db\ActiveRecord
 
         return $total;
     }
+
+    private $_recintoEleccion;
+    public function getRecintoEleccion(){
+        return $this->junta->recintoEleccion;
+    }
 }
