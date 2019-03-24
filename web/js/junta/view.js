@@ -67,111 +67,25 @@ function validarVotos(total, acta) {
     return result;
 }
 
-function handleActas(){
-    var actaValues = ['count_elector', 'count_vote', 'blank_vote', 'null_vote'];
-
-    for(var i = 0 ; i < actaValues.length; i++)
-    {
-        var actaValue = actaValues[i];
-
-        var actas = $('*').filter(function () {
-            var reg = '^Actas_[1-9][0-9]*_' + actaValue + '$';
-            return this.id.match(reg);
-        });
-
-        for(var j = 0 ; j < actas.length; j++)
-        {
-            $(actas[j]).on('focusout', function (event) {
-                var keyup= event.which;
-                var acta = $(this).attr('data-acta');
-                var actaAttr = $(this).data('attr');
-
-                actaModel = actaMap.get(acta);
-                console.log('Actualizando acta', actaModel);
-                console.log('Actualizando valor en acta', actaAttr);
-
-                var total = totalVotos(acta);
-
-                var result = validarVotos(total, acta);
-
-                var classValue = 'text-green';
-
-                if(!result.error)
-                {
-                    $('#btnSubmit').prop('disabled','');
-                    actaModel[actaAttr] = $(this).val();
-                    actaMap.set(acta, actaModel);
-                }
-                else
-                {
-                    classValue = 'text-red';
-                    event.preventDefault();
-                    $('#btnSubmit').prop('disabled','disabled');
-                    alert(result.msg);
-                }
-
-                // actualizaTotalVotos(total, acta, classValue);
-                return result.error;
-            });
-        }
-    }
-}
-
-var dialog = null;
-
 function reloadVotos(){
+    var loadingHtml = '<div class="overlay">' + '<i class="fa fa-circle-o-notch fa-spin"></i>' + '</div>';
+
+    $("#container").html(loadingHtml);
     $.ajax({
         url: homeUrl + "/junta/generar-actas",
         data:{
-            "canton":$("#canton_select2").val(),
+            "canton":cantonId,
             "recinto":recintoId,
             "junta": modelId
         },
-        beforeSend: function(){
-            dialog = $.dialog({
-                title: 'Cargando Información',
-                content: '',
-                animation: 'scale',
-                columnClass: 'medium',
-                closeAnimation: 'scale',
-                theme: 'supervan',
-                backgroundDismiss: true,
-            });
-        },
         success:function (response) {
-
-            if(response.success) {
-                var actas = response.data;
-                var tabsHtml = generateTabsHtml(actas);
-                tabsHtml += generateTabsConten(actas);
-                renderTabs(tabsHtml);
-                actas.forEach(acta => {
-                    renderTable(acta);
-                });
-
-                handleActas();
-            }
-            else {
-                dialog.close();
-                $.alert(
-                    {
-                        title:'Error!',
-                        content: response.msg,
-                        buttons: {
-                            confirm: {
-                                text:'Aceptar',
-                                action:function () {
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                );
-            }
-            dialog.close();
-        },
-        error: function () {
-            dialog.close();
+            var actas = response.data;
+            var tabsHtml = generateTabsHtml(actas);
+            tabsHtml += generateTabsConten(actas);
+            renderTabs(tabsHtml);
+            actas.forEach(acta => {
+                renderTable(acta);
+            });
         }
     });
 }
@@ -203,116 +117,50 @@ function generateRowActa(acta) {
         'class':"col-lg-12"
     });
 
-    var formGroup = $('<div>', {
-        class : "form-group"
-    });
-
     var label = $('<label>', {
         'for':  actaName + "_count_elector",
-    }).html('Cantidad de Electores');
+    }).html('Cantidad de Electores: ' + acta.count_elector,);
 
-    var inputCountElector = $('<input>', {
-        'id' : actaName + "_count_elector",
-        'name' : 'Actas[' + actaKey +'][count_elector]',
-        'data-acta' : actaKey,
-        'data-attr' : 'count_elector',
-        'value': acta.count_elector,
-        'require' : true,
-        'min': 0,
-        'type': 'number',
-    });
-
-    formGroup.append(label);
-    formGroup.append(inputCountElector);
     var colLg3 = $('<div>', {
         'class':"col-lg-3"
     });
 
-    colLg3.append(formGroup);
+    colLg3.append(label);
     colInputs.append(colLg3);
-
-    formGroup = $('<div>', {
-        class : "form-group"
-    });
 
     label = $('<label>', {
         'for':  actaName + "_count_vote",
-    }).html('Cantidad de Votantes');
+    }).html('Cantidad de Votantes: ' + acta.count_vote);
 
-    var inputCountVote = $('<input>', {
-        'id' : actaName + "_count_vote",
-        'name' : 'Actas[' + actaKey +'][count_vote]',
-        'data-acta' : actaKey,
-        'data-attr' : 'count_vote',
-        'value': acta.count_vote,
-        'require' : true,
-        'type': 'number',
-        'min': 0
-    });
-
-    formGroup.append(label);
-    formGroup.append(inputCountVote);
     colLg3 = $('<div>', {
         'class':"col-lg-3"
     });
 
-    colLg3.append(formGroup);
+    colLg3.append(label);
+
     colInputs.append(colLg3);
 
-    formGroup = $('<div>', {
-        class : "form-group"
+    colLg3 = $('<div>', {
+        'class':"col-lg-3"
     });
+
 
     label = $('<label>', {
         'for':  actaName + "_null_vote",
-    }).html('Votos Anulados');
+    }).html('Votos Anulados: ' + acta.null_vote);
 
-    var inputVotosNulos = $('<input>', {
-        'id' : actaName + "_null_vote",
-        'name' : 'Actas[' + actaKey +'][null_vote]',
-        'data-acta' : actaKey,
-        'data-attr' : 'null_vote',
-        'value': acta.null_vote,
-        'require' : true,
-        'type': 'number',
-        'min': 0
-    });
-
-    formGroup.append(label);
-    formGroup.append(inputVotosNulos);
-    colLg3 = $('<div>', {
-        'class':"col-lg-3"
-    });
-
-    colLg3.append(formGroup);
+    colLg3.append(label);
     colInputs.append(colLg3);
 
-    formGroup = $('<div>', {
-        class : "form-group"
+    colLg3 = $('<div>', {
+        'class':"col-lg-3"
     });
 
     label = $('<label>', {
         'for':  actaName + "_blank_vote",
-    }).html('Votos en Blanco');
+    }).html('Votos en Blanco: ' + acta.blank_vote);
 
-    var inputVotosBlancos = $('<input>', {
-        'id' : actaName + "_blank_vote",
-        'name' : 'Actas[' + actaKey +'][blank_vote]',
-        'data-acta' : actaKey,
-        'data-attr' : 'blank_vote',
-        'value': acta.blank_vote,
-        'require' : true,
-        'type': 'number',
-        'min': 0
-    });
-
-    formGroup.append(label);
-    formGroup.append(inputVotosBlancos);
-    colLg3 = $('<div>', {
-        'class':"col-lg-3"
-    });
-
-    colLg3.append(formGroup);
+    colLg3.append(label);
     colInputs.append(colLg3);
 
     row.append(colInputs);
@@ -428,24 +276,6 @@ function renderTable(acta) {
                     title:'Voto',
                     render: function ( data, type, full, meta )
                     {
-                        if(type == 'display')
-                        {
-                            var key = full.id == null ? full.postulacion_id : full.id;
-                            var voteKey = 'Votes_' + key;
-
-                            var inputVotosBlancos = $('<input>', {
-                                'id' : voteKey,
-                                'value': data,
-                                'data-id': key,
-                                'data-row': meta.row,
-                                'data-acta': full.type,
-                                'require' : true,
-                                'type': 'number',
-                                'min': 0,
-                            });
-
-                            return inputVotosBlancos.get(0).outerHTML;
-                        }
                         return data;
                     }
                 },
@@ -574,7 +404,6 @@ function ajaxSaveJunta(){
         url: homeUrl + 'junta/save-junta',
         type: "POST",
         data:junta,
-
         success:function (response) {
 
             if(response.success)
@@ -585,9 +414,6 @@ function ajaxSaveJunta(){
 
             if(!response.success)
                 alert(response.msg);
-        },
-        error: function(data) {
-            $.alert('Ha ocurrido un error al intenar eliminar el préstamo!');
         }
     });
 }
@@ -601,17 +427,6 @@ function ajaxSaveActas(){
         data:{
             juntaId: modelId,
             actas: actas,
-        },
-        beforeSend: function(){
-            dialog = $.dialog({
-                title: 'Registrando Datos de la Junta',
-                content: '',
-                animation: 'scale',
-                columnClass: 'medium',
-                closeAnimation: 'scale',
-                theme: 'supervan',
-                backgroundDismiss: true,
-            });
         },
         success:function (response) {
 
@@ -631,26 +446,7 @@ function ajaxSaveActas(){
             }
 
             if(!response.success)
-            {
-                dialog.close();
-                $.alert(
-                    {
-                        title:'Error!',
-                        content: response.msg,
-                        buttons: {
-                            confirm: {
-                                text:'Aceptar',
-                                action:function () {
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                );
-            }
-        },
-        error: function () {
-            dialog.close();
+                alert(response.msg);
         }
     });
 }
@@ -680,34 +476,15 @@ function ajaxSaveActaVotes(votos, acta) {
 
                 if(response.success)
                 {
-                    if(pendingSaveVotes.length == 0) {
-                        dialog.close();
-                        return;
-                    };
+                    if(pendingSaveVotes.length == 0) return;
                     ajaxSaveVotes();
                 }
 
                 if(!response.success) {
+                    alert(response.msg);
                     pendingSaveVotes.push(acta.type);
-                    dialog.close();
-                    $.alert(
-                        {
-                            title:'Error!',
-                            content: response.msg,
-                            buttons: {
-                                confirm: {
-                                    text:'Aceptar',
-                                    action:function () {
-                                        return;
-                                    }
-                                }
-                            }
-                        }
-                    );
                 }
-            },
-            error: function () {
-                dialog.close();
+
             }
         });
     }
@@ -729,7 +506,6 @@ $(document).ready(function () {
     console.log('recintoId', recintoId);
     console.log('modelId', modelId);
 
-    handleFormSubmit();
     reloadVotos();
 
 });

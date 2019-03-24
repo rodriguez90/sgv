@@ -488,9 +488,9 @@ class JuntaController extends Controller
                 $voteModel = new Voto();
                 $voteModel->loadDefaultValues();
 
-                if($vote->id !== null && $vote->id !== '')
+                if($vote['id'] !== null && $vote['id'] !== '')
                 {
-                    $voteModel = Voto::findOne(['id'=>$vote->id]);
+                    $voteModel = Voto::findOne(['id'=>$vote['id'] ]);
                 }
 
                 $voteModel->acta_id = $acta['id'];
