@@ -70,7 +70,7 @@ function fetchVotos() {
             }
         },
         error: function(data) {
-            $.alert('No sea ha encontrado ninguna información.!');
+            // $.alert('No sea ha encontrado ninguna información.!');
         }
     });
 
@@ -167,7 +167,7 @@ function fetchTotales(){
             }
         },
         error: function(data) {
-            $.alert('No sea ha encontrado ninguna información.!');
+            // $.alert('No sea ha encontrado ninguna información.!');
         }
     });
 

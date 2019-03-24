@@ -6,6 +6,7 @@ use app\models\Acta;
 use app\models\Eleccion;
 use app\models\Postulacion;
 use app\models\RecintoEleccion;
+use app\models\Voto;
 use Da\User\Filter\AccessRuleFilter;
 use Da\User\Form\LoginForm;
 use yii\filters\AccessControl;
@@ -201,7 +202,13 @@ class SiteController extends Controller
         $recinto = Yii::$app->request->get('recinto');
         $dignidad= Yii::$app->request->get('dignidad');
 
-        $response['data'] = Postulacion::find()
+         $query = Voto::find()
+            ->select('SUM(voto.vote) as total')
+            ->innerJoin('postulacion', 'postulacion.id = voto.postulacion_id')
+            ->innerJoin('postulacion_canton', 'postulacion_canton.postulacion_id = postulacion.id')
+            ->asArray();
+
+        $query2 = Postulacion::find()
             ->select([
                 'profile.name',
                 'SUM(voto.vote) as vote'
@@ -211,13 +218,36 @@ class SiteController extends Controller
             ->innerJoin('postulacion_canton', 'postulacion_canton.postulacion_id = postulacion.id')
             ->innerJoin('acta', 'acta.id = voto.acta_id')
             ->innerJoin('junta', 'junta.id = acta.junta_id')
-            ->andFilterWhere(['postulacion_canton.canton_id'=>$canton])
-            ->andFilterWhere(['postulacion.role'=>$dignidad])
-            ->andFilterWhere(['junta.recinto_eleccion_id'=>$recinto])
             ->groupBy(['postulacion.id'])
             ->having(['>', 'vote', 0])
-            ->asArray()
-            ->all();
+            ->asArray();
+
+         if(intval($canton) !== 0)
+         {
+             $query->andFilterWhere(['postulacion_canton.canton_id'=>intval($canton)]);
+             $query2->andFilterWhere(['postulacion_canton.canton_id'=>intval($canton)]);
+         }
+
+         if(intval($dignidad) !== 0)
+         {
+             $query->andFilterWhere(['postulacion.role'=>intval($dignidad)]);
+             $query2->andFilterWhere(['postulacion.role'=>intval($dignidad)]);
+         }
+
+        if(intval($recinto))
+        {
+            $query2->andFilterWhere(['junta.recinto_eleccion_id'=>intval($recinto)]);
+        }
+
+        $total = $query->all();
+        $results = $query2->all();
+
+        $total = intval($total[0]['total']);
+        foreach ($results as $tuple)
+        {
+            $tuple['vote'] = round((intval($tuple['vote']) * 100) / $total, 2);
+            array_push($response['data'], $tuple);
+        }
 
         return $response;
     }
