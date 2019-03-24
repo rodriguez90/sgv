@@ -7,6 +7,10 @@ use yii\widgets\ActiveForm;
 /* @var $model app\models\Postulacion */
 /* @var $form yii\widgets\ActiveForm */
 ?>
+<?php if ($model->hasErrors()) {
+    \Yii::$app->getSession()->setFlash('error', $model->getErrorSummary(true));
+}
+?>
 
 <!-- begin row -->
 <div class="row">
@@ -26,18 +30,37 @@ use yii\widgets\ActiveForm;
                                 ['prompt'=>'Seleccione la Elección',
                                 ]);?>
 
+                            <?= $form->field($model, 'partido_id')->widget(\kartik\select2\Select2::classname(), [
+                                'data' => \yii\helpers\ArrayHelper::map(\app\models\Partido::find()->all(),'id','name'),
+                                'language' => 'es',
+                                'options' => ['placeholder' => 'Seleccione el partido.',
+                                    'onchange'=>'
+                                        console.log("postulacion-partido_id", this.value);
+                                                                             
+                                        '
+                                ],
+                                'pluginOptions' => [
+                                    'allowClear' => false
+                                ],
+                            ]);?>
 
-                            <?= $form->field($model, 'partido_id')->dropDownList(
-                                \yii\helpers\ArrayHelper::map(\app\models\Partido::find()->all(),'id','name'),
-                                ['prompt'=>'Seleccione el Partido',
-                                ]);?>
-
-                            <?= $form->field($model, 'candidate_id')->dropDownList(
-                                \yii\helpers\ArrayHelper::map(\Da\User\Model\Profile::find()
+                            <?= $form->field($model, 'candidate_id')->widget(\kartik\select2\Select2::classname(), [
+                                'data' =>  \yii\helpers\ArrayHelper::map(\Da\User\Model\Profile::find()
                                     ->innerJoin('auth_assignment', 'profile.user_id=auth_assignment.user_id and auth_assignment.item_name="Candidato"')
+                                    ->innerJoin('postulacion', 'postulacion.candidate_id=profile.user_id')
+                                    ->asArray()
                                     ->all(),'user_id','name'),
-                                ['prompt'=>'Seleccione el Candidato',
-                                ]);?>
+                                'language' => 'es',
+                                'options' => ['placeholder' => 'Seleccione el Candidato.',
+                                    'onchange'=>'                                        
+                                                                             
+                                        '
+                                ],
+                                'pluginOptions' => [
+                                    'allowClear' => false
+                                ],
+                            ]);?>
+
                         </div>
 
                         <div class="col-lg-6">

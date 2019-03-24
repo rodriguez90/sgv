@@ -115,20 +115,20 @@ function handleActas(){
                     classValue = 'text-red';
                     event.preventDefault();
                     $('#btnSubmit').prop('disabled','disabled');
-                    $.alert(
-                        {
-                            title:'Error!',
-                            content: result.msg,
-                            buttons: {
-                                confirm: {
-                                    text:'Aceptar',
-                                    action:function () {
-                                        return;
-                                    }
-                                }
-                            }
-                        }
-                    );
+                    // $.alert(
+                    //     {
+                    //         title:'Error!',
+                    //         content: result.msg,
+                    //         buttons: {
+                    //             confirm: {
+                    //                 text:'Aceptar',
+                    //                 action:function () {
+                    //                     return;
+                    //                 }
+                    //             }
+                    //         }
+                    //     }
+                    // );
                 }
 
                 actualizaTotalVotos(total, acta, classValue);
@@ -166,7 +166,9 @@ function reloadVotos(){
                 var tabsHtml = generateTabsHtml(actas);
                 tabsHtml += generateTabsConten(actas);
                 renderTabs(tabsHtml);
+                actaMap.clear();
                 actas.forEach(acta => {
+                    actaMap.set(String(acta.type), acta);
                     renderTable(acta);
                 });
 
@@ -352,8 +354,6 @@ function generateTabsConten(actas) {
         var actaName = 'Actas_' + actaKey;
         var classHtml = firstActa === 0 ? ' active' : ''; firstActa++;
 
-        actaMap.set(String(acta.type), acta);
-
         var tabPane = $('<div>', {
             'id' : 'tab_' + acta.type,
             'name' : 'tab' + acta.type,
@@ -391,15 +391,15 @@ function generateTable(acta)
         'style': 'width:100%;',
         'cellspacing':"0",
     })
-    .append($('<thead>', {})
-       .append($('<tr>',{})
-        .append($('<th>',{}).html('Postulación'))
-        .append($('<th>',{}).html('Voto'))
-    .append($('<tbody>',{}))
-    .append($('<tfooter>', {})
-        .append($('<tr>', {})
-            .append($('<td>', {}).html('Total Votos'))
-            .append($('<td>', {}).append($('<label>', {'id': 'totalVotos_' + acta.type}).html(0)))))));
+        .append($('<thead>', {})
+            .append($('<tr>',{})
+                .append($('<th>',{}).html('Postulación'))
+                .append($('<th>',{}).html('Voto'))
+                .append($('<tbody>',{}))
+                .append($('<tfooter>', {})
+                    .append($('<tr>', {})
+                        .append($('<td>', {}).html('Total Votos'))
+                        .append($('<td>', {}).append($('<label>', {'id': 'totalVotos_' + acta.type}).html(0)))))));
 
     return table;
 }
@@ -494,20 +494,20 @@ function renderTable(acta) {
                 classValue = 'text-red';
                 event.preventDefault();
                 $('#btnSubmit').prop('disabled','disabled');
-                $.alert(
-                    {
-                        title:'Advertencia!',
-                        content: result.msg,
-                        buttons: {
-                            confirm: {
-                                text:'Aceptar',
-                                action:function () {
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                );
+                // $.alert(
+                //     {
+                //         title:'Advertencia!',
+                //         content: result.msg,
+                //         buttons: {
+                //             confirm: {
+                //                 text:'Aceptar',
+                //                 action:function () {
+                //                     return;
+                //                 }
+                //             }
+                //         }
+                //     }
+                // );
             }
 
             actualizaTotalVotos(total, acta, classValue);
@@ -624,6 +624,45 @@ function ajaxSaveJunta(){
 
 function ajaxSaveActas(){
     var actas = getActas();
+
+    for (var i =0; i < actas.length; i++){
+        var acta = actas[i];
+
+        if(typeof acta == 'undefined' || acta == null) continue;
+
+        var total = totalVotos(acta.type);
+        result = validarVotos(total, acta.type);
+        var  classValue = 'text-green';
+        if(result.error)
+        {
+            classValue = 'text-red';
+            actaName = acta.typeName;
+
+            if(dialog && dialog.isOpen())
+            {
+                dialog.close();
+            }
+
+            $.alert(
+                {
+                    title:'Advertencia Acta: ' + acta.typeName,
+                    content: result.msg,
+                    buttons: {
+                        confirm: {
+                            text:'Aceptar',
+                        }
+                    }
+                }
+            );
+        }
+
+        actualizaTotalVotos(total, acta.type, classValue);
+
+        if(result.error)
+        {
+          return ;
+        }
+    }
 
     $.ajax({
         url: homeUrl + 'junta/save-actas',

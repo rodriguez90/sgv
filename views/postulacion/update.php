@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Postulacion */
 
-$this->title = 'Modificar Postulacion: ' . $model->name;
+$this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Postulacions', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Modificar';

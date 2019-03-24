@@ -105,8 +105,22 @@ class ZonaController extends Controller
     {
         $model = new Zona();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+
+            $exit = Zona::find()
+                ->where(['name'=>$model->name])
+                ->one();
+
+            if($exit)
+            {
+                $model->addError( 'error','Ya éxiste uan zona con este nombre');
+                return $this->render('crete', [
+                    'model' => $model,
+                ]);
+            }
+
+            if( $model->save())
+                return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [

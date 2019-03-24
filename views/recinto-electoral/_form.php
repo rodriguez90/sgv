@@ -8,6 +8,10 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
+<?php if ($model->hasErrors()) {
+    \Yii::$app->getSession()->setFlash('error', $model->getErrorSummary(true));
+}
+?>
 
 <!-- begin row -->
 <div class="row">
@@ -20,11 +24,18 @@ use yii\widgets\ActiveForm;
 
                     <?php $form = ActiveForm::begin(); ?>
 
-                    <?= $form->field($model, 'zona_id')->dropDownList(
-                        \yii\helpers\ArrayHelper::map(\app\models\Zona::find()->all(),'id','name'),
-                        [
-                            'prompt'=>'Seleccione la Zona',
-                        ]);?>
+                    <?= $form->field($model, 'zona_id')->widget(\kartik\select2\Select2::classname(), [
+                        'data' => \yii\helpers\ArrayHelper::map(\app\models\Zona::find()->all(),'id','name'),
+                        'language' => 'es',
+                        'options' => ['placeholder' => 'Seleccione la zona.',
+                            'onchange'=>'
+                                                                             
+                                        '
+                        ],
+                        'pluginOptions' => [
+                            'allowClear' => false
+                        ],
+                    ]);?>
 
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 

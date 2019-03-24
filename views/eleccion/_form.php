@@ -10,6 +10,11 @@ use yii\widgets\ActiveForm;
 $initDate = $model->isNewRecord ? date('d-m-Y') : date('d-m-Y', strtotime($model->delivery_date));
 ?>
 
+<?php if ($model->hasErrors()) {
+    \Yii::$app->getSession()->setFlash('error', $model->getErrorSummary(true));
+}
+?>
+
 <!-- begin row -->
 <div class="row">
     <!-- begin col-lg-12 -->

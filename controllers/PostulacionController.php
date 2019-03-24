@@ -112,8 +112,19 @@ class PostulacionController extends Controller
         if(Yii::$app->request->isPost)
         {
             $cantones = $_POST['Postulacion']['postulacionCantons'];
+
+
             if($model->load(Yii::$app->request->post()))
             {
+                $postulacion = Postulacion::findOne(['postulacion.candidate_id'=>$model->candidate_id]);
+                if($postulacion)
+                {
+                    $model->addError('error', 'Ya para este candidato existe una postulación');
+                    return $this->render('create', [
+                        'model' => $model,
+                    ]);
+                }
+
                 $transaction = Yii::$app->db->beginTransaction();
                 if ($model->save()) {
 
@@ -125,8 +136,8 @@ class PostulacionController extends Controller
                         $postulacionCanton->canton_id = $canton;
                         if (!$postulacionCanton->save()) {
                             $transaction->rollBack();
-                            $model->addError('Ah ocurrido un error al asociar la postulación a los cantones');
-                            return $this->render('update', [
+                            $model->addError('error', 'Ah ocurrido un error al asociar la postulación a los cantones');
+                            return $this->render('create', [
                                 'model' => $model,
                             ]);
                         }
@@ -162,6 +173,16 @@ class PostulacionController extends Controller
             $cantones = $_POST['Postulacion']['postulacionCantons'];
             if($model->load(Yii::$app->request->post()))
             {
+                $postulacion = Postulacion::findOne(['postulacion.candidate_id'=>$model->candidate_id]);
+
+                if($postulacion->id !== $model->id)
+                {
+                    $model->addError( 'error','Ya para este candidato existe una postulación');
+                    return $this->render('update', [
+                        'model' => $model,
+                    ]);
+                }
+
                 $transaction = Yii::$app->db->beginTransaction();
                 if ($model->save()) {
 
@@ -173,7 +194,7 @@ class PostulacionController extends Controller
                         $postulacionCanton->canton_id = $canton;
                         if (!$postulacionCanton->save()) {
                             $transaction->rollBack();
-                            $model->addError('Ah ocurrido un error al asociar la postulación a los cantones');
+                            $model->addError('error','Ah ocurrido un error al asociar la postulación a los cantones');
                             return $this->render('update', [
                                 'model' => $model,
                             ]);
