@@ -682,6 +682,7 @@ function ajaxSaveActaVotes(votos, acta) {
                 {
                     if(pendingSaveVotes.length == 0) {
                         dialog.close();
+                        reloadVotos();
                         return;
                     };
                     ajaxSaveVotes();
