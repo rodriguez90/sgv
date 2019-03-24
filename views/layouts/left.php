@@ -79,7 +79,7 @@ if(Yii::$app->user !== null && Yii::$app->user->identity !== null)
         $eleccion['items'][]=['label' => 'Recinto en Elección', 'icon' => 'th-large', 'url' => ['/recinto-eleccion/index']];
     }
 
-    if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'juntas/index')
+    if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'junta/index')
         || Yii::$app->user->identity->getIsAdmin())
     {
         $eleccion['items'][]=['label' => 'Juntas Receptoras de Votos', 'icon' => 'archive', 'url' => ['/junta/index']];
