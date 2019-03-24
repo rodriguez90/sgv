@@ -550,7 +550,7 @@ class JuntaController extends Controller
             ->andWhere(['recinto_eleccion_id'=>$juntaData['recinto']])
             ->one();
 
-        if($model !== null && $model->id !== $juntaData['id'])
+        if($model !== null && $model->id !== intval($juntaData['id']))
         {
             $response['success'] = false;
             $response['msg'] = 'Ya existe una junta con ese nombre en el recinto.';

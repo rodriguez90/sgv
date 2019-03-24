@@ -94,7 +94,7 @@ function handleActas(){
                 var acta = $(this).attr('data-acta');
                 var actaAttr = $(this).data('attr');
 
-                actaModel = actaMap.get(acta);
+                actaModel = actaMap.get(String(acta));
                 console.log('Actualizando acta', actaModel);
                 console.log('Actualizando valor en acta', actaAttr);
                 console.log('Actualizando valor en acta', parseInt($(this).val()));
@@ -481,7 +481,7 @@ function renderTable(acta) {
             // console.log('Voto: ' + $(this).val());
             table.cell({row: row, column: 1}).data(parseInt($(this).val()));
 
-            actaModel = actaMap.get(acta);
+            actaModel = actaMap.get(String(acta));
             console.log('Actualizando acta', actaModel);
 
             var total = totalVotos(acta);
@@ -744,6 +744,20 @@ function ajaxSaveActas(){
         },
         error: function () {
             dialog.close();
+            $.alert(
+                {
+                    title:'Error!',
+                    content: 'Ah ocurrido un error al registrar las juntas',
+                    buttons: {
+                        confirm: {
+                            text:'Aceptar',
+                            action:function () {
+                                return;
+                            }
+                        }
+                    }
+                }
+            );
         }
     });
 }
@@ -755,7 +769,7 @@ function ajaxSaveVotes() {
 
     var actaType = pendingSaveVotes.pop();
 
-    ajaxSaveActaVotes(votosFromTableActa(actaType), actaMap.get(actaType));
+    ajaxSaveActaVotes(votosFromTableActa(actaType), actaMap.get(String(actaType)));
 }
 
 function ajaxSaveActaVotes(votos, acta) {
