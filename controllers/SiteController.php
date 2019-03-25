@@ -9,6 +9,7 @@ use app\models\RecintoEleccion;
 use app\models\Voto;
 use Da\User\Filter\AccessRuleFilter;
 use Da\User\Form\LoginForm;
+use yii\data\Sort;
 use yii\filters\AccessControl;
 use Yii;
 use yii\helpers\Url;
@@ -220,6 +221,7 @@ class SiteController extends Controller
             ->innerJoin('junta', 'junta.id = acta.junta_id')
             ->groupBy(['postulacion.id'])
             ->having(['>', 'vote', 0])
+            ->orderBy(['vote'=>SORT_DESC])
             ->asArray();
 
          if(intval($canton) !== 0)
@@ -261,11 +263,10 @@ class SiteController extends Controller
         $response['msg'] = '';
         $response['data'] = [];
         $response['msg_dev'] = '';
+
         $canton = Yii::$app->request->get('canton');
         $recinto = Yii::$app->request->get('recinto');
         $dignidad= Yii::$app->request->get('dignidad');
-
-
 
         $elecciones = Eleccion::find()->all();
         $eleccion = null;
@@ -280,7 +281,7 @@ class SiteController extends Controller
 
             $totalRecintos = $eleccion->getTotalRecintos();
             $totalJunta = $eleccion->getTotalJuntas();
-            $totalActas = $eleccion->getTotalActas();
+            $totalActas = $eleccion->getTotalActasRegistradas();
             $totalPostulacion = $eleccion->getTotalPostulacion();
         }
 
@@ -291,7 +292,10 @@ class SiteController extends Controller
             'totalPostulacion' => $totalPostulacion,
         ] ;
 
-        $response['data']['rentintoActas'] = Acta::find()
+        // id de las actas validas registradas
+        $actasRegistradas = $eleccion->getActasRegistradas();
+
+        $query = Acta::find()
             ->select([
                 'recinto_electoral.name',
                 'count(acta.id) as cantidad'
@@ -302,13 +306,27 @@ class SiteController extends Controller
             ->innerJoin('zona', 'zona.id=recinto_electoral.zona_id')
             ->innerJoin('parroquia', 'zona.parroquia_id=parroquia.id')
             ->innerJoin('canton', 'canton.id=parroquia.canton_id')
-            ->where(['>', 'acta.count_vote', 0])
-            ->andFilterWhere(['canton.id'=>$canton])
-            ->andFilterWhere(['acta.type'=>$dignidad])
-            ->andFilterWhere(['junta.recinto_eleccion_id'=>$recinto])
+            ->where(['in', 'acta.id', $actasRegistradas])
             ->groupBy(['recinto_eleccion.id'])
-            ->asArray()
-            ->all();
+            ->orderBy(['cantidad'=>SORT_DESC])
+            ->asArray();
+
+        if(intval($canton))
+        {
+            $query->andFilterWhere(['canton.id'=>intval($canton)]);
+        }
+
+        if(intval($dignidad))
+        {
+            $query->andFilterWhere(['acta.type'=>intval($dignidad)]);
+        }
+
+        if(intval($recinto))
+        {
+            $query->andFilterWhere(['junta.recinto_eleccion_id'=>intval($recinto)]);
+        }
+
+        $response['data']['rentintoActas'] = $query->all();
 
         return $response;
     }

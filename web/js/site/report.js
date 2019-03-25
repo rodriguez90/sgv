@@ -1,6 +1,6 @@
 var interval = null;
 
-var timeOut = 10000;
+var timeOut = 60000;
 
 var chart = null;
 var config = {
@@ -87,11 +87,11 @@ function fetchRecintoActas() {
                 chart.update();
             }
             else {
-                $.alert('No sea ha encontrado ninguna información.!');
+                // $.alert('No sea ha encontrado ninguna información.!');
             }
         },
         error: function(data) {
-            $.alert('No sea ha encontrado ninguna información.!');
+            // $.alert('No sea ha encontrado ninguna información.!');
         }
     });
 

@@ -99,7 +99,7 @@ $this->title = '';
                                     'onchange'=>'
                                          $.get(homeUrl + "recinto-eleccion/lists?cantonId='.'"+$(this).val(),function(data){
                                                     $( "#recinto_select2" ).html(data);
-                                                    reloadVotos();
+                                                    fetchData();
                                                 });'
                                 ],
 
@@ -117,7 +117,7 @@ $this->title = '';
                                 'options' => ['placeholder' => 'Seleccione Recinto.',
                                     'onchange'=>'
                                         console.log("recinto_select2", this.value);
-                                        reloadVotos();
+                                        fetchData();
                                         '
                                 ],
 
@@ -136,7 +136,7 @@ $this->title = '';
                                 'options' => [
                                     'placeholder' => 'Seleccione Dignidad.',
                                     'onchange'=>'
-                                        reloadVotos();
+                                        fetchData();
                                         '
                                 ],
 

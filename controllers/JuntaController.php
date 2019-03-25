@@ -653,6 +653,7 @@ class JuntaController extends Controller
         return $response;
     }
 
+    // FIXME: cambiar esto: registrar voto a voto, o una cantidad más pequeña
     public function actionSaveVotos() {
         Yii::$app->response->format = Response::FORMAT_JSON;
 

@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "eleccion".
@@ -85,7 +86,8 @@ class Eleccion extends \yii\db\ActiveRecord
     {
         $count  = Junta::find()
             ->innerJoin('recinto_eleccion', 'recinto_eleccion.id=junta.recinto_eleccion_id')
-            ->where(['eleccion_id'=>$this->id])->count('junta.id');
+            ->where(['eleccion_id'=>$this->id])
+            ->count('junta.id');
         return $count;
     }
 
@@ -94,8 +96,47 @@ class Eleccion extends \yii\db\ActiveRecord
         $count  = Acta::find()
             ->innerJoin('junta', 'junta.id=acta.junta_id')
             ->innerJoin('recinto_eleccion', 'recinto_eleccion.id=junta.recinto_eleccion_id')
-            ->where(['eleccion_id'=>$this->id])->count('acta.id');
+            ->where(['eleccion_id'=>$this->id])
+            ->count('acta.id');
         return $count;
+    }
+
+    public function getTotalActasRegistradas()
+    {
+        $connection = Yii::$app->getDb();
+        $command = $connection->createCommand(
+                "select COUNT(t.id) as total from (
+                    select acta.id, SUM(voto.vote) + acta.blank_vote + acta.null_vote  as cantidad
+                    from acta
+                    inner Join voto on voto.acta_id=acta.id
+                    inner Join junta on junta.id=acta.junta_id
+                    inner Join recinto_eleccion on recinto_eleccion.id=junta.recinto_eleccion_id
+                    where recinto_eleccion.eleccion_id=:eleccionId
+                    GROUP BY acta.id
+                    HAVING cantidad > 0) as t", [':eleccionId' =>  $this->id]);
+
+        $result = $command->queryAll();
+
+        return $result[0]['total'];
+    }
+
+    public function getActasRegistradas()
+    {
+        $connection = Yii::$app->getDb();
+        $command = $connection->createCommand(
+            "select t.id as total from (
+                    select acta.id, SUM(voto.vote) + acta.blank_vote + acta.null_vote  as cantidad
+                    from acta
+                    inner Join voto on voto.acta_id=acta.id
+                    inner Join junta on junta.id=acta.junta_id
+                    inner Join recinto_eleccion on recinto_eleccion.id=junta.recinto_eleccion_id
+                    where recinto_eleccion.eleccion_id=:eleccionId
+                    GROUP BY acta.id
+                    HAVING cantidad > 0) as t", [':eleccionId' =>  $this->id]);
+
+        $actas = $command->queryColumn();
+
+        return $actas;
     }
 
     public function getTotalPostulacion()
