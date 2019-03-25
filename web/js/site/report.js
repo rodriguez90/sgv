@@ -7,7 +7,7 @@ var config = {
     responsive: true,
     title: {
         display: true,
-        text: 'Actas por Recinto'
+        text: 'Actas por Canton'
     },
     scales: {
         xAxes: [{
@@ -29,7 +29,7 @@ var config = {
             type: 'category',
             scaleLabel: {
                 display: true,
-                labelString: 'Recintos'
+                labelString: 'Cantones'
             },
         }]
     }
@@ -82,9 +82,10 @@ function fetchRecintoActas() {
 
     var canton = $("#canton_select2").val();
     var recinto = null;
-    if($("#recinto_select2").val() !== '-' )
+    var tipoJunta = null;
+    if($("#junta_select2").val() !== '' )
     {
-        recinto = $("#recinto_select2").val();
+        tipoJunta = $("#junta_select2").val();
     }
 
     var dignidad = $("#dignidad_select2").val();
@@ -94,7 +95,8 @@ function fetchRecintoActas() {
         data: {
             canton: canton,
             recinto: recinto,
-            dignidad: dignidad
+            dignidad: dignidad,
+            tipoJunta: tipoJunta
         },
         type: "GET",
         success: function (response) {

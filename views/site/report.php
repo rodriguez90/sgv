@@ -79,7 +79,7 @@ $this->title = '';
             <!-- AREA CHART -->
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Actas por Recinto</h3>
+                    <h3 class="box-title">Actas por Cantones</h3>
 
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -97,10 +97,14 @@ $this->title = '';
                                 'language' => 'es',
                                 'options' => ['placeholder' => 'Seleccione Cantón.',
                                     'onchange'=>'
-                                         $.get(homeUrl + "recinto-eleccion/lists?cantonId='.'"+$(this).val(),function(data){
+                                        /* $.get(homeUrl + "recinto-eleccion/lists?cantonId='.'"+$(this).val(),function(data){
                                                     $( "#recinto_select2" ).html(data);
                                                     fetchData();
-                                                });'
+                                                });*/
+                                                
+                                                  fetchData();
+                                                
+                                                '
                                 ],
 
                                 'pluginOptions' => [
@@ -109,14 +113,15 @@ $this->title = '';
                             ]);?>
                         </div>
                         <div class="col-lg-4 col-md-4 col-xs-4">
-                            <label class="control-label" for="canton_select2">Recinto</label>
+                            <label class="control-label" for="canton_select2">Tipo de Junta</label>
                             <?= \kartik\select2\Select2::widget( [
-                                'id' => 'recinto_select2',
-                                'name' => 'recinto_select2',
+                                'id' => 'junta_select2',
+                                'name' => 'junta_select2',
+                                'data'=>\yii\helpers\ArrayHelper::map(\app\models\Junta::JUNTA_CHOICES,'id','name'),
                                 'language' => 'es',
-                                'options' => ['placeholder' => 'Seleccione Recinto.',
+                                'options' => ['placeholder' => 'Seleccione Tipo de Junta.',
                                     'onchange'=>'
-                                        console.log("recinto_select2", this.value);
+                                        //console.log("junta_select2", this.value);
                                         fetchData();
                                         '
                                 ],

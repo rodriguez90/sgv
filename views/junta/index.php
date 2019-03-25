@@ -47,20 +47,20 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                             'filterInputOptions' => ['placeholder' => 'Canton']
                         ],
-                        [
-                            'label' => 'Recinto',
-                            'attribute'=>'recintoEleccion',
-                            'format' => 'raw',
-                            'value' => function ($model) {
-                                return  Html::a($model->recintoEleccion->name, \yii\helpers\Url::toRoute(['recinto-eleccion/view', 'id' =>  $model->recintoEleccion->id]));
-                            },
-                            'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
-                            'filter' => \yii\helpers\ArrayHelper::map(\app\models\RecintoEleccion::find()->joinWith('recinto')->orderBy(['recinto_electoral.name'=>SORT_ASC])->all(), 'id', 'name'),
-                            'filterWidgetOptions' => [
-                                'pluginOptions' => ['allowClear' => true]
-                            ],
-                            'filterInputOptions' => ['placeholder' => 'Recintos']
-                        ],
+//                        [
+//                            'label' => 'Recinto',
+//                            'attribute'=>'recintoEleccion',
+//                            'format' => 'raw',
+//                            'value' => function ($model) {
+//                                return  Html::a($model->recintoEleccion->name, \yii\helpers\Url::toRoute(['recinto-eleccion/view', 'id' =>  $model->recintoEleccion->id]));
+//                            },
+//                            'filterType' => \kartik\grid\GridView::FILTER_SELECT2,
+//                            'filter' => \yii\helpers\ArrayHelper::map(\app\models\RecintoEleccion::find()->joinWith('recinto')->orderBy(['recinto_electoral.name'=>SORT_ASC])->all(), 'id', 'name'),
+//                            'filterWidgetOptions' => [
+//                                'pluginOptions' => ['allowClear' => true]
+//                            ],
+//                            'filterInputOptions' => ['placeholder' => 'Recintos']
+//                        ],
                         'name',
                         [
                             'attribute'=>'type',

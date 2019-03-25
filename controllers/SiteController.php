@@ -266,7 +266,8 @@ class SiteController extends Controller
 
         $canton = Yii::$app->request->get('canton');
         $recinto = Yii::$app->request->get('recinto');
-        $dignidad= Yii::$app->request->get('dignidad');
+        $dignidad = Yii::$app->request->get('dignidad');
+        $tipoJunta = Yii::$app->request->get('tipoJunta');
 
         $elecciones = Eleccion::find()->all();
         $eleccion = null;
@@ -297,7 +298,7 @@ class SiteController extends Controller
 
         $query = Acta::find()
             ->select([
-                'recinto_electoral.name',
+                'canton.name',
                 'count(acta.id) as cantidad'
             ])
             ->innerJoin('junta', 'junta.id = acta.junta_id')
@@ -307,7 +308,7 @@ class SiteController extends Controller
             ->innerJoin('parroquia', 'zona.parroquia_id=parroquia.id')
             ->innerJoin('canton', 'canton.id=parroquia.canton_id')
             ->where(['in', 'acta.id', $actasRegistradas])
-            ->groupBy(['recinto_eleccion.id'])
+            ->groupBy(['canton.id'])
             ->orderBy(['cantidad'=>SORT_DESC])
             ->asArray();
 
@@ -324,6 +325,11 @@ class SiteController extends Controller
         if(intval($recinto))
         {
             $query->andFilterWhere(['junta.recinto_eleccion_id'=>intval($recinto)]);
+        }
+
+        if(intval($tipoJunta))
+        {
+            $query->andFilterWhere(['junta.type'=>intval($tipoJunta)]);
         }
 
         $response['data']['rentintoActas'] = $query->all();
