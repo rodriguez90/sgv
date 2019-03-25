@@ -35,6 +35,40 @@ var config = {
     }
 };
 
+// Define a plugin to provide data labels
+Chart.plugins.register({
+    afterDatasetsDraw: function(chart) {
+        if($(chart.ctx.canvas).attr('id') == 'w0') return;
+        var ctx = chart.ctx;
+
+        chart.data.datasets.forEach(function(dataset, i) {
+            var meta = chart.getDatasetMeta(i);
+            if (!meta.hidden) {
+                meta.data.forEach(function(element, index) {
+                    // Draw the text in black, with the specified font
+                    ctx.fillStyle = 'rgb(0, 0, 0)';
+
+                    var fontSize = 10;
+                    var fontStyle = 'normal';
+                    var fontFamily = 'Source Sans Pro';
+                    ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
+
+                    // Just naively convert to string for now
+                    var dataString = dataset.data[index].toString();
+
+                    // Make sure alignment settings are correct
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+
+                    var padding = 0;
+                    var position = element.tooltipPosition();
+                    ctx.fillText(dataString, position.x + 10, position.y);
+                });
+            }
+        });
+    }
+});
+
 function removeData(chart) {
     chart.data.labels = [];
     chart.data.datasets.forEach((dataset) => {
