@@ -22,6 +22,62 @@ var timeOut = 60000;
 //     }
 // });
 
+var chart = null;
+var config = {
+    responsive: true,
+    title: {
+        display: true,
+        text: 'Votos por Postulación'
+    },
+    scales: {
+        xAxes: [{
+            type: 'linear',
+            ticks: {
+                min: 0,
+                max: 100,
+                // Include a dollar sign in the ticks
+            },
+            display: true,
+            scaleLabel: {
+                display: true,
+                labelString: 'Porciento de Votos'
+            },
+        }],
+        yAxes: [{
+            ticks: {
+                stepSize: 5,
+                // callback: function(value, index, values) {
+                //     console.log('values', values);
+                //     return value + ' %';
+                // }
+            },
+            display: true,
+            type: 'category',
+            scaleLabel: {
+                display: true,
+                labelString: 'Candidatos'
+            },
+        }]
+    },
+    tooltips: {
+        callbacks: {
+            title: function (tooltipItem, data) {
+                return "Candidato: " + data.labels[tooltipItem[0].index];
+            },
+            footer: function (tooltipItem, data) {
+                var voto = dataMap.get(data.labels[tooltipItem[0].index]);
+                return "Votos: " + voto;
+            },
+            label: function(tooltipItems, data) {
+                return "Porciento: " + tooltipItems.xLabel + ' %';
+            },
+
+        }
+    }
+};
+
+var dataMap = new Map();
+
 function removeData(chart) {
     chart.data.labels = [];
     chart.data.datasets.forEach((dataset) => {
@@ -51,14 +107,13 @@ function fetchVotos() {
         },
         type: "GET",
         success: function (response) {
-            var postulaciones = [];
-            var votos = [];
             if(response.success)
             {
                 response.data.forEach(function (element) {
+                    dataMap.set(element.name, element.vote);
                     chart.data.labels.push(element.name);
                     chart.data.datasets.forEach((dataset) => {
-                        dataset.data.push(element.vote);
+                        dataset.data.push(element.porciento);
                     });
                 });
 
@@ -76,38 +131,6 @@ function fetchVotos() {
 
 }
 
-var chart = null;
-var config = {
-    responsive: true,
-    title: {
-        display: true,
-        text: 'Votos por Postulación'
-    },
-    scales: {
-        xAxes: [{
-            type: 'linear',
-            ticks: {
-                min: 0
-            },
-            display: true,
-            scaleLabel: {
-                display: true,
-                labelString: 'Votos'
-            },
-        }],
-        yAxes: [{
-            ticks: {
-                stepSize: 5,
-            },
-            display: true,
-            type: 'category',
-            scaleLabel: {
-                display: true,
-                labelString: 'Candidatos'
-            },
-        }]
-    }
-};
 
 function init() {
     var ctx = document.getElementById("postulacion_voto_chart").getContext('2d');
@@ -181,6 +204,39 @@ function fetchData() {
 
     interval = setInterval(fetchData, timeOut);
 }
+
+// Define a plugin to provide data labels
+Chart.plugins.register({
+    afterDatasetsDraw: function(chart) {
+        var ctx = chart.ctx;
+
+        chart.data.datasets.forEach(function(dataset, i) {
+            var meta = chart.getDatasetMeta(i);
+            if (!meta.hidden) {
+                meta.data.forEach(function(element, index) {
+                    // Draw the text in black, with the specified font
+                    ctx.fillStyle = 'rgb(0, 0, 0)';
+
+                    var fontSize = 10;
+                    var fontStyle = 'normal';
+                    var fontFamily = 'Source Sans Pro';
+                    ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
+
+                    // Just naively convert to string for now
+                    var dataString = dataset.data[index].toString();
+
+                    // Make sure alignment settings are correct
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+
+                    var padding = 0;
+                    var position = element.tooltipPosition();
+                    ctx.fillText(dataString, position.x + 10, position.y - (fontSize / 2) - padding);
+                });
+            }
+        });
+    }
+});
 
 $(document).ready(function () {
     init();

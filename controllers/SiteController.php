@@ -247,7 +247,7 @@ class SiteController extends Controller
         $total = intval($total[0]['total']);
         foreach ($results as $tuple)
         {
-            $tuple['vote'] = round((intval($tuple['vote']) * 100) / $total, 2);
+            $tuple['porciento'] = round((intval($tuple['vote']) * 100) / $total, 2);
             array_push($response['data'], $tuple);
         }
 

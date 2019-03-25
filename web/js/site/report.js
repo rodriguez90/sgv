@@ -13,7 +13,7 @@ var config = {
         xAxes: [{
             type: 'linear',
             ticks: {
-                min: 0
+                min: 0,
             },
             display: true,
             scaleLabel: {
